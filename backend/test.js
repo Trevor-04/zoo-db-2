@@ -1,13 +1,17 @@
 const {query, connect, disconnect} = require('../functions/database');
-const mysql = require('mysql2');
 
 (async() => {
-    await connect();
+    try {
+        await connect(); 
+        console.log("Connected");
 
-    await query("SHOW DATABASES").then((results) => {
-        console.log(results);
-    })
-    
-    await disconnect();
-})
+        const results = await query("SHOW DATABASES"); 
+        console.log("Databases", results); 
+
+    } catch (error) {
+        // console.error("Error:", error); 
+    } finally {
+        await disconnect(); 
+    }
+})();
 
