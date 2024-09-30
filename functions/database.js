@@ -8,6 +8,7 @@ const connection = mysql.createConnection({
 
 module.exports.query = async function(query) {
     return new Promise((resolve, reject) => {
+        if (!module.exports.connected()) module.exports.connect(); // check if it's connected
         connection.query(query, (err, results) => {
             if(err) {
                 console.log(err); 
@@ -19,9 +20,22 @@ module.exports.query = async function(query) {
 }
 
 module.exports.connect = async function () {
-    console.log("Connected to database");
-    return connection.connect();
+    if(!module.exports.connected()) {
+        console.log("Connected to database");
+        return connection.connect();
+    } else {
+        console.log("You're already connected");
+    }
+    
 }
 module.exports.disconnect = async function () {
-    return connection.end();
+    if(module.exports.connected()) {
+        return connection.end();
+    } else {
+        console.log("You were never connected to the database")
+    }
+}
+
+module.exports.connected = async function () {
+    return connection.state === "disconnected";
 }

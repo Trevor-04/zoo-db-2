@@ -9,7 +9,7 @@ const {query, connect, disconnect} = require('../functions/database');
         console.log("Databases", results); 
 
     } catch (error) {
-        // console.error("Error:", error); 
+        console.error("Error:", error); 
     } finally {
         await disconnect(); 
     }
