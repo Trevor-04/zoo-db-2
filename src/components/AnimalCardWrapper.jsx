@@ -1,29 +1,25 @@
 import React from 'react';
-
-// AnimalCard Component (with placeholders for now)
-const AnimalCard = () => {
-  return (
-    <div className="card cursor-pointer bg-[#e0d3c2] shadow-lg w-full max-w-xs p-4 m-4 relative">
-      <figure className="w-full h-48 bg-white">
-        {/* Placeholder image */}
-      </figure>
-      <div className="cardContent p-4">
-        <h2 className="text-xl font-bold text-[#165e229e] hover:text-[#2490369e]">Animal Name</h2>
-        {/* Placeholder for any additional content */}
-      </div>
-    </div>
-  );
-};
+import GiftCard from './GiftCard';
 
 // AnimalCardWrapper Component (renders multiple cards)
 const AnimalCardWrapper = () => {
-  // Placeholder array for card rendering
-  const placeholderCards = new Array(4).fill(0);
+  // Array of animals with their image URLs and names
+  const animals = [
+    { imageUrl: "/cougar.jpeg", name: "Cougar" },
+    { imageUrl: "/cougar.jpeg", name: "Cougar" },
+    { imageUrl: "/cougar.jpeg", name: "Cougar" },
+    { imageUrl: "/cougar.jpeg", name: "Cougar" },
+    { imageUrl: "/cougar.jpeg", name: "Cougar" },
+    { imageUrl: "/cougar.jpeg", name: "Cougar" },
+
+    
+    // Add more animals here
+  ];
 
   return (
-    <div className=" bg-[#e0d3c2] cardBlock mt-4 flex justify-center flex-wrap w-full">
-      {placeholderCards.map((_, index) => (
-        <AnimalCard key={index} />
+    <div className="bg-white cardBlock -mt-[150px] flex justify-center flex-wrap w-full">
+      {animals.map((animal, index) => (
+        <GiftCard key={index} imageUrl={animal.imageUrl} name={animal.name} />
       ))}
     </div>
   );
