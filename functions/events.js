@@ -16,3 +16,17 @@ module.exports.getAllUpdates = async function () {
     FROM Events
     ORDER BY eventTime ASC`);
 }
+
+module.exports.addEvent = async function (eventID, eventName, eventTime, members_only, exhibitID) {
+    try {
+        // Insert the new event into the database
+        const result = await query(`
+            INSERT INTO Events (eventName, eventTime, eventDescription)
+            VALUES ('${eventID}''${eventName}', '${eventTime}', '${members_only}', '${exhibitID}')
+        `);
+        return result;
+    } catch (error) {
+        console.error("Error adding event: ", error);
+        throw error;
+    }
+};
