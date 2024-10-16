@@ -30,12 +30,41 @@ module.exports.addEvent = async function (eventID, eventName, eventTime, members
     try {
         // Insert the new event into the database
         const result = await query(`
-            INSERT INTO Events (eventName, eventTime, eventDescription)
+            INSERT INTO Events (eventID, eventName, eventTime, members_only, exhibitID)
             VALUES ('${eventID}''${eventName}', '${eventTime}', '${members_only}', '${exhibitID}')
         `);
         return result;
     } catch (error) {
         console.error("Error adding event: ", error);
+        throw error;
+    }
+};
+
+module.exports.deleteEvent = async function (eventID) {
+    try {
+        // delete the event from the database using parameterized query
+        const result = await query(`
+            DELETE FROM Events
+            WHERE eventID=${eventID};
+        `);
+        return result;
+    } catch (error) {
+        console.error("Error deleting event", error);
+        throw error;
+    }
+};
+
+module.exports.getEventByID = function (eventID) {
+    try {
+        // get a single event by its ID
+        const result = await query(`
+            SELECT * 
+            FROM Events
+            WHERE eventID=${eventID}
+        `);
+        return result;
+    } catch (error) {
+        console.error("Error getting event", error);
         throw error;
     }
 };
