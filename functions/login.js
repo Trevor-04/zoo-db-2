@@ -22,16 +22,36 @@ module.exports.validateLogin = async function(email, password) {
         WHERE employeeEmail = '${email}' 
         AND employeePassword = '${password}'`);
 
-        if (results.length > 0) {
+        if (results.length > 0) { // if they logged in 
             await query(`
             UPDATE Employee_logins SET last_login = NOW()
             WHERE employeeEmail = ${email} 
             AND employeePassword = ${password}`);
-            return true;
-        }
-
-        return results.length > 0;
-    } catch (error) {
+            return {
+                type: "employee",
+                ID: results[0].employeeID,
+                loggedIn: true,
+            }
+        } else {
+            const customerResults = await query(`
+            SELECT customerID
+            FROM Member_logins
+            WHERE memberEmail = ${email}
+            AND employeePassword = ${password}`);
+            if (customerResults.length > 0) {
+                return {
+                    type: "customer",
+                    ID: customerResults[0].customerID,
+                    loggedIn: true
+                }
+            }
+            return {
+                type: null,
+                ID: "",
+                loggedIn: false,
+            }
+        } 
+    }catch (error) {    
         console.error('Error in validateLogin:', error);
         throw error;
     }
