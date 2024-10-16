@@ -16,6 +16,11 @@ module.exports.createLogin = async function(email, username, password) {
 
 module.exports.validateLogin = async function(email, password) {
     try {
+        let returnData = {
+            type: null,
+            ID: "",
+            loggedIn: false,
+        }
         const results = await query(`
         SELECT employeeID 
         FROM Employee_logins
@@ -27,30 +32,23 @@ module.exports.validateLogin = async function(email, password) {
             UPDATE Employee_logins SET last_login = NOW()
             WHERE employeeEmail = ${email} 
             AND employeePassword = ${password}`);
-            return {
-                type: "employee",
-                ID: results[0].employeeID,
-                loggedIn: true,
-            }
+            
+            returnData.type = "employee"
+            returnData.ID = results[0].employeeID;
+            returnData.loggedIn = true;
         } else {
-            const customerResults = await query(`
-            SELECT customerID
+            const membersResults = await query(`
+            SELECT memberID
             FROM Member_logins
             WHERE memberEmail = ${email}
-            AND employeePassword = ${password}`);
-            if (customerResults.length > 0) {
-                return {
-                    type: "customer",
-                    ID: customerResults[0].customerID,
-                    loggedIn: true
-                }
-            }
-            return {
-                type: null,
-                ID: "",
-                loggedIn: false,
+            AND memberPassword = ${password}`);
+            if (membersResults.length > 0) {
+                returnData.type = "member"
+                returnData.ID = membersResults[0].employeeID;
+                returnData.loggedIn = true;
             }
         } 
+        return returnData
     }catch (error) {    
         console.error('Error in validateLogin:', error);
         throw error;
