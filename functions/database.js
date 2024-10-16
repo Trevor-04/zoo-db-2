@@ -7,35 +7,55 @@ const connection = mysql.createConnection({
 });
 
 module.exports.query = async function(query) {
-    return new Promise((resolve, reject) => {
-        if (!module.exports.connected()) module.exports.connect(); // check if it's connected
-        connection.query(query, (err, results) => {
-            if(err) {
-                console.log(err); 
-                reject(err)
-            }
-        resolve(results);
+    try {
+        return new Promise((resolve, reject) => {
+            if (!module.exports.connected()) module.exports.connect(); // check if it's connected
+            connection.query(query, (err, results) => {
+                if (err) {
+                    console.error('Error in query execution:', err);
+                    reject(err);
+                }
+                resolve(results);
+            });
         });
-    });
+    } catch (error) {
+        console.error('Error in query function:', error);
+        throw error;
+    }
 }
 
 module.exports.connect = async function () {
-    if(!module.exports.connected()) {
-        console.log("Connected to database");
-        return connection.connect();
-    } else {
-        console.log("You're already connected");
+    try {
+        if (!module.exports.connected()) {
+            console.log("Connected to database");
+            return connection.connect();
+        } else {
+            console.log("You're already connected");
+        }
+    } catch (error) {
+        console.error('Error in connect function:', error);
+        throw error;
     }
-    
 }
+
 module.exports.disconnect = async function () {
-    if(module.exports.connected()) {
-        return connection.end();
-    } else {
-        console.log("You were never connected to the database")
+    try {
+        if (module.exports.connected()) {
+            return connection.end();
+        } else {
+            console.log("You were never connected to the database");
+        }
+    } catch (error) {
+        console.error('Error in disconnect function:', error);
+        throw error;
     }
 }
 
 module.exports.connected = async function () {
-    return connection.state === "disconnected";
+    try {
+        return connection.state === "disconnected";
+    } catch (error) {
+        console.error('Error in connected function:', error);
+        throw error;
+    }
 }

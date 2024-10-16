@@ -1,20 +1,29 @@
 const {query, connect, disconnect} = require('../functions/database');
 
 module.exports.getUpcomingEvents = function () {
-    const currentDate = new Date().toISOString().slice(0,19).replace("T", "");
-    //
-    return query(`
-    SELECT * 
-    FROM Events
-    WHERE eventTime > ${currentDate}
-    ORDER BY eventTime ASC`);
+    try {
+        const currentDate = new Date().toISOString().slice(0,19).replace("T", "");
+        return query(`
+        SELECT * 
+        FROM Events
+        WHERE eventTime > ${currentDate}
+        ORDER BY eventTime ASC`);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 module.exports.getAllUpdates = async function () {
-    return query(`
-    SELECT * 
-    FROM Events
-    ORDER BY eventTime ASC`);
+    try {
+        return query(`
+        SELECT * 
+        FROM Events
+        ORDER BY eventTime ASC`);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 module.exports.addEvent = async function (eventID, eventName, eventTime, members_only, exhibitID) {
