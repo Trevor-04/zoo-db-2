@@ -21,6 +21,7 @@ module.exports.validateLogin = async function(email, password) {
             ID: "",
             loggedIn: false,
         }
+        
         const results = await query(`
         SELECT employeeID 
         FROM Employee_logins
@@ -44,7 +45,7 @@ module.exports.validateLogin = async function(email, password) {
             AND memberPassword = ${password}`);
             if (membersResults.length > 0) {
                 returnData.type = "member"
-                returnData.ID = membersResults[0].employeeID;
+                returnData.ID = membersResults[0].memberID;
                 returnData.loggedIn = true;
             }
         } 
