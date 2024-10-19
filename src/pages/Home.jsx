@@ -64,7 +64,9 @@ const Home = () => {
         </div>
       </section>
      </Link>
-
+      <div>
+        test
+      </div>
     </div>
   );
 }
