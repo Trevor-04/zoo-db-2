@@ -3,7 +3,7 @@ import React from 'react'
 function tickets() {
   return (
     <div>
-      test
+      test test
     </div>
   )
 }
