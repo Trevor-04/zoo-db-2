@@ -6,11 +6,11 @@ const connection = mysql.createConnection({
     password: "Uma1234!",
 });
 
-module.exports.query = async function(query) {
+module.exports.query = async function(query, params = []) {
     try {
         return new Promise((resolve, reject) => {
             if (!module.exports.connected()) module.exports.connect(); // check if it's connected
-            connection.query(query, (err, results) => {
+            connection.query(query, params, (err, results) => {
                 if (err) {
                     console.error('Error in query execution:', err);
                     reject(err);
