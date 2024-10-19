@@ -3,19 +3,23 @@ const { query, connect, disconnect } = require('../functions/database');
 // Employee_logins
 // employeeID, employeeEmail, employeePassword
 
-module.exports.createLogin = async function(email, username, password) {
-    try {
-        await query(`INSERT INTO 
-        Employee_logins (employeeID, employeePassword, employeeEmail) 
-        VALUES (${username}, ${password}, ${email})`);
-    } catch (error) {
-        console.error('Error in createLogin:', error);
-        throw error;
-    }
-};
+module.exports.createLogin = async function (loginData) {
+    const {employeeID, employeePassword, employeeEmail} = loginData;
+    
+        try {
+            await query(`INSERT INTO 
+            Employee_logins (employeeID, employeePassword, employeeEmail) 
+            VALUES (?, ?, ?) `, 
+            [employeeID, employeePassword, employeeEmail]);
+        } catch (error) {
+            console.error('Error in createLogin:', error);
+            throw error;
+        }
+    }   
 
-module.exports.validateLogin = async function(email, password) {
+module.exports.validateLogin = async function(loginData) {
     try {
+        const {employeePassword, employeeEmail} = loginData;
         let returnData = {
             type: null,
             ID: "",
@@ -25,14 +29,16 @@ module.exports.validateLogin = async function(email, password) {
         const results = await query(`
         SELECT employeeID 
         FROM Employee_logins
-        WHERE employeeEmail = '${email}' 
-        AND employeePassword = '${password}'`);
+        WHERE employeeEmail = ?
+        AND employeePassword = ?`, 
+        [employeeEmail, employeePassword]);
 
         if (results.length > 0) { // if they logged in 
             await query(`
             UPDATE Employee_logins SET last_login = NOW()
-            WHERE employeeEmail = ${email} 
-            AND employeePassword = ${password}`);
+            WHERE employeeEmail = ? 
+            AND employeePassword = ?`, 
+            [employeeEmail, employeePassword]);
             
             returnData.type = "employee"
             returnData.ID = results[0].employeeID;
@@ -41,8 +47,9 @@ module.exports.validateLogin = async function(email, password) {
             const membersResults = await query(`
             SELECT memberID
             FROM Member_logins
-            WHERE memberEmail = ${email}
-            AND memberPassword = ${password}`);
+            WHERE memberEmail = ?
+            AND memberPassword = ?`, 
+            [employeeEmail, employeePassword]);
             if (membersResults.length > 0) {
                 returnData.type = "member"
                 returnData.ID = membersResults[0].memberID;
@@ -56,24 +63,31 @@ module.exports.validateLogin = async function(email, password) {
     }
 };
 
-module.exports.changePassword = async function(employeeID, newPassword) {
+module.exports.changePassword = async function(passwordData) {
+    const {employeeID, employeePassword} = passwordData;
+    const newPassword = employeePassword;
+
     try {
         await query(`
         UPDATE Employee_logins
-        SET employeePassword = ${newPassword}
-        WHERE employeeID = ${employeeID}`);
+        SET employeePassword = ?
+        WHERE employeeID = ?`,
+        [newPassword, employeeID]);
     } catch (error) {
         console.error('Error in changePassword:', error);
         throw error;
     }
 };
 
-module.exports.getEmployeeByID = async function(employeeID) {
+module.exports.getEmployeeByID = async function(employeeData) {
+    const {employeeID} = employeeData;
+
     try {
         const result = await query(`
         SELECT * 
         FROM Employee_logins
-        WHERE employeeID = ${employeeID}`);
+        WHERE employeeID = ?`,
+        [employeeID]);
         return result[0];
     } catch (error) {
         console.error('Error in getEmployeeByID:', error);

@@ -1,6 +1,7 @@
 const { query, connect, disconnect } = require('../functions/database');
 
-module.exports.restaurantItemReports = async function (startDate, endDate) {
+module.exports.restaurantItemReports = async function (reportData) {
+    const {startDate, endDate} = reportData;
     try {
         return await query(`
         SELECT 
@@ -11,17 +12,18 @@ module.exports.restaurantItemReports = async function (startDate, endDate) {
         FROM Inventory I
         JOIN Restaurant_sales R 
         ON I.itemID = R.itemID
-        WHERE R.purchased_at BETWEEN ${startDate} AND ${endDate}
+        WHERE R.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
         ORDER BY total_sales_revenue DESC
-        `);
+        `, [startDate, endDate]);
     } catch (err) {
         console.log(err);
         throw err;
     }
 }
 
-module.exports.restaurantTotalReport = async function (startDate, endDate) {
+module.exports.restaurantTotalReport = async function (reportData) {
+    const {startDate, endDate} = reportData;
     try {
         return await query(`
         SELECT 
@@ -29,16 +31,17 @@ module.exports.restaurantTotalReport = async function (startDate, endDate) {
         FROM Inventory I
         JOIN Restaurant_sales R
         ON I.itemID = R.itemID
-        WHERE R.purchased_at BETWEEN ${startDate} AND ${endDate}
+        WHERE R.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC`)
+        ORDER BY total_sales_revenue DESC`, [startDate, endDate])
     } catch (err) {
         console.log(err);
         throw err;
     }
 }
 
-module.exports.concessionItemReport = async function (startDate, endDate) {
+module.exports.concessionItemReport = async function (reportData) {
+    const {startDate, endDate} = reportData;
     try {
         return await query(`
         SELECT 
@@ -49,17 +52,18 @@ module.exports.concessionItemReport = async function (startDate, endDate) {
         FROM Inventory I
         JOIN Concession_sales AS C 
         ON I.itemID = C.itemID
-        WHERE C.purchased_at BETWEEN ${startDate} AND ${endDate}
+        WHERE C.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
         ORDER BY total_sales_revenue DESC
-        `)
+        `, [startDate, endDate])
     } catch (err) {
         console.log(err);
         throw err;
     }
 }
 
-module.exports.concessionTotalReport = async function (startDate, endDate) {
+module.exports.concessionTotalReport = async function (reportData) {
+    const {startDate, endDate} = reportData;
     try {
         return await query(`
         SELECT 
@@ -67,16 +71,17 @@ module.exports.concessionTotalReport = async function (startDate, endDate) {
         FROM Inventory I
         JOIN Concession_sales C
         ON I.itemID = C.itemID
-        WHERE C.purchased_at BETWEEN ${startDate} AND ${endDate}
+        WHERE C.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC`)
+        ORDER BY total_sales_revenue DESC`, [startDate, endDate])
     } catch (err) {
         console.log(err);
         throw err;
     }
 }
 
-module.exports.giftShopItemReport = async function (startDate, endDate) {
+module.exports.giftShopItemReport = async function (reportData) {
+    const {startDate, endDate} = reportData;
     try {
         return query(`
         SELECT 
@@ -87,17 +92,18 @@ module.exports.giftShopItemReport = async function (startDate, endDate) {
         FROM Inventory I
         JOIN Gift_shop_sales AS G
         ON I.itemID = G.itemID
-        WHERE G.purchased_at BETWEEN ${startDate} AND ${endDate}
+        WHERE G.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
         ORDER BY total_sales_revenue DESC
-        `)
+        `, [startDate, endDate])
     } catch (err) {
         console.log(err);
         throw err;
     }
 }
 
-module.exports.giftShopTotalReport = async function (startDate, endDate) {
+module.exports.giftShopTotalReport = async function (reportData) {
+    const {startDate, endDate} = reportData;
     try {
         return await query(`
         SELECT 
@@ -105,9 +111,9 @@ module.exports.giftShopTotalReport = async function (startDate, endDate) {
         FROM Inventory I
         JOIN gift_shop_sales G
         ON I.itemID = G.itemID
-        WHERE G.purchased_at BETWEEN ${startDate} AND ${endDate}
+        WHERE G.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC`)
+        ORDER BY total_sales_revenue DESC`, [startDate, endDate])
     } catch (err) {
         console.log(err);
         throw err;
