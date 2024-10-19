@@ -65,7 +65,7 @@ const Home = () => {
       </section>
      </Link>
       <div>
-        test
+        test test
       </div>
     </div>
   );
