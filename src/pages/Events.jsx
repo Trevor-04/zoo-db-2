@@ -14,6 +14,9 @@ function Events() {
         <EventCal />
       </div>
     </div>
+    <div>
+      test
+    </div>
   </div>
   )
 }
