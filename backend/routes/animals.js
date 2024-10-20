@@ -1,5 +1,5 @@
 const express = require('express');
-const { query } = require('../database'); // Import the query function
+const { query } = require('../functions/database'); // Import the query function
 
 const router = express.Router();
 
