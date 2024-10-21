@@ -1,5 +1,6 @@
-const fetch = require('node-fetch')
 const express = require('express');
+const {url, port} = require("../src/config.json");
+const axios = require('axios');
 const cors = require('cors');
 
 // Routes
@@ -11,7 +12,6 @@ const reportsRoutes = require('./routes/reports');
 const ticketsRoutes = require('./routes/tickets');
 
 const app = express();
-const PORT = 3000; // replace this whenever we can 
 
 app.use(cors()); // allows us to handle front end requests
 
@@ -24,8 +24,13 @@ app.use('/members', membersRoutes);
 app.use('/reports', reportsRoutes);
 app.use('/tickets', ticketsRoutes);
 
+
+// axios.get(`${url}:${port}/animals/`).then(d => console.log(d.data));
+
+
+
 // Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
+app.listen(port, async () => {
+    console.log(`Server is running on ${url}:${port}`);
+});
 
