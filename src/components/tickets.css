@@ -99,15 +99,19 @@ body {
     text-align: left;
     width: 200px;
     flex-direction: column; /* Make sure the boxes are stacked vertically */
+    background-color: #fff7e6;
   }
   
   .ticket-list {
     list-style: none;
+    background-color: #fff7e6;
     padding: 0;
   }
   
   .ticket-item {
     margin: 10px 0;
+    background-color: #fff7e6;
+    border: none;
   }
   
   .ticket-link {
@@ -121,13 +125,13 @@ body {
     margin: 0;
     display: block;
     text-align: center;
-    background-color: #f5f0e1; /* Set the background color to transparent */
+    background-color: #fff7e6; /* Set the background color to transparent */
     width: 100%; /* Ensure the box takes full width */
     box-shadow: none; /* Remove any box shadow */
   }
   
   .ticket-link:hover {
     background-color: #165e22;
-    color: white;
+    color: #fff7e6;
   }
   
