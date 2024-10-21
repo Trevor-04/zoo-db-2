@@ -6,6 +6,7 @@ import GiftShop from './pages/GiftShop';
 import Events from './pages/Events';
 import Login from './components/login';
 import Signup from './components/signup';
+import Tickets from "./pages/Tickets";
 import './App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/giftshop" element={<GiftShop />} />
                     <Route path="/events" element={<Events />} />
                     <Route path="/signup" element={<Signup/>} />
+                    <Route path="/tickets" element={<Tickets />} />
                 </Routes>
             </Router>
         </div>

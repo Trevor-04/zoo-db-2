@@ -1,0 +1,133 @@
+:root {
+    --main-bg-color: #fff7e6;
+    --header-bg-color: rgb(59, 118, 59);
+    --text-color: black;
+    --accent-color: rgb(59, 118, 59);
+    --day-bg-color: #ffffff;
+    --border-color: #faf0e6;
+}
+
+body {
+    background-color: var(--main-bg-color);
+}
+
+.tickets-container {
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+    background-color: black;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid green; /* Similar to events, adds the green border */
+}
+
+.tickets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #faf0e6;
+}
+
+.tickets-header h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.ticket-item {
+    background-color: var(--day-bg-color);
+    padding: 15px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+.ticket-item:hover {
+    background-color: #eeeeee;
+    cursor: pointer;
+}
+
+.ticket-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--accent-color);
+}
+
+.ticket-details {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.ticket-button {
+    background-color: #88a628;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ticket-button:hover {
+    background-color: #e02525;
+}
+
+@media (max-width: 768px) {
+    .tickets-container {
+        margin: 10px;
+    }
+
+    .tickets-header h2 {
+        font-size: 20px;
+    }
+
+    .ticket-item {
+        padding: 10px;
+    }
+
+    .ticket-title {
+        font-size: 16px;
+    }
+}
+.ticket-options {
+    display: flex;
+    justify-content: flex-start; /* This will align the boxes to the left */
+    margin: 20px;
+    text-align: left;
+    width: 200px;
+    flex-direction: column; /* Make sure the boxes are stacked vertically */
+  }
+  
+  .ticket-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .ticket-item {
+    margin: 10px 0;
+  }
+  
+  .ticket-link {
+    color: #165e22;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid #165e22;
+    border-radius: 8px;
+    margin: 0;
+    display: block;
+    text-align: center;
+    background-color: #f5f0e1; /* Set the background color to transparent */
+    width: 100%; /* Ensure the box takes full width */
+    box-shadow: none; /* Remove any box shadow */
+  }
+  
+  .ticket-link:hover {
+    background-color: #165e22;
+    color: white;
+  }
+  
