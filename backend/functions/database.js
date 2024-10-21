@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
     host: "162.248.101.97",
@@ -35,5 +35,15 @@ module.exports.disconnect = async function () {
     } catch (error) {
         console.error('Error in disconnect function:', error);
         throw error;
+    }
+}
+
+module.exports.checkConnection = async function() {
+    try {
+        const connection = await pool.getConnection();
+        console.log("Connected to the database");
+        connection.release();
+    } catch (err) {
+        console.error("Didn't connect", err)
     }
 }

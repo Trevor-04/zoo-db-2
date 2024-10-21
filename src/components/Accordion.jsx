@@ -1,10 +1,20 @@
 import React from 'react'
-import {useState} from 'react'
+import {useState} from 'react';
+import axios from 'axios';
+import Config from '../config.json';
 
-// const {} = require('../../functions/');
+const {url, port} = Config; 
 
 function Accordion() {
-    const [AccordionOpen, setAccordionOpen] = useState(null)
+    const [AccordionOpen, setAccordionOpen] = useState(null);
+
+    const testAnimals = () => {
+      console.log(`${url}:${port}/animals/`)
+      return axios.get(`${url}:${port}/animals/`)
+      .then(d => console.log(d.data))
+      .catch(e => console.error(e))
+    }
+
   return (
     
     <div className=''>
@@ -50,7 +60,10 @@ function Accordion() {
             {AccordionOpen && (
               <ul className="relative flex flex-col -mt-4 py-2 overflow-y-scroll">
                 <li>
-                  <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors">
+                  <button 
+                  className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
+                  onClick={() => testAnimals()}
+                  >
                     African Forest
                   </button>
                 </li>
