@@ -1,5 +1,6 @@
 import React from 'react';
 import './tickets.css'; // Assuming you will style the box here
+import { Link } from 'react-router-dom';
 
 function TicketOptions() {
   return (
@@ -12,7 +13,8 @@ function TicketOptions() {
           <a href="/discounted-tickets" className="ticket-link">Discounted Tickets</a>
         </li>
         <li className="ticket-item">
-          <a href="/membership-portal" className="ticket-link">Membership Portal</a>
+          {/*<a href="/membership-portal" className="ticket-link">Membership Portal</a> */}
+          <Link to="/Signup" className="ticket-link">Membership Portal</Link>
         </li>
       </ul>
     </div>
