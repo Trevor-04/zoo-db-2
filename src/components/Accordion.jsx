@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {useState} from 'react';
 import axios from 'axios';
 import Config from '../config.json';
@@ -7,13 +7,33 @@ const {url, port} = Config;
 
 function Accordion() {
     const [AccordionOpen, setAccordionOpen] = useState(null);
+    const [exhibits, setExhibits] = useState([]);
 
-    const testAnimals = () => {
-      console.log(`${url}:${port}/animals/`)
-      return axios.get(`${url}:${port}/animals/`)
-      .then(d => console.log(d.data))
-      .catch(e => console.error(e))
+
+    const getExhibits = async (exhibit) => {
+      let response;
+      if(exhibit) { 
+        if (!isNaN(exhibit)) { // is numeric
+          console.log(`${url}:${port}/exhibits/${exhibit}`);
+          response = await axios.get(`${url}:${port}/exhibits/${exhibit}`)
+        } else { // name 
+          console.log(`${url}:${port}/exhibits/name/${exhibit}`);
+          response = await axios.get(`${url}:${port}/exhibits/name/${exhibit}`)
+        }
+      } else { // gets a list of all exhibits
+        console.log(`${url}:${port}/exhibits/`);
+          response = await axios.get(`${url}:${port}/exhibits/`)
+      }
+      if(response && response.data) {
+        console.log(response.data);
+        setExhibits(response.data);
+      }
+      
     }
+
+    useEffect(() => {
+      getExhibits();
+    }, [])
 
   return (
     
@@ -60,33 +80,24 @@ function Accordion() {
             {AccordionOpen && (
               <ul className="relative flex flex-col -mt-4 py-2 overflow-y-scroll">
                 <li>
-                  <button 
-                  className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
-                  onClick={() => testAnimals()}
-                  >
-                    African Forest
+                  <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
+                  onClick={() => getExhibits()}>
+                    All
                   </button>
                 </li>
-                <li>
-                  <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors">
-                    Asian Rainforest
-                  </button>
-                </li>
-                <li>
-                  <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors">
-                    Desert
-                  </button>
-                </li>
-                <li>
-                  <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors">
-                    Aquarium
-                  </button>
-                </li>
-                <li>
-                  <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors">
-                    Birds Exhibit
-                  </button>
-                </li>
+
+                {exhibits.map((exhibits) => (
+                  <li key = {exhibits.exhibitID}>
+                    <button 
+                    className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
+                    onClick={() => getExhibits(exhibits.exhibitName)}
+                    > 
+                {/* Test */}
+                {exhibits.exhibitName}
+                </button>
+              </li>
+                ))}
+              
               </ul>
             )}
           </div>  }
