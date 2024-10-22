@@ -218,3 +218,8 @@
     text-align: center;
   }
   
+  .time-slot-box.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    background-color: #f0f0f0;
+  }
