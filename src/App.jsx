@@ -6,7 +6,7 @@ import GiftShop from './pages/GiftShop';
 import Events from './pages/Events';
 import Login from './components/login';
 import Signup from './components/signup';
-import Tickets from "./pages/tickets";
+import Tickets from "./pages/Tickets";
 import './App.css';
 
 function App() {
