@@ -2,11 +2,9 @@ import React from 'react';
 
 // GiftCard Component (accepting image and name as props)
 const GiftCard = ({ imageUrl, name }) => {
-    
     const handleClick = () =>{
        
     };
-
   return (
     <div className="relative w-[250px] card cursor-pointer bg-gray-300 shadow-lg max-w-xs p-4 m-4 transition-colors duration-200"> {/* Apply background color here */}
       <button onClick={handleClick} className='absolute top-1/2 left-1/2 transform -translate-x-1/2 

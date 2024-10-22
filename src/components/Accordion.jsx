@@ -2,12 +2,14 @@ import React, { useEffect } from 'react'
 import {useState} from 'react';
 import axios from 'axios';
 import Config from '../config.json';
+import AnimalCardWrapper from './AnimalCardWrapper';
 
 const {url, port} = Config; 
 
 function Accordion() {
     const [AccordionOpen, setAccordionOpen] = useState(null);
     const [exhibits, setExhibits] = useState([]);
+    const [selectedExhibit, setSelectedExhibit] = useState([])
 
 
     const getExhibits = async (exhibit) => {
@@ -31,7 +33,18 @@ function Accordion() {
       
     }
 
+    const getSelectedAnimals = async function(exhibitName) {
+      let response;
+      response = await axios.get(`${url}:${port}/animals/exhibits/${exhibitName}`)
+
+      if(response && response.data) {
+        console.log(response.data);
+        setSelectedExhibit(response.data || []);
+      }
+    }
+
     useEffect(() => {
+      getSelectedAnimals("all");
       getExhibits();
     }, [])
 
@@ -81,7 +94,7 @@ function Accordion() {
               <ul className="relative flex flex-col -mt-4 py-2 overflow-y-scroll">
                 <li>
                   <button className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
-                  onClick={() => getExhibits()}>
+                  onClick={() => getSelectedAnimals("all")}>
                     All
                   </button>
                 </li>
@@ -90,7 +103,7 @@ function Accordion() {
                   <li key = {exhibits.exhibitID}>
                     <button 
                     className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
-                    onClick={() => getExhibits(exhibits.exhibitName)}
+                    onClick={() => getSelectedAnimals(exhibits.exhibitName)}
                     > 
                 {/* Test */}
                 {exhibits.exhibitName}
@@ -102,8 +115,9 @@ function Accordion() {
             )}
           </div>  }
       </div>
+      <AnimalCardWrapper selectedExhibit={selectedExhibit}/>
     </div>
-  )
+  );
 }
 
 export default Accordion

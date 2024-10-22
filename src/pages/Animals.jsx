@@ -51,9 +51,8 @@ function Animals() {
        
 
       {/* Animal Cards Section */}
-      <div className="relative -bottom-[150px] px-5 py-5 bg-white justify-center items-center w-full">
+      <div className="relative -bottom-[0px] px-5 py-5 bg-white justify-center items-center w-full">
         {/* Rendering AnimalCardWrapper here with the animals list */}
-        <AnimalCardWrapper animals={animals} />
       </div>
 
     </main>

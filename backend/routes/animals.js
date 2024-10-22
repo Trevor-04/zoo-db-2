@@ -72,7 +72,7 @@ router.get('/species/:species', async (req, res) => {
 
 // Get animals by enclosure
 router.get('/enclosure', async (req, res) => {
-    const { enclosureID, enclosureName } = req.query;
+    const { enclosureID, enclosureName } = req.params;
 
     try {
         let results;
@@ -93,6 +93,32 @@ router.get('/enclosure', async (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Failed to get animals by enclosure' });
     }
+});
+
+router.get('/exhibits/:exhibitName', async (req, res) => {
+    const {exhibitName} = req.params;
+
+    try {
+        let results; 
+        if (exhibitName === "all") {
+            results = await query(`SELECT * 
+            FROM Animals AS A
+            JOIN Enclosures AS En ON A.enclosureID = En.enclosureID
+            JOIN Exhibits AS Ex ON En.exhibitID = Ex.exhibitID`);
+        } else {
+            results = await query(`SELECT * 
+            FROM Animals AS A
+            JOIN Enclosures AS En ON A.enclosureID = En.enclosureID
+            JOIN Exhibits AS Ex ON En.exhibitID = Ex.exhibitID
+            WHERE Ex.exhibitName = ?`,[exhibitName])
+        }
+
+        res.status(200).json(results || []);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get animals by exhibits' });
+    }
+
 });
 
 // Export the router
