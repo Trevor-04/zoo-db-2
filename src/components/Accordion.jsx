@@ -4,7 +4,7 @@ import axios from 'axios';
 import Config from '../config.json';
 import AnimalCardWrapper from './AnimalCardWrapper';
 
-const {url, port} = Config; 
+const {url} = Config; 
 
 function Accordion() {
     const [AccordionOpen, setAccordionOpen] = useState(null);
@@ -16,15 +16,15 @@ function Accordion() {
       let response;
       if(exhibit) { 
         if (!isNaN(exhibit)) { // is numeric
-          console.log(`${url}:${port}/exhibits/${exhibit}`);
-          response = await axios.get(`${url}:${port}/exhibits/${exhibit}`)
+          console.log(`${url}/exhibits/${exhibit}`);
+          response = await axios.get(`${url}/exhibits/${exhibit}`)
         } else { // name 
-          console.log(`${url}:${port}/exhibits/name/${exhibit}`);
-          response = await axios.get(`${url}:${port}/exhibits/name/${exhibit}`)
+          console.log(`${url}/exhibits/name/${exhibit}`);
+          response = await axios.get(`${url}/exhibits/name/${exhibit}`)
         }
       } else { // gets a list of all exhibits
-        console.log(`${url}:${port}/exhibits/`);
-          response = await axios.get(`${url}:${port}/exhibits/`)
+        console.log(`${url}/exhibits/`);
+          response = await axios.get(`${url}/exhibits/`)
       }
       if(response && response.data) {
         console.log(response.data);
@@ -35,7 +35,7 @@ function Accordion() {
 
     const getSelectedAnimals = async function(exhibitName) {
       let response;
-      response = await axios.get(`${url}:${port}/animals/exhibits/${exhibitName}`)
+      response = await axios.get(`${url}/animals/exhibits/${exhibitName}`)
 
       if(response && response.data) {
         console.log(response.data);
@@ -105,7 +105,6 @@ function Accordion() {
                     className="w-full px-4 py-3 text-left border hover:bg-gray-100 transition-colors"
                     onClick={() => getSelectedAnimals(exhibits.exhibitName)}
                     > 
-                {/* Test */}
                 {exhibits.exhibitName}
                 </button>
               </li>
