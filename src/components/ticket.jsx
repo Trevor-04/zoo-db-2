@@ -28,7 +28,7 @@ function TicketOptions() {
           <input type="number" min="0" defaultValue="0" />
         </div>
         <div className="ticket-date">
-          <label>When?</label>
+          <label><strong>When?</strong></label>
           <input type="date" />
         </div>
         <button className="continue-button">Continue</button>
