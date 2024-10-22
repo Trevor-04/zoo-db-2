@@ -144,26 +144,7 @@
     display: block;
   }
   
-  .add-event-btn {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background-color: #88a628;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 16px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  
-  .event-form-overlay {
+  .event-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -175,41 +156,127 @@
     align-items: center;
   }
   
-  .event-form {
-    background-color:#f0f0f0;
+  .modal-content {
+    background-color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(239, 138, 138, 0.1);
-  }
-  
-  .event-form h4 {
-    margin-top: 0;
-    color: #b02424;
-  }
-  
-  .event-form input {
+    max-width: 500px;
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #f0f0f0;
-    border-radius: 5px;
-    
   }
   
-  .event-form button {
-    padding: 10px 15px;
-    margin-right: 10px;
+  .modal-content h3 {
+    margin-top: 0;
+  }
+  
+  .modal-content button {
     background-color: #ff2d2d;
     color: white;
     border: none;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
   }
   
-  .event-form button:hover {
+  .modal-content button:hover {
     background-color: #e02525;
   }
+
+  .button-container {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    left: 20px; /* Adjust based on how far from the left you want */
+    top: 100px; /* Adjust based on how far from the top you want */
+    gap: 20px; /* Space between buttons */
+  }
   
+  .add-event-button {
+    background-color: #ffffff; /* White background */
+    color: rgb(59, 118, 59); /* Green text color */
+    border: 2px solid rgb(59, 118, 59); /* Green border */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 200px; /* Ensure a consistent width */
+    transition: background-color 0.3s ease;
+    margin-left: 20px; /* Adjust this to control the left positioning */
+    margin-top: 15px; /* Adjust this for the top spacing */
+  }
+  
+  .add-event-button:hover {
+    background-color: rgb(59, 118, 59); /* Green background on hover */
+    color: white; /* White text on hover */
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px; /* Add space between form elements */
+  }
+  
+  .form-group label {
+    margin-bottom: 5px; /* Space between label and input */
+  }
+  
+  .form-group input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Button Styling */
+  .form-buttons {
+    display: flex;
+    gap: 10px; /* Add space between buttons */
+  }
+  
+  .submit-button, .close-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .submit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .close-button {
+    background-color: red;
+    color: white;
+  }
+  
+  .close-button:hover {
+    background-color: darkred;
+  }
+
+  .form-group input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc; /* Adding a light border */
+    border-radius: 4px; /* Rounded corners for inputs */
+    width: 100%; /* Ensure the input takes up full width */
+    box-sizing: border-box; /* Prevents padding from increasing width */
+  }
+  
+  .form-group input:focus {
+    border-color: #4CAF50; /* Change border color when input is focused */
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Add a slight shadow on focus */
+  }
+
   
   @media (max-width: 768px) {
     .calendar-container {
@@ -236,8 +303,5 @@
       font-size: 16px;
     }
   
-    .event-form {
-      width: 90%;
-    }
   } 
   

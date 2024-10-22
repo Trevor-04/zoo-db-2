@@ -5,43 +5,108 @@ import "./eventCal.css";
 
 const EventCal = ({ isAdmin }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  //event display
   const [events, setEvents] = useState({});
-  const [showEventForm, setShowEventForm] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [newEvent, setNewEvent] = useState({ 
-    title: '', 
-    startHour: '09', 
-    startMinute: '00', 
-    endHour: '10', 
-    endMinute: '00' 
-  });
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  //add events
+  const [newEventID, setNewEventID] = useState('');
+  const [newEventName, setNewEventName] = useState('');
+  const [newEventDate, setNewEventDate] = useState('');
+  const [newMembersOnly, setNewMembersOnly] = useState('');
+  const [newExhibitID, setNewExhibitID] = useState('');
 
+  // Fetch events from database
   useEffect(() => {
-    // Fetch events from the backend when the component mounts
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get('/api/events'); // Adjust the endpoint based on your backend route
-        const eventData = response.data;
-
-        // Convert event data into a date-keyed object for easier lookup
-        const eventsByDate = eventData.reduce((acc, event) => {
-          const dateString = event.eventDate; // Assuming the eventDate is in 'YYYY-MM-DD' format
-          if (!acc[dateString]) {
-            acc[dateString] = [];
+    axios.get('/api/events/upcoming')
+      .then(response => {
+        const eventsByDate = {};
+        response.data.forEach(event => {
+          const eventDate = new Date(event.eventTime).toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+          if (!eventsByDate[eventDate]) {
+            eventsByDate[eventDate] = [];
           }
-          acc[dateString].push(event);
-          return acc;
-        }, {});
-
-        setEvents(eventsByDate);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-
-    fetchEvents();
+          eventsByDate[eventDate].push(event);
+        });
+        setEvents(eventsByDate); // Save events data in state
+      })
+      .catch(error => {
+        console.error("There was an error fetching the events!", error);
+      });
   }, []);
 
+  // Mock events data
+  // useEffect(() => {
+  //   const mockEvents = [
+  //     {
+  //       eventID: 1,
+  //       eventName: "Happy Hour Special",
+  //       eventTime: new Date().toISOString(),
+  //       startTime: "11:00 AM",
+  //       endTime: "3:00 PM",
+  //       members_only: true,
+  //       exhibitID: "EX123"
+  //     },
+  //     {
+  //       eventID: 2,
+  //       eventName: "SOME BDAY",
+  //       eventTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+  //       startTime: "4:00 PM",
+  //       endTime: "9:00 PM",
+  //       members_only: false,
+  //       exhibitID: "EX124"
+  //     },
+  //     {
+  //       eventID: 3,
+  //       eventName: "Spooky Event",
+  //       eventTime: new Date(2024, 9, 31).toISOString(), 
+  //       startTime: "1:00 PM",
+  //       endTime: "5:00 PM",
+  //       members_only: false,
+  //       exhibitID: "EX125"
+  //     }
+  //   ];
+
+  //   const eventsByDate = {};
+  //   mockEvents.forEach(event => {
+  //     const eventDate = new Date(event.eventTime).toISOString().split('T')[0];
+  //     if (!eventsByDate[eventDate]) {
+  //       eventsByDate[eventDate] = [];
+  //     }
+  //     eventsByDate[eventDate].push(event);
+  //   });
+
+  //   setEvents(eventsByDate);
+  // }, []);
+  
+  // adding events
+  const handleAddEvent = async (e) => {
+    e.preventDefault();
+  
+    const newEvent = {
+      eventID: newEventID,
+      eventName: newEventName,
+      eventTime: newEventDate, // Assuming eventDate is stored as a date
+      members_only: newMembersOnly,
+      exhibitID: newExhibitID,
+    };
+  
+    try {
+      await axios.post('/api/events/add', newEvent);
+      // Reset form and close modal
+      setNewEventID('');
+      setNewEventName('');
+      setNewEventDate('');
+      setNewMembersOnly('');
+      setNewExhibitID('');
+      closeAddEventModal();
+    } catch (error) {
+      console.error("Error adding event", error);
+    }
+  };
+
+  // Calender stuff
   const daysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
@@ -49,19 +114,19 @@ const EventCal = ({ isAdmin }) => {
     "July", "August", "September", "October", "November", "December"
   ];
   
-  
+  const changeMonth = (increment) => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + increment, 1));
+  };
 
   const renderCalendarDays = () => {
     const days = [];
     const totalDays = daysInMonth(currentDate);
     const firstDay = firstDayOfMonth(currentDate);
 
-    // Add empty divs for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
     }
 
-    // Add days of the month with events
     for (let day = 1; day <= totalDays; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const dateString = date.toISOString().split('T')[0];
@@ -74,18 +139,15 @@ const EventCal = ({ isAdmin }) => {
             <div
               key={`${dateString}-${event.eventName}-${index}`}
               className="event-item"
+              onClick={() => {
+                setSelectedEvent(event);
+                setIsModalOpen(true);
+              }}
             >
               <span className="event-title">{event.eventName}</span>
               <span className="event-time">{`${event.startTime} - ${event.endTime}`}</span>
-              <div className="event-tooltip">
-                <strong>{event.eventName}</strong>
-                <br />
-                {`${event.startTime} - ${event.endTime}`}
-              </div>
             </div>
           ))}
-          {isAdmin && ( 
-            <button className="add-event-btn" onClick={() => handleAddEventClick(date)}>+</button> )}
         </div>
       );
     }
@@ -93,115 +155,124 @@ const EventCal = ({ isAdmin }) => {
     return days;
   };
 
- 
-
-  const changeMonth = (increment) => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + increment, 1));
+  // more detailed view of events
+  const closeModal = () => {
+    setSelectedEvent(null);
+    setIsModalOpen(false);
   };
 
-  const handleAddEventClick = (date) => {
-    setSelectedDate(date);
-    setShowEventForm(true);
+  const openAddEventModal = () => {
+    setIsAddModalOpen(true);
   };
 
-  const handleAddEvent = (e) => {
-    e.preventDefault();
-    if (newEvent.title.trim() !== '') {
-      const dateString = selectedDate.toISOString().split('T')[0];
-      setEvents(prevEvents => ({
-        ...prevEvents,
-        [dateString]: [...(prevEvents[dateString] || []), newEvent]
-      }));
-      setNewEvent({ 
-        title: '', 
-        startHour: '09', 
-        startMinute: '00', 
-        endHour: '10', 
-        endMinute: '00' 
-      });
-      setShowEventForm(false);
-    }
+  const closeAddEventModal = () => {
+    setIsAddModalOpen(false);
   };
 
   return (
-    <div className="calendar-container">
-      <div className="calendar-header">
-        <button onClick={() => changeMonth(-1)}>❮</button>
-        <h2>Event Calendar</h2>
-        <button onClick={() => changeMonth(1)}>❯</button>
+    <div className="calendar-page">
+      <div className="button-container">
+        <button className="side-button add-event-button" onClick={openAddEventModal}>Add Event</button>
       </div>
-      <div className="calendar-subheader">
-        <h3>{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h3>
+
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <button onClick={() => changeMonth(-1)}>❮</button>
+          <h2>Event Calendar</h2>
+          <button onClick={() => changeMonth(1)}>❯</button>
+        </div>
+        <div className="calendar-subheader">
+          <h3>{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h3>
+        </div>
+        <div className="calendar-grid">
+          <div className="calendar-day-header">Sun</div>
+          <div className="calendar-day-header">Mon</div>
+          <div className="calendar-day-header">Tue</div>
+          <div className="calendar-day-header">Wed</div>
+          <div className="calendar-day-header">Thu</div>
+          <div className="calendar-day-header">Fri</div>
+          <div className="calendar-day-header">Sat</div>
+          {renderCalendarDays()}
+        </div>
       </div>
-      <div className="calendar-grid">
-        <div className="calendar-day-header">Sun</div>
-        <div className="calendar-day-header">Mon</div>
-        <div className="calendar-day-header">Tue</div>
-        <div className="calendar-day-header">Wed</div>
-        <div className="calendar-day-header">Thu</div>
-        <div className="calendar-day-header">Fri</div>
-        <div className="calendar-day-header">Sat</div>
-        {renderCalendarDays()}
-      </div>
-      {showEventForm && (
-        <div className="event-form-overlay">
-          <div className="event-form">
-            <h4>Add Event for {selectedDate.toDateString()}</h4>
+
+      {/* Event Details */}
+      {isModalOpen && selectedEvent && (
+        <div className="event-modal">
+          <div className="modal-content">
+            <h3>{selectedEvent.eventName}</h3>
+            <p><strong>Event ID:</strong> {selectedEvent.eventID}</p>
+            <p><strong>Event Time:</strong> {new Date(selectedEvent.eventTime).toLocaleString()}</p>
+            <p><strong>Members Only:</strong> {selectedEvent.members_only ? 'Yes' : 'No'}</p>
+            <p><strong>Exhibit ID:</strong> {selectedEvent.exhibitID}</p>
+            <button onClick={closeModal}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* Adding Event */}
+      {isAddModalOpen && (
+        <div className="event-modal">
+          <div className="modal-content">
+            <h3>Add a New Event</h3>
             <form onSubmit={handleAddEvent}>
-              <input
-                type="text"
-                value={newEvent.title}
-                onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                placeholder="Enter event title"
-              />
-              <div className="time-selection">
-                <div className="time-group">
-                  <label>Start:</label>
-                  <select
-                    value={newEvent.startHour}
-                    onChange={(e) => setNewEvent({ ...newEvent, startHour: e.target.value })}
-                  >
-                    {[...Array(24)].map((_, i) => (
-                      <option key={i} value={i.toString().padStart(2, '0')}>
-                        {i.toString().padStart(2, '0')}
-                      </option>
-                    ))}
-                  </select>
-                  :
-                  <select
-                    value={newEvent.startMinute}
-                    onChange={(e) => setNewEvent({ ...newEvent, startMinute: e.target.value })}
-                  >
-                    {['00', '15', '30', '45'].map((minute) => (
-                      <option key={minute} value={minute}>{minute}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="time-group">
-                  <label>End:</label>
-                  <select
-                    value={newEvent.endHour}
-                    onChange={(e) => setNewEvent({ ...newEvent, endHour: e.target.value })}
-                  >
-                    {[...Array(24)].map((_, i) => (
-                      <option key={i} value={i.toString().padStart(2, '0')}>
-                        {i.toString().padStart(2, '0')}
-                      </option>
-                    ))}
-                  </select>
-                  :
-                  <select
-                    value={newEvent.endMinute}
-                    onChange={(e) => setNewEvent({ ...newEvent, endMinute: e.target.value })}
-                  >
-                    {['00', '15', '30', '45'].map((minute) => (
-                      <option key={minute} value={minute}>{minute}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group">
+                <label>Event ID:</label>
+                <input
+                  type="text"
+                  value={newEventID}
+                  onChange={(e) => setNewEventID(e.target.value)}
+                  required
+                />
               </div>
-              <button type="submit">Add Event</button>
-              <button type="button" onClick={() => setShowEventForm(false)}>Cancel</button>
+
+              <div className="form-group">
+                <label>Event Name:</label>
+                <input
+                  type="text"
+                  value={newEventName}
+                  onChange={(e) => setNewEventName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Event Date:</label>
+                <input
+                  type="date"
+                  value={newEventDate}
+                  onChange={(e) => setNewEventDate(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Members Only:</label>
+                <select
+                  value={newMembersOnly}
+                  onChange={(e) => setNewMembersOnly(e.target.value)}
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Exhibit ID:</label>
+                <input
+                  type="text"
+                  value={newExhibitID}
+                  onChange={(e) => setNewExhibitID(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-buttons">
+                <button type="submit" className="submit-button">Submit</button>
+                <button type="button" onClick={closeAddEventModal} className="close-button">Close</button>
+              </div>
             </form>
           </div>
         </div>
