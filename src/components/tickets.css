@@ -1,0 +1,158 @@
+/* Main container for both the ticket options and the General Admission content */
+.page-container {
+    display: flex;
+    justify-content: center; /* Center the entire ticket page horizontally */
+    align-items: flex-start; /* Align content at the top */
+    padding: 20px;
+    width: 100%;
+    gap: 50px; /* Add space between the options list and the general admission box */
+}
+
+/* Adjust ticket options list */
+.ticket-list {
+    width: 200px;
+    flex-shrink: 0; /* Prevent the list from shrinking */
+    list-style: none;
+    padding: 0;
+    margin: 20px;
+    text-align: left;
+    background-color: #fff7e6;
+    flex-direction: column; /* Ensure vertical stacking */
+}
+
+/* Styling for individual ticket items */
+.ticket-item {
+    margin: 10px 0;
+    background-color: #fff7e6;
+    border: none;
+}
+
+/* Styling for the ticket links */
+.ticket-link {
+    color: #165e22;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid #165e22;
+    border-radius: 8px;
+    display: block;
+    text-align: center;
+    background-color: #fff7e6;
+    width: 100%; /* Ensure the box takes full width */
+}
+
+.ticket-link:hover {
+    background-color: #165e22;
+    color: #fff7e6;
+}
+
+/* General Admission container */
+.general-admission-container {
+    flex-grow: 1; /* Allow this section to grow to fill remaining space */
+    display: flex;
+    justify-content: center; /* Center the General Admission content */
+    align-items: flex-start;
+}
+
+/* General Admission box styling */
+.general-admission {
+    width: 100%;
+    max-width: 600px; /* Control max width for General Admission content */
+    background-color: #d9cac3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional box shadow for aesthetics */
+    text-align: center; /* Center the "General Admission" heading */
+}
+
+
+/* Adjust h2 heading for General Admission */
+.general-admission h2 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Styling the ticket categories */
+.ticket-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add spacing between the input fields */
+}
+
+/* Styling individual ticket category */
+.ticket-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+}
+
+.ticket-category input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Styling for the date picker */
+.ticket-date input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+/* Continue button */
+.continue-button {
+    background-color: #165e22;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.continue-button:hover {
+    background-color: #0e4217;
+}
+/* Styling for the title */
+.ticket-selection-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Styling for ticket type selection */
+.ticket-type {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.ticket-quantity {
+    display: flex;
+    align-items: center;
+}
+
+.ticket-quantity button {
+    background-color: #165e22;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.ticket-quantity span {
+    margin: 0 10px;
+    font-size: 18px;
+}
+
+.ticket-quantity button:hover {
+    background-color: #0e4217;
+}
