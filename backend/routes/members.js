@@ -1,5 +1,5 @@
 const express = require('express');
-const membersController = require('./members'); // Assuming the file is named members.js
+const membersController = require('../functions/members'); 
 
 const router = express.Router();
 

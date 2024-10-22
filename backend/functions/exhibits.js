@@ -1,4 +1,4 @@
-const { query } = require('../backend/functions/database');
+const { query } = require('../functions/database');
 
 module.exports.addNewExhibit = async function (exhibitData) {
     const { exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID } = exhibitData;
@@ -37,6 +37,17 @@ module.exports.getExhibitById = async function (exhibitData) {
     const { exhibitID } = exhibitData;
     try {
         const result = await query(`SELECT * FROM Exhibits WHERE exhibitID = ?`, [exhibitID]);
+        return result[0]; 
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};
+
+module.exports.getExhibitByName = async function (exhibitData) {
+    const { exhibitName } = exhibitData;
+    try {
+        const result = await query(`SELECT * FROM Exhibits WHERE exhibitName = ?`, [exhibitName]);
         return result[0]; 
     } catch (err) {
         console.log(err);

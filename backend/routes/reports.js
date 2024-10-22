@@ -1,5 +1,5 @@
 const express = require('express');
-const reportsController = require('./reports'); // Assuming the file is named reports.js
+const reportsController = require('../functions/reports'); 
 
 const router = express.Router();
 
