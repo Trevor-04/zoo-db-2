@@ -223,3 +223,19 @@
     pointer-events: none;
     background-color: #f0f0f0;
   }
+  .time-slot {
+    display: block;
+    padding: 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .time-slot:hover {
+    background-color: #dcdcdc;
+    cursor: pointer;
+  }
