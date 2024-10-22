@@ -64,6 +64,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional box shadow for aesthetics */
     text-align: center; /* Center the "General Admission" heading */
+    position:relative;
 }
 
 
@@ -156,3 +157,64 @@
 .ticket-quantity button:hover {
     background-color: #0e4217;
 }
+/* Time Slots container */
+.time-slots-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Each Time Slot Column */
+.time-slot-column {
+    width: 30%;
+    text-align: center;
+}
+
+/* Heading for each column */
+.time-slot-column h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Box for time slots */
+
+
+/* Button to go back to General Admission */
+.update-tickets-button {
+    background-color: #f04f3e;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 10px; /* Place it at the top left of the Time Slots box */
+}
+
+  
+  .update-tickets-button:hover {
+    background-color: #c84032;
+  }
+  
+  .time-slots-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .time-slot-column {
+    width: 30%;
+  }
+  
+  .time-slot-box {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  h3 {
+    text-align: center;
+  }
+  
