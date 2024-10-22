@@ -1,4 +1,4 @@
-const {query, connect, disconnect} = require('../functions/database');
+const {query} = require('../functions/database');
 
 module.exports.calculateVisitorCount = async function(visitorData) {
     

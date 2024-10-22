@@ -1,4 +1,4 @@
-const {query, connect, disconnect} = require('../backend/functions/database');
+const {query} = require('../functions/database');
 
 module.exports.addNewAnimal = async function (animalData) {
     const { name, sex, date_acquired, date_died, date_born, species, classification, enclosureID } = animalData;
@@ -60,20 +60,6 @@ module.exports.getAnimalBySpecies = async function(animalData) {
      }
 }
 
-module.exports.getAnimalBySpecies = async function(animalData) {
-    const {species} = animalData;
-     try {
-        return await query(`
-        SELECT * 
-        FROM Animals 
-        WHERE species=?`, 
-        [species]);
-     } catch(e) {
-         console.log(e);
-         throw e;
-     }
-}
-
 module.exports.getAnimalsbyEnclosure = async function(animalData) {
     const {enclosureID, enclosureName} = animalData;
     try {
@@ -109,7 +95,7 @@ module.exports.getAnimalsbyExhibit= async function(animalData) {
             SELECT * 
             FROM Animals 
             JOIN Exibits
-            ON Animals.exibitID = Enclosures.enclosureID
+            ON Animals.enclosureID = Enclosures.enclosureID
             WHERE Enclosures.enclosureName=?`, 
             [enclosureName]);
         } else if (exhibitID) {
@@ -125,3 +111,34 @@ module.exports.getAnimalsbyExhibit= async function(animalData) {
         throw err;
     } 
 }
+
+module.exports.getAnimalsByExhibit = async function(animalData) {
+    const { exhibitName } = animalData;
+
+    if (!exhibitName && !exhibitID) throw new Error('Either exhibitName or exhibitID must be provided');
+    try {
+        let results; 
+
+        if (exhibitName === "all") {
+            results = await query(`
+                SELECT * 
+                FROM Animals AS A
+                JOIN Enclosures AS En ON A.enclosureID = En.enclosureID
+                JOIN Exhibits AS Ex ON En.exhibitID = Ex.exhibitID
+            `);
+        } else {
+            results = await query(`
+                SELECT * 
+                FROM Animals AS A
+                JOIN Enclosures AS En ON A.enclosureID = En.enclosureID
+                JOIN Exhibits AS Ex ON En.exhibitID = Ex.exhibitID
+                WHERE Ex.exhibitName = ?
+            `, [exhibitName]);
+        }
+
+        return results || [];
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};

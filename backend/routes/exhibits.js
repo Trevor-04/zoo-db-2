@@ -1,5 +1,5 @@
 const express = require('express');
-const { query } = require('../functions/database'); // Import the query function
+const exhibitController = require('../functions/exhibits'); 
 
 const router = express.Router();
 
@@ -8,11 +8,7 @@ router.post('/add', async (req, res) => {
     const { exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID } = req.body;
 
     try {
-        await query(`
-            INSERT INTO Exhibits (exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-            [exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID]
-        );
+        await exhibitController.addNewExhibit({ exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID });
         res.status(201).json({ message: 'Exhibit added successfully' });
     } catch (err) {
         console.error(err);
@@ -25,7 +21,7 @@ router.delete('/:exhibitID', async (req, res) => {
     const { exhibitID } = req.params;
 
     try {
-        await query(`DELETE FROM Exhibits WHERE exhibitID = ?`, [exhibitID]);
+        await exhibitController.deleteExhibit({ exhibitID });
         res.status(200).json({ message: 'Exhibit deleted successfully' });
     } catch (err) {
         console.error(err);
@@ -36,7 +32,7 @@ router.delete('/:exhibitID', async (req, res) => {
 // List all exhibits
 router.get('/', async (req, res) => {
     try {
-        const exhibits = await query(`SELECT * FROM Exhibits`);
+        const exhibits = await exhibitController.listAllExhibits();
         res.status(200).json(exhibits);
     } catch (err) {
         console.error(err);
@@ -49,23 +45,24 @@ router.get('/:exhibitID', async (req, res) => {
     const { exhibitID } = req.params;
 
     try {
-        const result = await query(`SELECT * FROM Exhibits WHERE exhibitID = ?`, [exhibitID]);
-        res.status(200).json(result[0] || null);
+        const exhibit = await exhibitController.getExhibitById({ exhibitID });
+        res.status(200).json(exhibit || null);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to get exhibit by ID' });
     }
 });
 
+// Get exhibit by name
 router.get('/name/:exhibitName', async (req, res) => {
     const { exhibitName } = req.params;
 
     try {
-        const result = await query(`SELECT * FROM Exhibits WHERE exhibitName = ?`, [exhibitName]);
-        res.status(200).json(result[0] || null);
+        const exhibit = await exhibitController.getExhibitByName({ exhibitName });
+        res.status(200).json(exhibit || null);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to get exhibit by ID' });
+        res.status(500).json({ error: 'Failed to get exhibit by name' });
     }
 });
 

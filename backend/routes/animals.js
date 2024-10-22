@@ -1,5 +1,5 @@
 const express = require('express');
-const { query } = require('../functions/database'); // Import the query function
+const animalController = require("../functions/animals");
 
 const router = express.Router();
 
@@ -8,11 +8,7 @@ router.post('/add', async (req, res) => {
     const { name, sex, date_acquired, date_died, date_born, species, classification, enclosureID } = req.body;
 
     try {
-        await query(`
-            INSERT INTO Animals (name, sex, date_acquired, date_died, date_born, species, classification, enclosureID)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [name, sex, date_acquired, date_died, date_born, species, classification, enclosureID]
-        );
+        await animalController.addNewAnimal({ name, sex, date_acquired, date_died, date_born, species, classification, enclosureID });
         res.status(201).json({ message: 'Animal added successfully' });
     } catch (err) {
         console.error(err);
@@ -25,7 +21,7 @@ router.delete('/:animalID', async (req, res) => {
     const { animalID } = req.params;
 
     try {
-        await query(`DELETE FROM Animals WHERE animal_id=?`, [animalID]);
+        await animalController.deleteAnimal({ animalID });
         res.status(200).json({ message: 'Animal deleted successfully' });
     } catch (err) {
         console.error(err);
@@ -36,7 +32,7 @@ router.delete('/:animalID', async (req, res) => {
 // List all animals
 router.get('/', async (req, res) => {
     try {
-        const animals = await query(`SELECT * FROM Animals`);
+        const animals = await animalController.listAllAnimals();
         res.status(200).json(animals);
     } catch (err) {
         console.error(err);
@@ -49,8 +45,8 @@ router.get('/:animalID', async (req, res) => {
     const { animalID } = req.params;
 
     try {
-        const result = await query(`SELECT * FROM Animals WHERE animal_id=?`, [animalID]);
-        res.status(200).json(result[0] || null);
+        const animal = await animalController.getAnimalById({ animalID });
+        res.status(200).json(animal || null);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to get animal by ID' });
@@ -62,7 +58,7 @@ router.get('/species/:species', async (req, res) => {
     const { species } = req.params;
 
     try {
-        const animals = await query(`SELECT * FROM Animals WHERE species=?`, [species]);
+        const animals = await animalController.getAnimalBySpecies({ species });
         res.status(200).json(animals);
     } catch (err) {
         console.error(err);
@@ -72,53 +68,28 @@ router.get('/species/:species', async (req, res) => {
 
 // Get animals by enclosure
 router.get('/enclosure', async (req, res) => {
-    const { enclosureID, enclosureName } = req.params;
+    const { enclosureID, enclosureName } = req.query;
 
     try {
-        let results;
-        if (enclosureName) {
-            results = await query(`
-                SELECT * 
-                FROM Animals 
-                JOIN Enclosures
-                ON Animals.enclosureID = Enclosures.enclosureID
-                WHERE Enclosures.enclosureName=?`, 
-                [enclosureName]);
-        } else if (enclosureID) {
-            results = await query(`SELECT * FROM Animals WHERE enclosureID=?`, [enclosureID]);
-        }
-
-        res.status(200).json(results || []);
+        const animals = await animalController.getAnimalsbyEnclosure({ enclosureID, enclosureName });
+        res.status(200).json(animals);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to get animals by enclosure' });
     }
 });
 
+// Get animals by exhibit
 router.get('/exhibits/:exhibitName', async (req, res) => {
-    const {exhibitName} = req.params;
+    const { exhibitName } = req.params;
 
     try {
-        let results; 
-        if (exhibitName === "all") {
-            results = await query(`SELECT * 
-            FROM Animals AS A
-            JOIN Enclosures AS En ON A.enclosureID = En.enclosureID
-            JOIN Exhibits AS Ex ON En.exhibitID = Ex.exhibitID`);
-        } else {
-            results = await query(`SELECT * 
-            FROM Animals AS A
-            JOIN Enclosures AS En ON A.enclosureID = En.enclosureID
-            JOIN Exhibits AS Ex ON En.exhibitID = Ex.exhibitID
-            WHERE Ex.exhibitName = ?`,[exhibitName])
-        }
-
-        res.status(200).json(results || []);
+        const animals = await animalController.getAnimalsByExhibit({ exhibitName });
+        res.status(200).json(animals);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to get animals by exhibits' });
+        res.status(500).json({ error: 'Failed to get animals by exhibit' });
     }
-
 });
 
 // Export the router

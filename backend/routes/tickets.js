@@ -1,5 +1,5 @@
 const express = require('express');
-const ticketsController = require('./tickets'); // Assuming this file is named tickets.js
+const ticketsController = require('../functions/tickets'); 
 
 const router = express.Router();
 

@@ -1,12 +1,12 @@
 const express = require('express');
-const events = require('./events');
+const eventsController = require('../functions/events');
 
 const router = express.Router();
 
 // Get upcoming events
 router.get('/upcoming', async (req, res) => {
     try {
-        const eventsList = await events.getUpcomingEvents();
+        const eventsList = await eventsController.getUpcomingEvents();
         res.json(eventsList);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch upcoming events' });
@@ -17,7 +17,7 @@ router.get('/upcoming', async (req, res) => {
 router.post('/add', async (req, res) => {
     try {
         const eventData = req.body;
-        const result = await events.addEvent(eventData);
+        const result = await eventsController.addEvent(eventData);
         res.status(201).json({ message: 'Event added successfully', event: result });
     } catch (err) {
         res.status(500).json({ error: 'Failed to add event' });
