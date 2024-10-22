@@ -48,7 +48,22 @@ function TicketOptions() {
       month: 'long',
       year: 'numeric'
     });
-
+  
+    // Get the current time
+    const now = new Date();
+    const currentHour = now.getHours();
+  
+    // Determine if the selected date is today
+    const isToday = new Date(selectedDate).toDateString() === now.toDateString();
+  
+    // Check if a time slot is in the past for today
+    const isTimeSlotDisabled = (time) => {
+      const hour = parseInt(time); // Extract the hour from the time (e.g., '9am' becomes 9)
+      
+      // Disable time slots only for today if the time is before the current time
+      return isToday && hour <= currentHour;
+    };
+  
     return (
       <div className="general-admission">
         <button 
@@ -57,119 +72,155 @@ function TicketOptions() {
         >
           Update Tickets
         </button>
-
+  
         <h2>{formattedDate}</h2>
-
-        {/* Time Slots Container with 3 Columns */}
+  
         <div className="time-slots-container">
           {/* Morning Time Slots */}
           <div className="time-slot-column">
             <h3>Morning</h3>
-            <div className="time-slot-box">
-              <h4>9am</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('9am').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(9) ? 'disabled' : ''}`}>
+              <h4><strong>9am</strong></h4>
+              {isTimeSlotDisabled(9) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('9am').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
-            <div className="time-slot-box">
-              <h4>10am</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('10am').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(10) ? 'disabled' : ''}`}>
+            <h4><strong>10am</strong></h4>
+              {isTimeSlotDisabled(10) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('10am').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
-            <div className="time-slot-box">
-              <h4>11am</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('11am').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(11) ? 'disabled' : ''}`}>
+            <h4><strong>11am</strong></h4>
+              {isTimeSlotDisabled(11) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('11am').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
           </div>
-
+  
           {/* Afternoon Time Slots */}
           <div className="time-slot-column">
             <h3>Afternoon</h3>
-            <div className="time-slot-box">
-              <h4>12pm</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('12pm').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(12) ? 'disabled' : ''}`}>
+            <h4><strong>12pm</strong></h4>
+              {isTimeSlotDisabled(12) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('12pm').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
-            <div className="time-slot-box">
-              <h4>1pm</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('1pm').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(13) ? 'disabled' : ''}`}>
+            <h4><strong>1pm</strong></h4>
+              {isTimeSlotDisabled(13) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('1pm').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
-            <div className="time-slot-box">
-              <h4>2pm</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('2pm').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(14) ? 'disabled' : ''}`}>
+            <h4><strong>2pm</strong></h4>
+              {isTimeSlotDisabled(14) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('2pm').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
           </div>
-
+  
           {/* Evening Time Slots */}
           <div className="time-slot-column">
             <h3>Evening</h3>
-            <div className="time-slot-box">
-              <h4>3pm</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('3pm').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(15) ? 'disabled' : ''}`}>
+            <h4><strong>3pm</strong></h4>
+              {isTimeSlotDisabled(15) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('3pm').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
-            <div className="time-slot-box">
-              <h4>4pm</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('4pm').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(16) ? 'disabled' : ''}`}>
+            <h4><strong>4pm</strong></h4>
+              {isTimeSlotDisabled(16) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('4pm').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
-            <div className="time-slot-box">
-              <h4>5pm</h4>
-              <p>Total Price: <strong>${calculateTotalPrice('5pm').toFixed(2)}</strong></p>
-              <p>
-                {adultTickets > 0 && `${adultTickets} x Adult, `}
-                {childTickets > 0 && `${childTickets} x Child, `}
-                {seniorTickets > 0 && `${seniorTickets} x Senior, `}
-                {infantTickets > 0 && `${infantTickets} x Infant`}
-              </p>
+            <div className={`time-slot-box ${isTimeSlotDisabled(17) ? 'disabled' : ''}`}>
+            <h4><strong>5pm</strong></h4>
+              {isTimeSlotDisabled(17) ? <p>Unavailable</p> : (
+                <>
+                  <p>Total Price: <strong>${calculateTotalPrice('5pm').toFixed(2)}</strong></p>
+                  <p>
+                    {adultTickets > 0 && `${adultTickets} x Adult, `}
+                    {childTickets > 0 && `${childTickets} x Child, `}
+                    {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+                    {infantTickets > 0 && `${infantTickets} x Infant`}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
     );
   };
+  
 
   const GeneralAdmission = () => (
     <div className="general-admission">
@@ -217,6 +268,7 @@ function TicketOptions() {
             type="date" 
             value={selectedDate}
             onChange={handleDateChange} 
+            min={new Date().toISOString().split("T")[0]} // Disables past dates
           />
         </div>
         <button 
