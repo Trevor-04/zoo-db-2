@@ -57,5 +57,17 @@ router.get('/:exhibitID', async (req, res) => {
     }
 });
 
+router.get('/name/:exhibitName', async (req, res) => {
+    const { exhibitName } = req.params;
+
+    try {
+        const result = await query(`SELECT * FROM Exhibits WHERE exhibitName = ?`, [exhibitName]);
+        res.status(200).json(result[0] || null);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get exhibit by ID' });
+    }
+});
+
 // Export the router
 module.exports = router;
