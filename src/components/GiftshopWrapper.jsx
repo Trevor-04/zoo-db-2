@@ -5,12 +5,12 @@ import GiftCard from './GiftCard';
 const GiftshopWrapper = () => {
   // Array of animals with their image URLs and names
   const gifts = [
-    {imageUrl: "/GiraffeShirt.webp", name: "Giraffe"},
-    {imageUrl: "/GiraffeShirt.webp", name: "Giraffe"},
-    {imageUrl: "/GiraffeShirt.webp", name: "Giraffe"},
-    {imageUrl: "/GiraffeShirt.webp", name: "Giraffe"},
-    {imageUrl: "/GiraffeShirt.webp", name: "Giraffe"},
-    {imageUrl: "/GiraffeShirt.webp", name: "Giraffe"},
+    {imageUrl: "/giraffeShirt.webp", name: "Giraffe"},
+    {imageUrl: "/giraffeShirt.webp", name: "Giraffe"},
+    {imageUrl: "/giraffeShirt.webp", name: "Giraffe"},
+    {imageUrl: "/giraffeShirt.webp", name: "Giraffe"},
+    {imageUrl: "/giraffeShirt.webp", name: "Giraffe"},
+    {imageUrl: "/giraffeShirt.webp", name: "Giraffe"},
     
     // Add more animals here
   ];
