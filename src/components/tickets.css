@@ -1,120 +1,34 @@
-:root {
-    --main-bg-color: #fff7e6;
-    --header-bg-color: rgb(59, 118, 59);
-    --text-color: black;
-    --accent-color: rgb(59, 118, 59);
-    --day-bg-color: #ffffff;
-    --border-color: #faf0e6;
-}
-
-body {
-    background-color: var(--main-bg-color);
-}
-
-.tickets-container {
-    max-width: 900px;
-    margin: 20px auto;
-    font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
-    background-color: black;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid green; /* Similar to events, adds the green border */
-}
-
-.tickets-header {
+/* Main container for both the ticket options and the General Admission content */
+.page-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center; /* Center the entire ticket page horizontally */
+    align-items: flex-start; /* Align content at the top */
     padding: 20px;
-    background-color: #faf0e6;
+    width: 100%;
+    gap: 50px; /* Add space between the options list and the general admission box */
 }
 
-.tickets-header h2 {
-    margin: 0;
-    color: var(--text-color);
-    font-size: 40px;
-    font-weight: 700;
-}
-
-.ticket-item {
-    background-color: var(--day-bg-color);
-    padding: 15px;
-    margin: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
-    transition: background-color 0.3s ease;
-}
-
-.ticket-item:hover {
-    background-color: #eeeeee;
-    cursor: pointer;
-}
-
-.ticket-title {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: var(--accent-color);
-}
-
-.ticket-details {
-    font-size: 14px;
-    color: var(--text-color);
-}
-
-.ticket-button {
-    background-color: #88a628;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.ticket-button:hover {
-    background-color: #e02525;
-}
-
-@media (max-width: 768px) {
-    .tickets-container {
-        margin: 10px;
-    }
-
-    .tickets-header h2 {
-        font-size: 20px;
-    }
-
-    .ticket-item {
-        padding: 10px;
-    }
-
-    .ticket-title {
-        font-size: 16px;
-    }
-}
-.ticket-options {
-    display: flex;
-    justify-content: flex-start; /* This will align the boxes to the left */
+/* Adjust ticket options list */
+.ticket-list {
+    width: 200px;
+    flex-shrink: 0; /* Prevent the list from shrinking */
+    list-style: none;
+    padding: 0;
     margin: 20px;
     text-align: left;
-    width: 200px;
-    flex-direction: column; /* Make sure the boxes are stacked vertically */
     background-color: #fff7e6;
-  }
-  
-  .ticket-list {
-    list-style: none;
-    background-color: #fff7e6;
-    padding: 0;
-  }
-  
-  .ticket-item {
+    flex-direction: column; /* Ensure vertical stacking */
+}
+
+/* Styling for individual ticket items */
+.ticket-item {
     margin: 10px 0;
     background-color: #fff7e6;
     border: none;
-  }
-  
-  .ticket-link {
+}
+
+/* Styling for the ticket links */
+.ticket-link {
     color: #165e22;
     font-size: 18px;
     font-weight: bold;
@@ -122,16 +36,96 @@ body {
     padding: 10px 20px;
     border: 2px solid #165e22;
     border-radius: 8px;
-    margin: 0;
     display: block;
     text-align: center;
-    background-color: #fff7e6; /* Set the background color to transparent */
+    background-color: #fff7e6;
     width: 100%; /* Ensure the box takes full width */
-    box-shadow: none; /* Remove any box shadow */
-  }
-  
-  .ticket-link:hover {
+}
+
+.ticket-link:hover {
     background-color: #165e22;
     color: #fff7e6;
-  }
-  
+}
+
+/* General Admission container */
+.general-admission-container {
+    flex-grow: 1; /* Allow this section to grow to fill remaining space */
+    display: flex;
+    justify-content: center; /* Center the General Admission content */
+    align-items: flex-start;
+}
+
+/* General Admission box styling */
+.general-admission {
+    width: 100%;
+    max-width: 600px; /* Control max width for General Admission content */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional box shadow for aesthetics */
+}
+
+/* Styling for the title */
+.ticket-selection-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Styling for ticket type selection */
+.ticket-type {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.ticket-quantity {
+    display: flex;
+    align-items: center;
+}
+
+.ticket-quantity button {
+    background-color: #165e22;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.ticket-quantity span {
+    margin: 0 10px;
+    font-size: 18px;
+}
+
+.ticket-quantity button:hover {
+    background-color: #0e4217;
+}
+
+.date-picker {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.date-picker input {
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.continue-button {
+    background-color: #165e22;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.continue-button:hover {
+    background-color: #0e4217;
+}
