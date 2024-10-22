@@ -6,7 +6,12 @@ import GiftShop from './pages/GiftShop';
 import Events from './pages/Events';
 import Login from './components/login';
 import Signup from './components/signup';
+<<<<<<< HEAD
 import Tickets from "./pages/tickets";
+=======
+import Payment from "./components/payment";
+import Tickets from "./pages/Tickets";
+>>>>>>> 1da44945735aa9d3d1e5701126f7ff1f77887b9b
 import './App.css';
 
 function App() {
@@ -22,6 +27,7 @@ function App() {
                     <Route path="/events" element={<Events />} />
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
+                    <Route path="/payment" element={<Payment />} /> 
                 </Routes>
             </Router>
         </div>

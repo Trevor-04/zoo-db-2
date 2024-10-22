@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './tickets.css';
 import { Link } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 function TicketOptions() {
   const [visibleSection, setVisibleSection] = useState('generalAdmission');
@@ -12,7 +14,7 @@ function TicketOptions() {
   const [childTickets, setChildTickets] = useState(0);
   const [seniorTickets, setSeniorTickets] = useState(0);
   const [infantTickets, setInfantTickets] = useState(0);
-
+  const navigate = useNavigate(); // Create navigate function here
   const pricing = {
     '9am': { adult: 25, child: 15, senior: 20, infant: 0 },
     '10am': { adult: 20, child: 13.5, senior: 15, infant: 0 },
@@ -64,6 +66,14 @@ function TicketOptions() {
       return isToday && hour <= currentHour;
     };
   
+    // Handle time slot selection and navigate to payment page
+    const handleTimeSlotClick = (time) => {
+      if (!isTimeSlotDisabled(time)) {
+        // Assuming you have a navigate function to go to the payment page
+        navigate("/payment", { state: { selectedTime: time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets } });
+      }
+    };
+  
     return (
       <div className="general-admission">
         <button 
@@ -79,7 +89,10 @@ function TicketOptions() {
           {/* Morning Time Slots */}
           <div className="time-slot-column">
             <h3>Morning</h3>
-            <div className={`time-slot-box ${isTimeSlotDisabled(9) ? 'disabled' : ''}`}>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(9) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(9)}
+            >
               <h4><strong>9am</strong></h4>
               {isTimeSlotDisabled(9) ? <p>Unavailable</p> : (
                 <>
@@ -93,8 +106,11 @@ function TicketOptions() {
                 </>
               )}
             </div>
-            <div className={`time-slot-box ${isTimeSlotDisabled(10) ? 'disabled' : ''}`}>
-            <h4><strong>10am</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(10) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(10)}
+            >
+              <h4><strong>10am</strong></h4>
               {isTimeSlotDisabled(10) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('10am').toFixed(2)}</strong></p>
@@ -107,8 +123,11 @@ function TicketOptions() {
                 </>
               )}
             </div>
-            <div className={`time-slot-box ${isTimeSlotDisabled(11) ? 'disabled' : ''}`}>
-            <h4><strong>11am</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(11) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(11)}
+            >
+              <h4><strong>11am</strong></h4>
               {isTimeSlotDisabled(11) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('11am').toFixed(2)}</strong></p>
@@ -126,8 +145,11 @@ function TicketOptions() {
           {/* Afternoon Time Slots */}
           <div className="time-slot-column">
             <h3>Afternoon</h3>
-            <div className={`time-slot-box ${isTimeSlotDisabled(12) ? 'disabled' : ''}`}>
-            <h4><strong>12pm</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(12) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(12)}
+            >
+              <h4><strong>12pm</strong></h4>
               {isTimeSlotDisabled(12) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('12pm').toFixed(2)}</strong></p>
@@ -140,8 +162,11 @@ function TicketOptions() {
                 </>
               )}
             </div>
-            <div className={`time-slot-box ${isTimeSlotDisabled(13) ? 'disabled' : ''}`}>
-            <h4><strong>1pm</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(13) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(13)}
+            >
+              <h4><strong>1pm</strong></h4>
               {isTimeSlotDisabled(13) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('1pm').toFixed(2)}</strong></p>
@@ -154,8 +179,11 @@ function TicketOptions() {
                 </>
               )}
             </div>
-            <div className={`time-slot-box ${isTimeSlotDisabled(14) ? 'disabled' : ''}`}>
-            <h4><strong>2pm</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(14) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(14)}
+            >
+              <h4><strong>2pm</strong></h4>
               {isTimeSlotDisabled(14) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('2pm').toFixed(2)}</strong></p>
@@ -173,8 +201,11 @@ function TicketOptions() {
           {/* Evening Time Slots */}
           <div className="time-slot-column">
             <h3>Evening</h3>
-            <div className={`time-slot-box ${isTimeSlotDisabled(15) ? 'disabled' : ''}`}>
-            <h4><strong>3pm</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(15) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(15)}
+            >
+              <h4><strong>3pm</strong></h4>
               {isTimeSlotDisabled(15) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('3pm').toFixed(2)}</strong></p>
@@ -187,8 +218,11 @@ function TicketOptions() {
                 </>
               )}
             </div>
-            <div className={`time-slot-box ${isTimeSlotDisabled(16) ? 'disabled' : ''}`}>
-            <h4><strong>4pm</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(16) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(16)}
+            >
+              <h4><strong>4pm</strong></h4>
               {isTimeSlotDisabled(16) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('4pm').toFixed(2)}</strong></p>
@@ -201,8 +235,11 @@ function TicketOptions() {
                 </>
               )}
             </div>
-            <div className={`time-slot-box ${isTimeSlotDisabled(17) ? 'disabled' : ''}`}>
-            <h4><strong>5pm</strong></h4>
+            <div
+              className={`time-slot-box ${isTimeSlotDisabled(17) ? 'disabled' : ''}`}
+              onClick={() => handleTimeSlotClick(17)}
+            >
+              <h4><strong>5pm</strong></h4>
               {isTimeSlotDisabled(17) ? <p>Unavailable</p> : (
                 <>
                   <p>Total Price: <strong>${calculateTotalPrice('5pm').toFixed(2)}</strong></p>
@@ -220,6 +257,7 @@ function TicketOptions() {
       </div>
     );
   };
+  
   
 
   const GeneralAdmission = () => (
