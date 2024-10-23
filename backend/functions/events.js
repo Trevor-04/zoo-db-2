@@ -27,13 +27,19 @@ module.exports.getAllEvents = async function () {
 }
 
 module.exports.addEvent = async function (eventData) {
-    const {eventID, eventName, eventTime, members_only, exhibitID} = eventData
+    const {eventName, eventTime, members_only, exhibitID, attendeeCount = 0, sponsorID = null} = eventData;
+    console.log(eventName, eventTime, members_only, exhibitID, attendeeCount, sponsorID);
+
+    const exhibitExists = await query(`SELECT 1 FROM Exhibits WHERE exhibitID = ?`, [exhibitID]);
+    
+    // if (!exhibitExists.length ) throw new Error('Invalid exhibitID: Exhibit does not exist');
+
     try {
         // Insert the new event into the database
         const result = await query(`
-            INSERT INTO Events (eventID, eventName, eventTime, members_only, exhibitID)
-            VALUES (?, ?, ?, ?, ?)`,
-            [eventID, eventName, eventTime, members_only, exhibitID]);
+            INSERT INTO Events (eventName, eventTime, members_only, exhibitID, attendeeCount, sponsorID)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [eventName, eventTime, members_only, exhibitID, attendeeCount, sponsorID]);
         return result;
     } catch (error) {
         console.error("Error adding event: ", error);

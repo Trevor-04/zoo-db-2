@@ -18,6 +18,8 @@ const EventCal = ({ isAdmin }) => {
   const [newEventDate, setNewEventDate] = useState('');
   const [newMembersOnly, setNewMembersOnly] = useState('');
   const [newExhibitID, setNewExhibitID] = useState('');
+  const [newSponsorID, setNewSponsorID] = useState('');
+
 
   // Fetch events from database
 async function getAllEvents() {
@@ -42,72 +44,28 @@ async function getAllEvents() {
   useEffect(() => {
     getAllEvents();
   }, []);
-
-  // Mock events data
-  // useEffect(() => {
-  //   const mockEvents = [
-  //     {
-  //       eventID: 1,
-  //       eventName: "Happy Hour Special",
-  //       eventTime: new Date().toISOString(),
-  //       startTime: "11:00 AM",
-  //       endTime: "3:00 PM",
-  //       members_only: true,
-  //       exhibitID: "EX123"
-  //     },
-  //     {
-  //       eventID: 2,
-  //       eventName: "SOME BDAY",
-  //       eventTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-  //       startTime: "4:00 PM",
-  //       endTime: "9:00 PM",
-  //       members_only: false,
-  //       exhibitID: "EX124"
-  //     },
-  //     {
-  //       eventID: 3,
-  //       eventName: "Spooky Event",
-  //       eventTime: new Date(2024, 9, 31).toISOString(), 
-  //       startTime: "1:00 PM",
-  //       endTime: "5:00 PM",
-  //       members_only: false,
-  //       exhibitID: "EX125"
-  //     }
-  //   ];
-
-  //   const eventsByDate = {};
-  //   mockEvents.forEach(event => {
-  //     const eventDate = new Date(event.eventTime).toISOString().split('T')[0];
-  //     if (!eventsByDate[eventDate]) {
-  //       eventsByDate[eventDate] = [];
-  //     }
-  //     eventsByDate[eventDate].push(event);
-  //   });
-
-  //   setEvents(eventsByDate);
-  // }, []);
   
   // adding events
   const handleAddEvent = async (e) => {
     e.preventDefault();
   
     const newEvent = {
-      eventID: newEventID,
-      eventName: newEventName,
-      eventTime: newEventDate, // Assuming eventDate is stored as a date
-      members_only: newMembersOnly,
-      exhibitID: newExhibitID,
+      eventName: newEventName || null,
+      eventTime: newEventDate || null, // Assuming eventDate is stored as a date
+      members_only: newMembersOnly === true,
+      exhibitID: newExhibitID || null,
+      sponsorID: newSponsorID || null
     };
-  
     try {
-      await axios.post('/api/events/add', newEvent);
+      await axios.post(`${url}/events/add/`, newEvent);
       // Reset form and close modal
-      setNewEventID('');
       setNewEventName('');
       setNewEventDate('');
       setNewMembersOnly('');
       setNewExhibitID('');
+      setNewSponsorID('');
       closeAddEventModal();
+      getAllEvents();
     } catch (error) {
       console.error("Error adding event", error);
     }
@@ -208,10 +166,10 @@ async function getAllEvents() {
         <div className="event-modal">
           <div className="modal-content">
             <h3>{selectedEvent.eventName}</h3>
-            <p><strong>Event ID:</strong> {selectedEvent.eventID}</p>
             <p><strong>Event Time:</strong> {new Date(selectedEvent.eventTime).toLocaleDateString('en-US', {year: '2-digit', month: '2-digit', day: '2-digit'})}</p>
             <p><strong>Members Only:</strong> {selectedEvent.members_only ? 'Yes' : 'No'}</p>
             <p><strong>Exhibit ID:</strong> {selectedEvent.exhibitID}</p>
+            <p><strong>Sponsor ID:</strong> {selectedEvent.sponsorID}</p>
             <button onClick={closeModal}>Close</button>
           </div>
         </div>
@@ -223,7 +181,7 @@ async function getAllEvents() {
           <div className="modal-content">
             <h3>Add a New Event</h3>
             <form onSubmit={handleAddEvent}>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label>Event ID:</label>
                 <input
                   type="text"
@@ -231,7 +189,7 @@ async function getAllEvents() {
                   onChange={(e) => setNewEventID(e.target.value)}
                   required
                 />
-              </div>
+              </div> */}
 
               <div className="form-group">
                 <label>Event Name:</label>
@@ -272,6 +230,16 @@ async function getAllEvents() {
                   type="text"
                   value={newExhibitID}
                   onChange={(e) => setNewExhibitID(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Sponsor ID:</label>
+                <input
+                  type="text"
+                  value={newSponsorID}
+                  onChange={(e) => setNewSponsorID(e.target.value)}
                   required
                 />
               </div>
