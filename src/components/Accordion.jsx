@@ -16,14 +16,11 @@ function Accordion() {
       let response;
       if(exhibit) { 
         if (!isNaN(exhibit)) { // is numeric
-          console.log(`${url}/exhibits/${exhibit}`);
           response = await axios.get(`${url}/exhibits/${exhibit}`)
         } else { // name 
-          console.log(`${url}/exhibits/name/${exhibit}`);
           response = await axios.get(`${url}/exhibits/name/${exhibit}`)
         }
       } else { // gets a list of all exhibits
-        console.log(`${url}/exhibits/`);
           response = await axios.get(`${url}/exhibits/`)
       }
       if(response && response.data) {
@@ -38,7 +35,6 @@ function Accordion() {
       response = await axios.get(`${url}/animals/exhibits/${exhibitName}`)
 
       if(response && response.data) {
-        console.log(response.data);
         setSelectedExhibit(response.data || []);
       }
     }

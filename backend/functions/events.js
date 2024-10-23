@@ -14,9 +14,9 @@ module.exports.getUpcomingEvents = function () {
     }
 }
 
-module.exports.getAllUpdates = async function () {
+module.exports.getAllEvents = async function () {
     try {
-        return query(`
+        return await query(`
         SELECT * 
         FROM Events
         ORDER BY eventTime ASC`);
