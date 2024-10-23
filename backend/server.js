@@ -27,10 +27,6 @@ app.use('/reports', reportsRoutes);
 app.use('/tickets', ticketsRoutes);
 
 
-axios.get(`${url}:${port}/exhibits/`).then(d => console.log(d.data));
-
-
-
 // Start the server
 app.listen(port, async () => {
     console.log(`Server is running on ${url}:${port}`);

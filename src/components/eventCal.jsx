@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "./eventCal.css";
 
+const {url} = require('../config.json');
+
 
 const EventCal = ({ isAdmin }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -18,22 +20,27 @@ const EventCal = ({ isAdmin }) => {
   const [newExhibitID, setNewExhibitID] = useState('');
 
   // Fetch events from database
+async function getAllEvents() {
+  console.log(`${url}/events/`)
+  await axios.get(`${url}/events/`)
+  .then(response => {
+    const eventsByDate = {};
+    response.data.forEach(event => {
+      const eventDate = new Date(event.eventTime).toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+      if (!eventsByDate[eventDate]) {
+        eventsByDate[eventDate] = [];
+      }
+      eventsByDate[eventDate].push(event);
+    });
+    setEvents(eventsByDate); // Save events data in state
+  })
+  .catch(error => {
+    console.error("There was an error fetching the events!", error);
+  });
+}
+
   useEffect(() => {
-    axios.get('/api/events/upcoming')
-      .then(response => {
-        const eventsByDate = {};
-        response.data.forEach(event => {
-          const eventDate = new Date(event.eventTime).toISOString().split('T')[0]; // Format date as YYYY-MM-DD
-          if (!eventsByDate[eventDate]) {
-            eventsByDate[eventDate] = [];
-          }
-          eventsByDate[eventDate].push(event);
-        });
-        setEvents(eventsByDate); // Save events data in state
-      })
-      .catch(error => {
-        console.error("There was an error fetching the events!", error);
-      });
+    getAllEvents();
   }, []);
 
   // Mock events data
@@ -145,7 +152,7 @@ const EventCal = ({ isAdmin }) => {
               }}
             >
               <span className="event-title">{event.eventName}</span>
-              <span className="event-time">{`${event.startTime} - ${event.endTime}`}</span>
+              {/* <span className="event-time">{`${event.startTime} - ${event.endTime}`}</span> */}
             </div>
           ))}
         </div>
@@ -202,7 +209,7 @@ const EventCal = ({ isAdmin }) => {
           <div className="modal-content">
             <h3>{selectedEvent.eventName}</h3>
             <p><strong>Event ID:</strong> {selectedEvent.eventID}</p>
-            <p><strong>Event Time:</strong> {new Date(selectedEvent.eventTime).toLocaleString()}</p>
+            <p><strong>Event Time:</strong> {new Date(selectedEvent.eventTime).toLocaleDateString('en-US', {year: '2-digit', month: '2-digit', day: '2-digit'})}</p>
             <p><strong>Members Only:</strong> {selectedEvent.members_only ? 'Yes' : 'No'}</p>
             <p><strong>Exhibit ID:</strong> {selectedEvent.exhibitID}</p>
             <button onClick={closeModal}>Close</button>
