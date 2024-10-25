@@ -41,9 +41,54 @@ async function getAllEvents() {
   });
 }
 
-  useEffect(() => {
-    getAllEvents();
-  }, []);
+useEffect(() => {
+  // Mock events array
+  const mockEvents = [
+    {
+      eventID: 1,
+      eventName: "Art Exhibit",
+      eventTime: new Date().toISOString(), // Today's date
+      startTime: "10:00 AM",
+      endTime: "2:00 PM",
+      members_only: true,
+      exhibitID: "EX123"
+    },
+    {
+      eventID: 2,
+      eventName: "Music Festival",
+      eventTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(), // Tomorrow's date
+      startTime: "4:00 PM",
+      endTime: "9:00 PM",
+      members_only: false,
+      exhibitID: "EX124"
+    },
+    {
+      eventID: 3,
+      eventName: "Science Fair",
+      eventTime: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(), // 3 days from today
+      startTime: "1:00 PM",
+      endTime: "5:00 PM",
+      members_only: false,
+      exhibitID: "EX125"
+    }
+  ];
+
+  // Organize mock events by their date (YYYY-MM-DD format)
+  const eventsByDate = {};
+  mockEvents.forEach(event => {
+    const eventDate = new Date(event.eventTime).toISOString().split('T')[0]; // Extract date in YYYY-MM-DD format
+    if (!eventsByDate[eventDate]) {
+      eventsByDate[eventDate] = [];
+    }
+    eventsByDate[eventDate].push(event);
+  });
+
+  setEvents(eventsByDate); // Set mock events to state
+}, []);
+
+  // useEffect(() => {
+  //   getAllEvents();
+  // }, []);
   
   // adding events
   const handleAddEvent = async (e) => {
@@ -68,6 +113,19 @@ async function getAllEvents() {
       getAllEvents();
     } catch (error) {
       console.error("Error adding event", error);
+    }
+  };
+  
+  // deleting events
+  const handleDeleteEvent = async () => {
+    try {
+      await axios.post(`${url}/events/delete/`, { eventID: selectedEvent.eventID });
+      alert('Event deleted successfully!');
+      setIsModalOpen(false);
+      getAllEvents();
+    } catch (error) {
+      console.error("Error deleting event", error);
+      alert('Failed to delete event.');
     }
   };
 
@@ -170,7 +228,8 @@ async function getAllEvents() {
             <p><strong>Members Only:</strong> {selectedEvent.members_only ? 'Yes' : 'No'}</p>
             <p><strong>Exhibit ID:</strong> {selectedEvent.exhibitID}</p>
             <p><strong>Sponsor ID:</strong> {selectedEvent.sponsorID}</p>
-            <button onClick={closeModal}>Close</button>
+            <button onClick={handleDeleteEvent} className="delete-button">Delete Event</button>
+            <button onClick={closeModal} className="close-button">Close</button>
           </div>
         </div>
       )}

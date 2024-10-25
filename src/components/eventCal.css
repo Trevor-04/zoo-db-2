@@ -262,6 +262,20 @@
     background-color: darkred;
   }
 
+  .delete-button {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px; /* Add some space between Delete and Close buttons */
+  }
+  
+  .delete-button:hover {
+    background-color: darkred;
+  }
+
   .form-group input {
     padding: 8px;
     font-size: 14px;
