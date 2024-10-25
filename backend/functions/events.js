@@ -28,7 +28,6 @@ module.exports.getAllEvents = async function () {
 
 module.exports.addEvent = async function (eventData) {
     const {eventName, eventTime, members_only, exhibitID, attendeeCount = 0, sponsorID = null} = eventData;
-    console.log(eventName, eventTime, members_only, exhibitID, attendeeCount, sponsorID);
 
     const exhibitExists = await query(`SELECT 1 FROM Exhibits WHERE exhibitID = ?`, [exhibitID]);
     

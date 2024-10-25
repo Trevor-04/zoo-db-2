@@ -41,54 +41,9 @@ async function getAllEvents() {
   });
 }
 
-useEffect(() => {
-  // Mock events array
-  const mockEvents = [
-    {
-      eventID: 1,
-      eventName: "Art Exhibit",
-      eventTime: new Date().toISOString(), // Today's date
-      startTime: "10:00 AM",
-      endTime: "2:00 PM",
-      members_only: true,
-      exhibitID: "EX123"
-    },
-    {
-      eventID: 2,
-      eventName: "Music Festival",
-      eventTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(), // Tomorrow's date
-      startTime: "4:00 PM",
-      endTime: "9:00 PM",
-      members_only: false,
-      exhibitID: "EX124"
-    },
-    {
-      eventID: 3,
-      eventName: "Science Fair",
-      eventTime: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(), // 3 days from today
-      startTime: "1:00 PM",
-      endTime: "5:00 PM",
-      members_only: false,
-      exhibitID: "EX125"
-    }
-  ];
-
-  // Organize mock events by their date (YYYY-MM-DD format)
-  const eventsByDate = {};
-  mockEvents.forEach(event => {
-    const eventDate = new Date(event.eventTime).toISOString().split('T')[0]; // Extract date in YYYY-MM-DD format
-    if (!eventsByDate[eventDate]) {
-      eventsByDate[eventDate] = [];
-    }
-    eventsByDate[eventDate].push(event);
-  });
-
-  setEvents(eventsByDate); // Set mock events to state
-}, []);
-
-  // useEffect(() => {
-  //   getAllEvents();
-  // }, []);
+  useEffect(() => {
+    getAllEvents();
+  }, []);
   
   // adding events
   const handleAddEvent = async (e) => {
@@ -240,15 +195,6 @@ useEffect(() => {
           <div className="modal-content">
             <h3>Add a New Event</h3>
             <form onSubmit={handleAddEvent}>
-              {/* <div className="form-group">
-                <label>Event ID:</label>
-                <input
-                  type="text"
-                  value={newEventID}
-                  onChange={(e) => setNewEventID(e.target.value)}
-                  required
-                />
-              </div> */}
 
               <div className="form-group">
                 <label>Event Name:</label>
