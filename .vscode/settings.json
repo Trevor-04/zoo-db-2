@@ -26,5 +26,6 @@
             "database": "ZooDB",
             "username": "zoo"
         }
-    ]
+    ],
+    "github-enterprise.uri": "https://c"
 }
