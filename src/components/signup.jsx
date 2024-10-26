@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 //import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const {url} = require('../config.json');
 
 function Signup() {
@@ -36,43 +37,32 @@ function Signup() {
 
     const handleSubmitForm = async (formData) => {
         try {
-            // console.log(formData);
+            console.log(formData);
+            const {first_name, last_name, email, phone_number, username, password, date_of_birth} = formData;
+            const {street, city, state, zip} = address;
 
-            // const accountData = {
-            //     address: `${address.street}, ${address.city}, ${address.state}, ${address.zip}`,
-            //     birthday,
-            //     username,
-            //     email, 
-            //     password,
-            //     memberPhone: phone_number,
-            //     memberFName: first_name,
-            //     memberLName: last_name,
-            // }
-            // console.log(accountData);
-            // await axios.post(`${url}/login/create`, accountData);
-
-            const response = await fetch("https://museuma.onrender.com/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    address: `${address.street}, ${address.city}, ${address.state}, ${address.zip}`,
-                    date_of_birth: birthday
-                }), // Include the form data along with address and date_of_birth in the request body
-            });
-            if (!response.ok) {
-                throw new Error("Failed to submit sign-up form");
+            const memberData = {
+                address: `${street}, ${city}, ${state}, ${zip}`,
+                memberPhone: phone_number,
+                memberFName: first_name,
+                memberLName: last_name,
+                birthday,
             }
-            const responseData = await response.json();
-            console.log(responseData); // Log the response data to the console
-            // Optionally, you can perform any additional actions based on the response
-            
+
+            const newMember = await axios.post(`${url}/members/new`, memberData);
+            console.log(memberData);
+            const accountData = {
+                memberID: newMember.data.memberID,
+                memberEmail: email, 
+                memberPassword: password,
+            }
+            console.log(accountData);
+            await axios.post(`${url}/login/create`, accountData);
+
             // navigate('/login');
 
         } catch (error) {
-            console.log(error.body);
+            console.log(error);
             console.error("Error submitting sign-up form:", error);
             // Handle error as needed
         }
