@@ -4,7 +4,7 @@ const loginController = require('../functions/login');
 const router = express.Router();
 
 // Route to create a new employee login
-router.post('/login/create', async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const loginData = req.body;
         await loginController.createLogin(loginData);
@@ -15,14 +15,14 @@ router.post('/login/create', async (req, res) => {
 });
 
 // Route to validate a login
-router.post('/login/validate', async (req, res) => {
+router.post('/validate', async (req, res) => {
     try {
         const loginData = req.body;
         const result = await loginController.validateLogin(loginData);
         if (result.loggedIn) {
-            res.status(200).json(result);
+            return res.status(200).json(result);
         } else {
-            res.status(401).json({ message: 'Invalid login credentials' });
+            return res.status(401).json({ message: 'Invalid login credentials' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Failed to validate login' });
@@ -30,7 +30,7 @@ router.post('/login/validate', async (req, res) => {
 });
 
 // Route to change employee password
-router.post('/login/change-password', async (req, res) => {
+router.post('/change-password', async (req, res) => {
     try {
         const passwordData = req.body;
         await loginController.changePassword(passwordData);

@@ -37,29 +37,28 @@ function Signup() {
 
     const handleSubmitForm = async (formData) => {
         try {
-            console.log(formData);
             const {first_name, last_name, email, phone_number, username, password, date_of_birth} = formData;
             const {street, city, state, zip} = address;
 
             const memberData = {
                 address: `${street}, ${city}, ${state}, ${zip}`,
+                memberEmail: email,
                 memberPhone: phone_number,
                 memberFName: first_name,
                 memberLName: last_name,
                 birthday,
             }
 
-            const newMember = await axios.post(`${url}/members/new`, memberData);
-            console.log(memberData);
+            const newMember = await axios.post(`${url}/members/new/member`, memberData);
+
             const accountData = {
-                memberID: newMember.data.memberID,
                 memberEmail: email, 
                 memberPassword: password,
+                memberID: newMember.data.insertId,
             }
-            console.log(accountData);
-            await axios.post(`${url}/login/create`, accountData);
 
-            // navigate('/login');
+            const login = await axios.post(`${url}/members/new/login`, accountData);
+            navigate('/login');
 
         } catch (error) {
             console.log(error);
@@ -69,9 +68,9 @@ function Signup() {
     };
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        handleSubmitForm(formData); // Call the handleSubmitForm function with the form data
+        await handleSubmitForm(formData); // Call the handleSubmitForm function with the form data
         // window.location.href = '/login';
     };
 
