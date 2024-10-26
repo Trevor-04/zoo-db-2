@@ -1,6 +1,6 @@
 const { query } = require('../functions/database');
 
-module.exports.addNewExhibit = async function (exhibitData) {
+module.exports.addExhibit = async function (exhibitData) {
     const { exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID } = exhibitData;
 
     try {

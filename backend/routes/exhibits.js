@@ -8,7 +8,7 @@ router.post('/add', async (req, res) => {
     const { exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID } = req.body;
 
     try {
-        await exhibitController.addNewExhibit({ exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID });
+        await exhibitController.addExhibit({ exhibitName, founded_on, closed_on, closure_reason, sponsorID, headkeeperID });
         res.status(201).json({ message: 'Exhibit added successfully' });
     } catch (err) {
         console.error(err);

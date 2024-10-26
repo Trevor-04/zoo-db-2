@@ -71,9 +71,23 @@ function TicketOptions() {
       if (!isTimeSlotDisabled(time)) {
         // Assuming you have a navigate function to go to the payment page
         navigate("/payment", { state: { selectedTime: time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets } });
+        console.log(time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets);
+        const date_purchased = new Date()
+        // adult = 0, child = 1, senior = 2, infant = 3;
+        const tickets = [adultTickets, childTickets, seniorTickets, infantTickets];
+        const ticketType = 0;
+        
+
+        console.log(date_purchased);
+        
+
       }
     };
   
+    const handleSubmitButton = () => {
+
+    }
+
     return (
       <div className="general-admission">
         <button 
