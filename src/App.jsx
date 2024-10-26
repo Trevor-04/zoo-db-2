@@ -8,6 +8,7 @@ import Login from './components/login';
 import Signup from './components/signup';
 import Payment from "./components/payment";
 import Tickets from "./pages/Tickets";
+import Donate from "./pages/Donate"
 import './App.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
+                    <Route path="/Donate" element={<Donate />} />
                 </Routes>
             </Router>
         </div>

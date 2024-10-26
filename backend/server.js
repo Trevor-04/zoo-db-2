@@ -11,6 +11,8 @@ const exhibitsRoutes = require('./routes/exhibits');
 const membersRoutes = require('./routes/members');
 const reportsRoutes = require('./routes/reports');
 const ticketsRoutes = require('./routes/tickets');
+const inventoryRoutes = require('./routes/inventory');
+const donationRoutes = require('./routes/donations');
 
 const app = express();
 
@@ -25,6 +27,9 @@ app.use('/login', loginRoutes);
 app.use('/members', membersRoutes);
 app.use('/reports', reportsRoutes);
 app.use('/tickets', ticketsRoutes);
+app.use('/inventory', inventoryRoutes);
+app.use('/donations', donationRoutes); 
+
 
 
 // Start the server
