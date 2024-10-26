@@ -47,3 +47,23 @@ module.exports.checkConnection = async function() {
         console.error("Didn't connect", err)
     }
 }
+
+module.exports.startTransaction = async function() {
+    try {
+        const connection = await pool.beginTransaction();
+        console.log("Started Transaction");
+        return connection;
+    } catch (err) {
+        console.error("Did not start transaction", err)
+    }
+}
+
+module.exports.commit = async function () {
+    try {
+        const connection = await pool.commit()
+        console.log("Commited Transaction");
+        connection.release();
+    } catch (err) {
+        console.error("Did not commit", err)
+    }
+}

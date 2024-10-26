@@ -3,6 +3,8 @@ import './tickets.css';
 import { Link } from 'react-router-dom';
 //import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+const {url} = require('../config.json');
 
 function TicketOptions() {
   const [visibleSection, setVisibleSection] = useState('generalAdmission');
@@ -27,6 +29,13 @@ function TicketOptions() {
     '5pm': { adult: 20, child: 13.5, senior: 15, infant: 0 },
   };
 
+
+  function format12Hours(time) {
+    const period = time >= 12 ? "pm" : "am";  // Determine AM or PM
+    const hour = time % 12 || 12;             // Convert 0 or 13-23 to 12-hour format
+    return `${hour}${period}`;
+}
+
   // Handle date change and update state
   const handleDateChange = (e) => {
     const dateValue = e.target.value;
@@ -34,14 +43,28 @@ function TicketOptions() {
     setIsDateSelected(true);
   };
 
-  const calculateTotalPrice = (time) => {
+  
+  const calculateTotalPrice = (time, type = "all") => {
     const rates = pricing[time];
-    return (
-      (adultTickets * rates.adult) +
-      (childTickets * rates.child) +
-      (seniorTickets * rates.senior) +
-      (infantTickets * rates.infant)
-    );
+
+    switch (type) {
+      case "all": 
+      return (
+        (adultTickets * rates.adult) +
+        (childTickets * rates.child) +
+        (seniorTickets * rates.senior) +
+        (infantTickets * rates.infant)
+      );
+      case "adult":
+        return adultTickets * rates.adult
+      case "child":
+        return (childTickets * rates.child)
+      case "senior":
+        return (seniorTickets * rates.senior)
+      case "infant": 
+        return (infantTickets * rates.infant)
+    }
+
   };
 
   const TimeSlots = () => {
@@ -67,24 +90,32 @@ function TicketOptions() {
     };
   
     // Handle time slot selection and navigate to payment page
-    const handleTimeSlotClick = (time) => {
+    const handleTimeSlotClick = async (time) => {
       if (!isTimeSlotDisabled(time)) {
         // Assuming you have a navigate function to go to the payment page
         navigate("/payment", { state: { selectedTime: time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets } });
-        console.log(time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets);
-        const date_purchased = new Date()
-        // adult = 0, child = 1, senior = 2, infant = 3;
-        const tickets = [adultTickets, childTickets, seniorTickets, infantTickets];
-        const ticketType = 0;
-        
-
-        console.log(date_purchased);
-        
-
+        await handleSubmitButton(time);
       }
     };
   
-    const handleSubmitButton = () => {
+    const handleSubmitButton = async (time) => {
+      
+      // adult = 0, child = 1, senior = 2, infant = 3;
+      const tickets = [adultTickets, childTickets, seniorTickets, infantTickets];
+      const  ticketTypeMap = ["adult", "child", "senior", "infant"];
+
+      for (let i = 0; i < tickets.length; i++) {
+
+        if (tickets[i] > 0) {
+
+          const dataObject = {
+            date_purchased: new Date().toISOString().split('T')[0],
+            ticketType: i,
+            ticketPrice: calculateTotalPrice(format12Hours(time), ticketTypeMap[i]),
+          }
+          await axios.post(`${url}/tickets/add/`, dataObject);
+        }
+      }
 
     }
 

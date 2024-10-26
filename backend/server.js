@@ -34,6 +34,6 @@ app.use('/donations', donationRoutes);
 
 // Start the server
 app.listen(port, async () => {
-    console.log(`Server is running on ${url}:${port}`);
+    console.log(`Server is running on ${url}`);
 });
 
