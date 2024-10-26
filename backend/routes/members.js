@@ -4,18 +4,29 @@ const membersController = require('../functions/members');
 const router = express.Router();
 
 // Route to create a new member
-router.post('/members/new', async (req, res) => {
+
+router.post('/new/login', async (req, res) => {
     try {
         const memberData = req.body;
-        await membersController.newMember(memberData);
-        res.status(201).json({ message: 'New member created successfully.' });
+        const result = await membersController.newMemberLogin(memberData);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.post('/new/member', async (req, res) => {
+    try {
+        const memberData = req.body;
+        const result = await membersController.newMember(memberData);
+        res.status(201).json(result);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
 
 // Route to get a member by ID
-router.get('/members/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const memberID = req.params.id;
         const member = await membersController.getMember({ memberID: parseInt(memberID) });
@@ -30,7 +41,7 @@ router.get('/members/:id', async (req, res) => {
 });
 
 // Route to update billing information for a member
-router.post('/members/billed', async (req, res) => {
+router.post('/billed', async (req, res) => {
     try {
         const memberData = req.body;
         await membersController.billed(memberData);

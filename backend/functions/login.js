@@ -4,13 +4,13 @@ const { query, connect, disconnect } = require('../functions/database');
 // employeeID, employeeEmail, employeePassword
 
 module.exports.createLogin = async function (loginData) {
-    const {employeeID, employeePassword, employeeEmail} = loginData;
-    
+    const {employeePassword, employeeEmail} = loginData;
+        
         try {
             await query(`INSERT INTO 
-            Employee_logins (employeeID, employeePassword, employeeEmail) 
-            VALUES (?, ?, ?) `, 
-            [employeeID, employeePassword, employeeEmail]);
+            Employee_logins (employeePassword, employeeEmail) 
+            VALUES (?, ?) `, 
+            [employeePassword, employeeEmail]);
         } catch (error) {
             console.error('Error in createLogin:', error);
             throw error;
@@ -20,6 +20,7 @@ module.exports.createLogin = async function (loginData) {
 module.exports.validateLogin = async function(loginData) {
     try {
         const {employeePassword, employeeEmail} = loginData;
+        
         let returnData = {
             type: null,
             ID: "",
@@ -45,7 +46,7 @@ module.exports.validateLogin = async function(loginData) {
             returnData.loggedIn = true;
         } else {
             const membersResults = await query(`
-            SELECT memberID
+            SELECT loginID, memberID
             FROM Member_logins
             WHERE memberEmail = ?
             AND memberPassword = ?`, 
@@ -54,6 +55,7 @@ module.exports.validateLogin = async function(loginData) {
                 returnData.type = "member"
                 returnData.ID = membersResults[0].memberID;
                 returnData.loggedIn = true;
+                returnData.loginID = membersResults[0].loginID;
             }
         } 
         return returnData

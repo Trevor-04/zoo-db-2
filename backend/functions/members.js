@@ -2,15 +2,27 @@ const {query} = require('../functions/database');
 
 module.exports.newMember = async function (memberData) {
     try {
-        validateMemberData(memberData);
-        const {memberID, memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName} = memberData;
+        module.exports.validateMemberData(memberData);
+        const {memberType = 0, memberTerm = null, subscribed_on = null, last_billed = null, memberEmail, memberPhone, memberFName, memberLName} = memberData;
+        
         return await query(`
-        INSERT INTO Members (memberID, memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-        [memberID, memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName])
+        INSERT INTO Members (memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
+        [memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName])
     } catch (err) {
         console.log(err);
         throw err;
+    }
+}
+
+module.exports.newMemberLogin = async function (memberData) {
+    const {memberEmail, memberPassword, memberID} = memberData;
+    try {
+        return await query(`INSERT INTO Member_logins (memberEmail, memberPassword, memberID)
+        VALUES (?, ?, ?)`,
+        [memberEmail, memberPassword, memberID]);
+    } catch (err) {
+        console.error(err);
     }
 }
 
@@ -43,29 +55,29 @@ module.exports.billed = async function (memberData) {
 }
 
 module.exports.validateMemberData = async function (memberData) {
-    const {memberID, memberType, memberEmail, memberFName, memberLName} = memberData;
+    const {memberID, memberType, memberEmail, memberFName, memberLName, memberTerm} = memberData;
 
-    if (!memberID || typeof memberID !== 'number') {
+    if (memberID && (typeof memberID !== 'number')) {
         throw new Error('Invalid or missing memberID');
     }
 
-    if (!memberType || !['Standard', 'Premium'].includes(memberType)) {
-        throw new Error('Invalid memberType. It must be either "Standard" or "Premium"');
+    if (memberType &&  typeof memberType !== 'number') {
+        throw new Error('Invalid memberType. Must be a number');
     }
 
-    if (!memberEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberEmail)) {
+    if (memberEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberEmail)) {
         throw new Error('Invalid email format');
     }
 
-    if (!memberFName || typeof memberFName !== 'string') {
+    if (memberFName && typeof memberFName !== 'string') {
         throw new Error('First name is required and should be a string');
     }
 
-    if (!memberLName || typeof memberLName !== 'string') {
+    if (memberLName && typeof memberLName !== 'string') {
         throw new Error('Last name is required and should be a string');
     }
 
-    if (!memberTerm || typeof memberTerm !== 'number') {
+    if (memberTerm && typeof memberTerm !== 'number') {
         throw new Error('Invalid or missing memberTerm. It must be a number');
     }
 }
