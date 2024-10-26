@@ -1,5 +1,5 @@
 const express = require('express');
-const ticketsController = require('../functions/tickets'); 
+const ticketController = require('../functions/tickets'); 
 
 const router = express.Router();
 
@@ -7,88 +7,88 @@ const router = express.Router();
 router.post('/tickets/visitor-count', async (req, res) => {
     try {
         const visitorData = req.body; // Assuming startDate and endDate are passed in the body
-        const visitorCount = await ticketsController.calculateVisitorCount(visitorData);
+        const visitorCount = await ticketController.calculateVisitorCount(visitorData);
         res.status(200).json({ visitorCount });
     } catch (error) {
         res.status(500).json({ error: 'Failed to calculate visitor count' });
     }
 });
 
-module.exports.addTicket = async function (ticketData) {
-    const { ticketType, date_purchased, ticketPrice } = ticketData;
+router.post('/add', async (req, res) => {
+    const { ticketType, date_purchased, ticketPrice} = req.body;
 
     try {
-        return await query(`
-            INSERT INTO Ticket_sales (ticketType, date_purchased, ticketPrice)
-            VALUES (?, ?, ?)`,
-            [ticketType, date_purchased, ticketPrice]);
+        await ticketController.addTicket({ ticketType, date_purchased, ticketPrice});
+        res.status(201).json({ message: 'Ticket added successfully' });
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error(err);
+        res.status(500).json({ error: 'Failed to add ticket' });
     }
-};
+});
 
-// Delete a ticket by ticketID
-module.exports.deleteTicket = async function (ticketData) {
-    const { ticketID } = ticketData;
+// Delete a ticket by ID
+router.delete('/:ticketID', async (req, res) => {
+    const { ticketID } = req.params;
 
     try {
-        return await query(`DELETE FROM Ticket_sales WHERE ticketID = ?`, [ticketID]);
+        await ticketController.deleteTicket({ ticketID });
+        res.status(200).json({ message: 'Ticket deleted successfully' });
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete ticket' });
     }
-};
+});
 
-// Update a ticket's details by ticketID
-module.exports.updateTicket = async function (ticketData) {
-    const { ticketID, ticketType, date_purchased, ticketPrice } = ticketData;
+// Update a ticket by ID
+router.put('/:ticketID', async (req, res) => {
+    const { ticketID } = req.params;
+    const { ticketType, date_purchased, ticketPrice } = req.body;
 
     try {
-        return await query(`
-            UPDATE Ticket_sales
-            SET ticketType = ?, date_purchased = ?, ticketPrice = ?
-            WHERE ticketID = ?`,
-            [ticketType, date_purchased, ticketPrice, ticketID]);
+        await ticketController.updateTicket({ ticketID, ticketType, date_purchased, ticketPrice });
+        res.status(200).json({ message: 'Ticket updated successfully' });
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update ticket' });
     }
-};
+});
 
 // List all tickets
-module.exports.listAllTickets = async function () {
+router.get('/', async (req, res) => {
     try {
-        return await query(`SELECT * FROM Ticket_sales`);
+        const tickets = await ticketController.listTickets();
+        res.status(200).json(tickets);
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error(err);
+        res.status(500).json({ error: 'Failed to list tickets' });
     }
-};
+});
 
 // Get a ticket by ticketID
-module.exports.getTicketById = async function (ticketData) {
-    const { ticketID } = ticketData;
+router.get('/:ticketID', async (req, res) => {
+    const { ticketID } = req.params;
 
     try {
-        const result = await query(`SELECT * FROM Ticket_sales WHERE ticketID = ?`, [ticketID]);
-        return result[0];
+        const ticket = await ticketController.getTicketById({ ticketID });
+        res.status(200).json(ticket || null);
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get ticket by ID' });
     }
-};
+});
 
-// Get tickets by type
-module.exports.getTicketsByType = async function (ticketData) {
-    const { ticketType } = ticketData;
+// Get tickets by ticketType
+router.get('/type/:ticketType', async (req, res) => {
+    const { ticketType } = req.params;
 
     try {
-        return await query(`SELECT * FROM Ticket_sales WHERE ticketType = ?`, [ticketType]);
+        const tickets = await ticketController.getTicketsByType({ ticketType });
+        res.status(200).json(tickets);
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get tickets by type' });
     }
-};
+});
 
+// Export the router
 module.exports = router;

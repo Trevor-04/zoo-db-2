@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 //import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+const {url} = require('../config.json');
 
 function Signup() {
     const navigate = useNavigate();
@@ -35,7 +36,21 @@ function Signup() {
 
     const handleSubmitForm = async (formData) => {
         try {
-            console.log(formData);
+            // console.log(formData);
+
+            // const accountData = {
+            //     address: `${address.street}, ${address.city}, ${address.state}, ${address.zip}`,
+            //     birthday,
+            //     username,
+            //     email, 
+            //     password,
+            //     memberPhone: phone_number,
+            //     memberFName: first_name,
+            //     memberLName: last_name,
+            // }
+            // console.log(accountData);
+            // await axios.post(`${url}/login/create`, accountData);
+
             const response = await fetch("https://museuma.onrender.com/signup", {
                 method: "POST",
                 headers: {
@@ -53,8 +68,8 @@ function Signup() {
             const responseData = await response.json();
             console.log(responseData); // Log the response data to the console
             // Optionally, you can perform any additional actions based on the response
-            // For example, show a success message or redirect the user
-            navigate('/login');
+            
+            // navigate('/login');
 
         } catch (error) {
             console.log(error.body);
@@ -67,7 +82,7 @@ function Signup() {
     const handleSubmit = (e) => {
         e.preventDefault();
         handleSubmitForm(formData); // Call the handleSubmitForm function with the form data
-        window.location.href = '/login';
+        // window.location.href = '/login';
     };
 
     return (
