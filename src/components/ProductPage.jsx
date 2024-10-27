@@ -14,11 +14,6 @@ const ProductPage = () => {
     navigate('/giftshop'); // Navigate back to the main page
   };
 
-  const handleBuy = () => {
-    alert('You have successfully purchased the product!'); // Placeholder alert for buying functionality
-    navigate('/giftshop'); // Navigate back to the main page
-  }
-
   return (
     <div className="productPage">
       {/* Product Image */}
@@ -40,24 +35,12 @@ const ProductPage = () => {
         <p className="description">{descript}</p>
         
         {/* Return Button */}
-
-        <div className = "buttonContainer">
-          <button 
-            onClick={handleBuy} 
-            className="buyButton"
-          >
-            Buy
-          </button>
-
-          <button 
-            onClick={handleReturn} 
-            className="returnButton"
-          >
-            Return
-          </button>
-        </div>
-
-  
+        <button 
+          onClick={handleReturn} 
+          className="returnButton"
+        >
+          Return
+        </button>
       </div>
     </div>
   );
