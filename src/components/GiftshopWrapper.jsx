@@ -1,35 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
+import axios from 'axios';
 
-// AnimalCardWrapper Component (renders multiple cards)
-const GiftshopWrapper = (gifts = []) => {
-  // Array of animals with their image URLs and names
+const { url } = require('../config.json');
 
-  
+const GiftshopWrapper = () => {
+  const [gifts, setGifts] = useState([]);
 
-  const defaultGifts = [
-    {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
-    "This is a giraffe shirt. It is very cool. You should buy it." },
-    {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
-      "This is a giraffe shirt. It is very cool. You should buy it." },
-    {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
-      "This is a giraffe shirt. It is very cool. You should buy it." },
-    {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
-      "This is a giraffe shirt. It is very cool. You should buy it." },
-    {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
-      "This is a giraffe shirt. It is very cool. You should buy it." },
-    
-  ];
+  useEffect(() => {
+    // Fetch data from your API when the component mounts
+    const listItems = async () => {
+      try {
+        const response = await axios.get(`${url}/inventory/category/3`);
+        // Extract data from the response
+        const fetchedGifts = response.data;
+        setGifts(fetchedGifts); // Save the fetched data in state
+      } catch (error) {
+        console.error('There was an error fetching the gifts!', error);
+      }
+    };
 
-  gifts = gifts.length ? gifts : defaultGifts
-
+    listItems();
+  }, []);
 
   return (
-    
     <div className="bg-white cardBlock flex justify-center flex-wrap w-full">
-      
       {gifts.map((gift, index) => (
-        <ProductCard key={index} imageUrl={gift.imageUrl} name={gift.name} price={gift.price} descript={gift.descript}/>
+        <ProductCard
+          key={gift.itemID || index} // Ensure each item has a unique key
+          imageUrl={gift.image_url}
+          name={gift.itemName}
+          price={gift.itemPrice}
+          descript={gift.descript}
+        />
       ))}
     </div>
   );
