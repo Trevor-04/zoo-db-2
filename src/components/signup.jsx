@@ -42,6 +42,7 @@ function Signup() {
 
             const memberData = {
                 address: `${street}, ${city}, ${state}, ${zip}`,
+                memberBirthday: date_of_birth,
                 memberEmail: email,
                 memberPhone: phone_number,
                 memberFName: first_name,
@@ -57,7 +58,7 @@ function Signup() {
                 memberID: newMember.data.insertId,
             }
 
-            const login = await axios.post(`${url}/members/new/login`, accountData);
+            await axios.post(`${url}/members/new/login`, accountData);
             navigate('/login');
 
         } catch (error) {
