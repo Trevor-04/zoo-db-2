@@ -9,6 +9,7 @@ import Signup from './components/signup';
 import Payment from "./components/payment";
 import Tickets from "./pages/Tickets";
 import Donate from "./pages/Donate"
+import ProductPage from './components/ProductPage';
 import './App.css';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/animals" element={<Animals />} />
                     <Route path="/giftshop" element={<GiftShop />} />
+                    <Route path="/product/:name" element={<ProductPage />} />
                     <Route path="/events" element={<Events />} />
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
