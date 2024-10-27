@@ -18,7 +18,7 @@ const ProductCard = ({ imageUrl, name, price, descript }) => {
         Quick View
       </button>
       <figure>
-        <img src={imageUrl} alt={name} />
+        <img className="productImg" src={imageUrl} alt={name} />
       </figure>
       <div className="cardContent">
         <h2>{name}</h2>
