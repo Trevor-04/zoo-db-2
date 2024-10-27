@@ -25,7 +25,7 @@ export default function Navbar() {
 
         <Link to="/giftshop">
           <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
-            Gift shop
+            Merchandise
           </button>
         </Link>
 
