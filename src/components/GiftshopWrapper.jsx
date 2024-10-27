@@ -2,12 +2,12 @@ import React from 'react';
 import ProductCard from './ProductCard';
 
 // AnimalCardWrapper Component (renders multiple cards)
-const GiftshopWrapper = () => {
+const GiftshopWrapper = (gifts = []) => {
   // Array of animals with their image URLs and names
 
   
 
-  const gifts = [
+  const defaultGifts = [
     {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
     "This is a giraffe shirt. It is very cool. You should buy it." },
     {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
@@ -19,8 +19,10 @@ const GiftshopWrapper = () => {
     {imageUrl: "/giraffeShirt.webp", name: "Giraffe", price: 12.99, descript:
       "This is a giraffe shirt. It is very cool. You should buy it." },
     
-    // Add more animals here
   ];
+
+  gifts = gifts.length ? gifts : defaultGifts
+
 
   return (
     

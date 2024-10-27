@@ -155,17 +155,23 @@
     margin-bottom: 16px; /* spacing between description and button */
   }
   
-  /* Return Button */
-  .returnButton {
-    background-color: #165e229e; /* bg-gray-500 */
+  .buttonContainer {
+    display: inline-flex; /* Keeps the container as wide as the content */
+    gap: 10px; /* Adds a gap between the buttons */
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.buyButton, .returnButton {
+    background-color: #165e229e;
     color: white;
-    padding: 8px 16px; /* py-2 px-4 */
-    border-radius: 4px; /* rounded */
+    padding: 8px 16px;
+    border-radius: 4px; /* Optional: Round each button separately */
     transition: background-color 0.2s;
     cursor: pointer;
-  }
-  
-  .returnButton:hover {
-    background-color: #064e3b; /* hover:bg-gray-600 */
-  }
+}
+
+.buyButton:hover, .returnButton:hover {
+    background-color: #064e3b;
+}
   
