@@ -3,12 +3,12 @@ const {query} = require('../functions/database');
 module.exports.newMember = async function (memberData) {
     try {
         module.exports.validateMemberData(memberData);
-        const {memberType = 0, memberTerm = null, subscribed_on = null, last_billed = null, memberEmail, memberPhone, memberFName, memberLName} = memberData;
+        const {memberType = 0, memberTerm = null, subscribed_on = null, last_billed = null, memberEmail, memberPhone, memberFName, memberLName, memberBirthday} = memberData;
         
         return await query(`
-        INSERT INTO Members (memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-        [memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName])
+        INSERT INTO Members (memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName, memberBirthday)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+        [memberType, memberTerm, subscribed_on, last_billed, memberEmail, memberPhone, memberFName, memberLName, memberBirthday])
     } catch (err) {
         console.log(err);
         throw err;
@@ -48,6 +48,18 @@ module.exports.billed = async function (memberData) {
         SET last_billed = NOW(),
         WHERE memberID  = ?`,
         [memberID]);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+module.exports.getMembersByBirthday = async function (memberData) {
+    const {memberBirthday} = memberData;
+    try {
+        return await query(`SELECT * FROM MEMBERS
+        WHERE memberBirthday =?`,
+        [memberBirthday]);
     } catch (err) {
         console.log(err);
         throw err;
