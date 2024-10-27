@@ -31,7 +31,7 @@ const ProductPage = () => {
       {/* Product Details */}
       <div className="productDetails">
         <h1>{name}</h1>
-        <p>{price ? `$${price.toFixed(2)}` : 'Price not available'}</p>
+        <p>{price ? `$${price}` : 'Price not available'}</p>
         <p className="description">{descript}</p>
         
         {/* Return Button */}
