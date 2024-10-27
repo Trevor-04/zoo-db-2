@@ -3,7 +3,7 @@ import React from 'react';
 // GiftCard Component (accepting image and name as props)
 const GiftCard = ({ imageUrl, name }) => { // what happens when you click on the card
     const handleClick = () =>{
-       console.log(name)
+       console.log(name);
     };
   return (
     <div className="relative w-[250px] card cursor-pointer bg-gray-300 shadow-lg max-w-xs p-4 m-4 transition-colors duration-200"> {/* Apply background color here */}
