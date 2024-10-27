@@ -42,12 +42,11 @@ function Signup() {
 
             const memberData = {
                 address: `${street}, ${city}, ${state}, ${zip}`,
-                memberBirthday: date_of_birth,
+                memberBirthday: birthday,
                 memberEmail: email,
                 memberPhone: phone_number,
                 memberFName: first_name,
                 memberLName: last_name,
-                birthday,
             }
 
             const newMember = await axios.post(`${url}/members/new/member`, memberData);
@@ -60,6 +59,7 @@ function Signup() {
 
             await axios.post(`${url}/members/new/login`, accountData);
             navigate('/login');
+            alert(`Successfully created account`);
 
         } catch (error) {
             console.log(error);
@@ -175,7 +175,7 @@ function Signup() {
                         type="date"
                         id="birthday"
                         className="w-full p-2 mb-4 border border-[#165e229e]  rounded"
-                        value={birthday}
+                        value={formData.birthday}
                         onChange={(e) => setBirthday(e.target.value)}
                         max={new Date().toISOString().split('T')[0]}
                     />
