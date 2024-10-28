@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 
 
@@ -16,15 +16,15 @@ const GiftshopWrapper = ({gifts = []}) => {
   gifts = gifts.length ? gifts : defaultGifts;
 
   return (
-    
     <div className="bg-white cardBlock flex justify-center flex-wrap w-full">
-      
       {gifts.map((gift, index) => (
-        <ProductCard key={index} 
-        imageUrl={gift.imageUrl || "/giraffeShirt.webp"} 
-        name={gift.itemName} 
-        price={gift.itemPrice} 
-        descript={gift.descript}/>
+        <ProductCard
+          key={gift.itemID || index} // Ensure each item has a unique key
+          imageUrl={gift.image_url || "/giraffeShirt.webp"}
+          name={gift.itemName}
+          price={gift.itemPrice}
+          descript={gift.descript}
+        />
       ))}
     </div>
   );
