@@ -18,7 +18,7 @@ module.exports.calculateVisitorCount = async function(visitorData) {
 }
 
 module.exports.addTicket = async function (ticketData) {
-    const { ticketType, date_purchased, ticketPricex} = ticketData;
+    const { ticketType, date_purchased, ticketPrice} = ticketData;
 
     try {
         return await query(`
