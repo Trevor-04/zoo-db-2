@@ -18,7 +18,13 @@ const ProductCard = ({ imageUrl, name, price, descript }) => {
         Quick View
       </button>
       <figure>
-        <img className="productImg" src={imageUrl} alt={name} />
+        <img className="productImg" 
+        src={imageUrl} 
+        alt={name}
+        onError={(e) => {
+          e.target.onerror = null; // Prevent infinite loop
+          e.target.src = "/giraffeShirt.webp"; // Fallback image
+        }}/>
       </figure>
       <div className="cardContent">
         <h2>{name}</h2>
