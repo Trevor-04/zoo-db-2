@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
+import axios from 'axios';
 
 
 // AnimalCardWrapper Component (renders multiple cards)
@@ -20,7 +21,7 @@ const GiftshopWrapper = ({gifts = []}) => {
       {gifts.map((gift, index) => (
         <ProductCard
           key={gift.itemID || index} // Ensure each item has a unique key
-          imageUrl={gift.image_url || "/giraffeShirt.webp"}
+          imageUrl={gift.image_url ? gift.image_url :  "/giraffeShirt.webp"}
           name={gift.itemName}
           price={gift.itemPrice}
           descript={gift.descript}
