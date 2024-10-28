@@ -7,7 +7,7 @@ import './Giftshop.css'; // Import the CSS file
 const ProductCard = ({ imageUrl, name, price, descript }) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick = () => { // clicking on product 
     console.log(name);
     navigate(`/product/${name}`, { state: { name, imageUrl, price, descript } });
   };

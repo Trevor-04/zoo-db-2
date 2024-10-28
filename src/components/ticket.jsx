@@ -113,6 +113,7 @@ function TicketOptions() {
             ticketType: i,
             ticketPrice: calculateTotalPrice(format12Hours(time), ticketTypeMap[i]),
           }
+          console.log(dataObject)
           await axios.post(`${url}/tickets/add/`, dataObject);
         }
       }

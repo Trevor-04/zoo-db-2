@@ -1,9 +1,31 @@
 import React from 'react'
+import {useState, useEffect} from 'react';
 import GiftshopWrapper from '../components/GiftshopWrapper';
+import axios from 'axios';
+const {url} = require('../config.json');
 
-function giftshop({imageUrl, name}) {
+function Giftshop({imageUrl, name}) {
 
-  const gifts = [];
+  const [gifts, setGifts] = useState([]);
+
+  async function getProducts() {
+    try {
+        const response = await axios.get(`${url}/inventory/category/0`);
+        if(response && response.data) {
+          setGifts(response.data);
+        } else {
+          setGifts([]);
+        }
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  useEffect(() => {
+    getProducts();
+  }, [])
+
   return (
 
     <div className='flex flex-col items-center justify-start min-h-screen bg-white'>
@@ -16,4 +38,4 @@ function giftshop({imageUrl, name}) {
   )
 }
 
-export default giftshop
+export default Giftshop
