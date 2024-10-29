@@ -24,7 +24,7 @@ const ProductPage = () => {
             alt={name} 
             onError={(e) => {
               e.target.onerror = null; // Prevent infinite loop
-              e.target.src = "/giraffeShirt.webp"; // Fallback image
+              e.target.src = "/default-product.png"; // Fallback image
             }}
           />
         ) : (

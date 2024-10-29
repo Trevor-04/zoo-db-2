@@ -47,6 +47,7 @@ function Accordion() {
   return (
     
     <div className=''>
+      <div className = 'flex flex-col justify-center items-center'>
     {/* Accordion Dropdown Section */}
     <button onClick={() => setAccordionOpen(!AccordionOpen)}  
       className='flex items-center justify-between h-12 w-64 -mt-[25px] bg-white text-[#165e229e] text-sm 
@@ -75,7 +76,8 @@ function Accordion() {
             </svg>
           </span>
       </button> 
-      <div className={`aboslute grid overflow-hidden transition-all duration-300 ease-in-outborder ${
+      </div>
+      <div className={`aboslute top-full flex justify-center grid overflow-hidden transition-all duration-300 ease-in-outborder ${
             AccordionOpen 
             ? 'grid-rows-[1fr] opacity-100' 
             : 'grid-rows-[0fr] opacity-0'
