@@ -22,6 +22,10 @@ const ProductPage = () => {
           <img 
             src={imageUrl} 
             alt={name} 
+            onError={(e) => {
+              e.target.onerror = null; // Prevent infinite loop
+              e.target.src = "/giraffeShirt.webp"; // Fallback image
+            }}
           />
         ) : (
           <p>Loading image...</p>

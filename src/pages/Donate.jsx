@@ -1,8 +1,39 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
+import { CardElement, useElements, useStripe, Elements} from "@stripe/react-stripe-js";
 import { CountryDropdown } from "react-country-region-selector";
 import StripeContainer from '../components/StripeContainer';
 const {url} = require('../config.json');
+
+const CARD_OPTIONS = {
+  iconStyle: "solid",
+  style: {
+    base: {
+      margin: '1rem',
+      iconColor: "#cccccc",  // Grey to match the border color of the input
+      color: "black",
+      fontWeight: "500",
+      fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
+      fontSize: "16px",
+      fontSmoothing: "antialiased",
+      "::placeholder": {
+        color: "#cccccc"  // Light grey for placeholder to match the HTML input
+      },
+      backgroundColor: "#ffffff",  // Ensure the background is white
+      border: "1px solid #cccccc", // Grey border to match the HTML input style
+      borderRadius: "0.375rem",   // Rounded corners similar to 'rounded-md'
+      padding: "0.5rem",           // Equivalent to 'p-2' in Tailwind CSS
+    },
+    invalid: {
+      iconColor: "#ff1a1a",  // Red color for invalid input icons
+      color: "#ff1a1a",      // Red color for text when the input is invalid
+      borderColor: "#ff1a1a", // Red border when the input is invalid
+    },
+  },
+};
+const pkey = `${process.env.PUBLISHABLE_KEY}`;
+const stripeTestPromise = loadStripe(pkey);
 
 function Donate() {
   const initialFormData ={
@@ -29,12 +60,52 @@ function Donate() {
   const monthlyAmounts = ['10 /mo', '35 /mo', '50 /mo', '75 /mo', '100 /mo', '150 /mo'];
   //const paymentMethods = ['Credit Card'];
 
+  const [success, setSuccess] = useState(false);
+  const stripe = useStripe();
+  const elements = useElements();
+
+
   const amounts = isMonthly ? monthlyAmounts : oneTime; 
 
   const handleCountryChange = (val) => {
     setCountry(val);
     setFormData({ ...formData, country: val }); // Update formData with the country
   };
+
+  const handleDonation = async (e) => {
+  
+      e.preventDefault();
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: elements.getElement(CardElement),
+      });
+  
+      if (!error) {
+        try {
+          const { id } = paymentMethod;
+          const response = await axios.post("http://localhost:4000/payment", {
+            amount: 1000,
+            id,
+          });
+  
+          if (response.data.success) {
+            console.log("Successful payment");
+            setSuccess(true);
+          } else if (response.data.redirect_url) {
+            window.location.href = response.data.redirect_url;
+          }
+        } catch (error) {
+          console.log("Error", error);
+        }
+      } else {
+        console.log(error.message);
+      }
+  }
+
+  const doBoth = async (e) =>  {
+    handleAddDonation(e);
+    handleDonation(e);
+  }
 
 
   const [error, setError] = useState('');
@@ -55,6 +126,13 @@ function Donate() {
   //add donation to database
   const handleAddDonation = async (e) => {
     e.preventDefault();
+
+    let donationAmount = selectedAmount || customAmount;
+    if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
+      setError('Please enter a valid donation amount.');
+      return;
+    }
+    
     const newDonation ={
       email: formData.email,
       firstName: formData.firstName,
@@ -66,59 +144,21 @@ function Donate() {
       zip: formData.zip,
       country: formData.country,
       phone: formData.phone,
-      amount: selectedAmount || customAmount,
+      amount: parseFloat(donationAmount),
       donationType: isMonthly ? 1 : 0,
     }
     try {
       await axios.post(`${url}/donations/add`, newDonation);
-      //resetForm();
+      alert(`Thank you for your donation, ${formData.firstName}!`);
+      // resetForm();
       
     } catch (error) {
       console.error("Error adding donation:", error);
     }
   }
 
-
-  // const handleSubmit = async () => {
-  //   const { email, firstName, lastName, address1, city, state, zip } = formData;
-  //   const validAmount = selectedAmount || (customAmount && parseFloat(customAmount) > 0);
-    
-  //   if (!email || !firstName || !lastName || !address1 || !city || !state || !zip || !country || !validAmount) {
-  //     setError('Please fill in all the required fields.');
-  //     return;
-  //   }
-    
-  //   try {
-  //     // Your form submission logic here
-  //     console.log("FormData", formData);
-  //     alert(`Thank you for your donation, ${formData.firstName}!`);
-      
-  //     // Reset the form after successful submission
-  //     resetForm();
-  //   } catch (error) {
-  //     setError('An error occurred while processing your donation.');
-  //   }
-  // };
-
-  // const resetForm = () => {
-  //   setFormData(initialFormData);
-
-  //   setSelectedAmount('');
-  //   setCustomAmount('');
-  //   setSelectedPaymentMethod('');
-  //   setCountry('');
-  //   setIsMonthly(false);
-  //   setError('');
-  // };
-  
-  // const handlePaymentMethodChange = (method) => {
-  //   setSelectedPaymentMethod(method);
-  //   if (method !== 'Credit Card') {
-  //     // Reset payment information fields here if needed
-  //   }
-  // };  
-
   return (
+    <Elements stripe={stripeTestPromise}>
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white p-10 rounded-md shadow-md max-w-2xl w-full">
         <header className="text-center mb-8">
@@ -187,12 +227,19 @@ function Donate() {
           </div>
         </div>
 
-        {/* Payment Method */}      
+        {/* Payment Method */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">Enter Card Information</h2>
-          <StripeContainer/>
-        </div>
-
+            <h2 className="text-lg font-semibold mb-2">Enter Card Information</h2>
+            <form onSubmit={handleDonation}>
+              <CardElement options={CARD_OPTIONS} />
+              {/* <button
+                type="submit"
+                className="w-full bg-[#165e229e] text-white py-3 rounded-md font-semibold hover:bg-green-900"
+              >
+                Donate Now
+              </button> */}
+            </form>
+          </div>
 
         {/* Personal Information */}
         <div className="mb-8">
@@ -326,15 +373,26 @@ function Donate() {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         {/* Submit Button */}
-        <button
-          className="w-full bg-[#165e229e] text-white py-3 rounded-md font-semibold hover:bg-green-900"
-          onClick={handleAddDonation}
-        >
-          Donate Now
-        </button>
+        <form onSubmit={doBoth}>
+          <button
+            className="w-full bg-[#165e229e] text-white py-3 rounded-md font-semibold hover:bg-green-900"
+          >
+            Donate Now
+          </button>
+        </form>
       </div>
     </div>
+    </Elements>
   );
 }
 
-export default Donate;
+export default function DonateWrapper() {
+  return (
+    <Elements stripe={stripeTestPromise}>
+      <Donate />
+    </Elements>
+  );
+}
+
+// Optionally, export Donate separately if needed for other internal purposes
+export { Donate };  
