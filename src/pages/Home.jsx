@@ -53,7 +53,7 @@ const Home = () => {
        </section>
 
     {/*Donate link possibly a joke*/}
-    <Link> 
+    <Link to='/donate'> 
       <section className='overflow-y-scroll relative '>
         <div className='text-bold text-white  bg-[#faf0e6] h-[200px] m-4 p-6 relative'>
         <p className='font-bold text-2xl text-[#165e229e]'>Donate Today</p>
@@ -64,9 +64,6 @@ const Home = () => {
         </div>
       </section>
      </Link>
-      <div>
-        test test
-      </div>
     </div>
   );
 }

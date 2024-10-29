@@ -10,6 +10,8 @@ import Payment from "./components/payment";
 import Tickets from "./pages/Tickets";
 import Donate from "./pages/Donate"
 import ProductPage from './components/ProductPage';
+import Admin from './pages/AdminPage';
+import Member from './pages/MemberPage';
 import './App.css';
 
 function App() {
@@ -27,7 +29,9 @@ function App() {
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
-                    <Route path="/Donate" element={<Donate />} />
+                   <Route path="/Donate" element={<Donate />} />
+                   <Route path ="/Admin" element={<Admin />} />
+                   <Route path ="/Member" element={<Member />} />
                 </Routes>
             </Router>
         </div>
