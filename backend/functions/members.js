@@ -57,7 +57,7 @@ module.exports.billed = async function (memberData) {
 module.exports.getMembersByBirthday = async function (memberData) {
     const {memberBirthday} = memberData;
     try {
-        return await query(`SELECT * FROM MEMBERS
+        return await query(`SELECT * FROM Members
         WHERE memberBirthday =?`,
         [memberBirthday]);
     } catch (err) {

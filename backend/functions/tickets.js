@@ -2,15 +2,15 @@ const {query, startTransaction, commit} = require('../functions/database');
 
 module.exports.calculateVisitorCount = async function(visitorData) {
     
-    const {startDate, endDate} = visitorData
+    const {startDate, endDate} = visitorData;
 
     try {
-        const results =  query(`
+        const results = await query(`
         SELECT COUNT(ticketID) as visitorCount
         FROM Ticket_sales
         WHERE date_purchased BETWEEN ? AND ?`,
-        [startDate, endDate])
-        return results[0].visitorCount;
+        [startDate, endDate]);
+        return results;
     } catch (err) {
         console.log(err);
         throw err;

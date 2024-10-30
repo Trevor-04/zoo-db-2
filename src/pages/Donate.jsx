@@ -73,8 +73,13 @@ function Donate() {
   };
 
   const handleDonation = async (e) => {
-  
       e.preventDefault();
+
+      if (!stripe || !elements) {
+        console.error("Stripe.js has not loaded yet.");
+        return;
+    }
+
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: "card",
         card: elements.getElement(CardElement),
@@ -83,7 +88,7 @@ function Donate() {
       if (!error) {
         try {
           const { id } = paymentMethod;
-          const response = await axios.post("http://localhost:4000/payment", {
+          const response = await axios.post(`https::localhost4000/payment`, {
             amount: 1000,
             id,
           });

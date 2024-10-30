@@ -10,6 +10,7 @@ import Payment from "./components/payment";
 import Tickets from "./pages/Tickets";
 import Donate from "./pages/Donate"
 import ProductPage from './components/ProductPage';
+import Admin from './components/AdminPage'
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
                     <Route path="/Donate" element={<Donate />} />
+                    <Route path="/admin" element={<Admin />} />
                 </Routes>
             </Router>
         </div>

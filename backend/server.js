@@ -35,7 +35,7 @@ app.post("/payment", async (req, res) => {
       payment_method: id,
       confirm: true,
       automatic_payment_methods: { enabled: true, allow_redirects: "never" },
-      return_url: "http://localhost:3000/success",
+      return_url: `http://localhost:${port}/success`,
     });
     console.log("Payment", payment);
     res.json({ message: "Payment successful", success: true });

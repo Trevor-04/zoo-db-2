@@ -4,7 +4,9 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node /Users/nosaj/Desktop/zoo-db-2/backend/server.js",
+    "client": "cd frontend && npm start" 
   },
   "keywords": [],
   "author": "",

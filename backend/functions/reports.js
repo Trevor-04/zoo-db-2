@@ -119,3 +119,17 @@ module.exports.giftShopTotalReport = async function (reportData) {
         throw err;
     }
 }
+
+module.exports.listSubscribers = async function (memberData) {
+    const {startDate, endDate} = memberData;
+
+    try {
+        return await query(`SELECT * FROM Members
+        WHERE subscribed_on BETWEEN ? AND ?`,
+        [startDate, endDate]);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
