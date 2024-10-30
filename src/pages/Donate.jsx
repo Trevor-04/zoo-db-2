@@ -55,6 +55,13 @@ function Donate() {
   //add donation to database
   const handleAddDonation = async (e) => {
     e.preventDefault();
+
+    let donationAmount = selectedAmount || customAmount;
+    if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
+      setError('Please enter a valid donation amount.');
+      return;
+    }
+    
     const newDonation ={
       email: formData.email,
       firstName: formData.firstName,
@@ -66,57 +73,18 @@ function Donate() {
       zip: formData.zip,
       country: formData.country,
       phone: formData.phone,
-      amount: selectedAmount || customAmount,
+      amount: parseFloat(donationAmount),
       donationType: isMonthly ? 1 : 0,
     }
     try {
       await axios.post(`${url}/donations/add`, newDonation);
-      //resetForm();
+      alert(`Thank you for your donation, ${formData.firstName}!`);
+      // resetForm();
       
     } catch (error) {
       console.error("Error adding donation:", error);
     }
   }
-
-
-  // const handleSubmit = async () => {
-  //   const { email, firstName, lastName, address1, city, state, zip } = formData;
-  //   const validAmount = selectedAmount || (customAmount && parseFloat(customAmount) > 0);
-    
-  //   if (!email || !firstName || !lastName || !address1 || !city || !state || !zip || !country || !validAmount) {
-  //     setError('Please fill in all the required fields.');
-  //     return;
-  //   }
-    
-  //   try {
-  //     // Your form submission logic here
-  //     console.log("FormData", formData);
-  //     alert(`Thank you for your donation, ${formData.firstName}!`);
-      
-  //     // Reset the form after successful submission
-  //     resetForm();
-  //   } catch (error) {
-  //     setError('An error occurred while processing your donation.');
-  //   }
-  // };
-
-  // const resetForm = () => {
-  //   setFormData(initialFormData);
-
-  //   setSelectedAmount('');
-  //   setCustomAmount('');
-  //   setSelectedPaymentMethod('');
-  //   setCountry('');
-  //   setIsMonthly(false);
-  //   setError('');
-  // };
-  
-  // const handlePaymentMethodChange = (method) => {
-  //   setSelectedPaymentMethod(method);
-  //   if (method !== 'Credit Card') {
-  //     // Reset payment information fields here if needed
-  //   }
-  // };  
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -192,7 +160,6 @@ function Donate() {
           <h2 className="text-lg font-semibold mb-2">Enter Card Information</h2>
           <StripeContainer/>
         </div>
-
 
         {/* Personal Information */}
         <div className="mb-8">

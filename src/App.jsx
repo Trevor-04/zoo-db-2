@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from './components/navbar';
 import Home from './pages/Home';    
 import Animals from './pages/Animals';
@@ -8,7 +8,8 @@ import Login from './components/login';
 import Signup from './components/signup';
 import Payment from "./components/payment";
 import Tickets from "./pages/Tickets";
-import Donate from "./pages/Donate"
+//import Donate from "./pages/Donate"
+//import DonatePage from "./pages/donatePage";
 import ProductPage from './components/ProductPage';
 import Admin from './pages/AdminPage';
 import Member from './pages/MemberPage';
@@ -29,7 +30,9 @@ function App() {
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
-                   <Route path="/Donate" element={<Donate />} />
+                   {/* <Route path="/Donate" element={<Donate />} /> */}
+                   {/* <Route path="/DonatePage" element={<DonatePage/>} />  */}
+                   <Route path="/donatePage" element={<Navigate to="/donatePage.html" />} />
                    <Route path ="/Admin" element={<Admin />} />
                    <Route path ="/Member" element={<Member />} />
                 </Routes>

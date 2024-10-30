@@ -12,6 +12,5 @@ export default function StripeContainer() {
 		<Elements stripe={stripeTestPromise}>
 			<PaymentForm />
 		</Elements>
-	
 	)
 }
