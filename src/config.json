@@ -1,5 +1,5 @@
 {
-    "url": "https://zoo-db-2-uf6c-production.vercel.app/",
+    "url": "https://zoo-db-2-uf6c-production.vercel.app",
     "port": 4000,
     "inventory": ["Gift Shop", "Restraunt", "Concession"]
 }
