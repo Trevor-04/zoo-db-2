@@ -1,14 +1,14 @@
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-    host: "162.248.101.97",
-    user: "zoo",
-    password: "Uma1234!",
-    database: "ZooDB",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
-});
+    queueLimit: 0,
+  });
 
 module.exports.query = async function(query, params = []) {
     let connection;
