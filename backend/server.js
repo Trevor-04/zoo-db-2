@@ -22,7 +22,8 @@ const employeeRoutes = require('./routes/employeeRoutes');
 const app = express();
 
 // Middleware
-app.use(cors()); // Handle CORS
+//app.use(cors()); // Handle CORS
+app.use(cors({ origin:`${url}`}));
 app.use(express.json()); // Handle JSON payloads
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Handle URL-encoded payloads
