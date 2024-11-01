@@ -41,7 +41,7 @@ app.post("/payment", cors(), async (req, res) => {
 				enabled: true,
 				allow_redirects: "never"
 			},
-			return_url: "http://localhost:3000/success"
+			return_url:`${url}/donations`
 		})
 		console.log("Payment", payment)
 		res.json({
