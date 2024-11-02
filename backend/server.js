@@ -4,7 +4,10 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const { url, port } = require("../src/config.json");
+// const { url, port } = require("../src/config.json");
+const environment = process.env.NODE_ENV || 'development';
+const config = require("../src/config.json");
+const { url, port } = config[environment];
 
 // Routes
 const animalRoutes = require("./routes/animals");
@@ -23,10 +26,14 @@ const app = express();
 
 // Middleware
 //app.use(cors()); // Handle CORS
-app.use(cors({ origin:`${url}`}));
+app.use(cors({ 
+	origin: [config.development.url, config.production.url],
+	credentials: true
+  }));
 app.use(express.json()); // Handle JSON payloads
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Handle URL-encoded payloads
+
 
 // Stripe Payment Route
 app.post("/payment", cors(), async (req, res) => {
@@ -70,7 +77,13 @@ app.use("/tickets", ticketsRoutes);
 app.use("/inventory", inventoryRoutes);
 app.use("/donations", donationRoutes);
 
-// Start the server
-app.listen(port, async () => {
+
+const serverPort = environment === 'production' ? process.env.PORT : port;
+app.listen(serverPort, async () => {
   console.log(`Server is running on ${url}`);
 });
+
+// // Start the server
+// app.listen(port, async () => {
+//   console.log(`Server is running on ${url}`);
+// });

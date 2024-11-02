@@ -10,8 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@stripe/react-stripe-js": "^2.8.1",
+    "@stripe/stripe-js": "^4.9.0",
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "mysql2": "^3.11.3"
+    "mysql2": "^3.11.3",
+    "stripe": "^17.3.0"
   }
 }
