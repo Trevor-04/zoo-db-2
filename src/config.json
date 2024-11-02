@@ -4,7 +4,7 @@
       "port": 4000
     },
     "production": {
-      "url": "https://zoo-db-2-uf6c-production.vercel.app"
+      "url": "https://coog-zoo-06b72c775d86.herokuapp.com"
     },
     "inventory": ["Gift Shop", "Restraunt", "Concession"]
   }
