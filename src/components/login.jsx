@@ -75,7 +75,7 @@ function Login() {
             </button>
           </Link>
 
-          <Link to="/admin-login"> {/* Link to Admin Login */}
+          <Link to="/AdminLogin"> {/* Link to Admin Login */}
             <button className="flex items-center justify-center bg-[#165e229e] hover:bg-green-800 px-4 py-2 w-full mt-2">
               Admin Login
             </button>

@@ -30,7 +30,7 @@ router.post('/validate', async (req, res) => {
 
         let result;
         if (loginType === 'employee') {
-            result = await loginController.validateEmployeeLogin({ email, password });
+            result = await loginController.validateEmployeeLogin({ email, password});
         } else if (loginType === 'member') {
             result = await loginController.validateMemberLogin({ email, password });
         } else {
