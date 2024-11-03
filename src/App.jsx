@@ -5,6 +5,7 @@ import Animals from './pages/Animals';
 import GiftShop from './pages/GiftShop';
 import Events from './pages/Events';
 import Login from './components/login';
+import AdminLogin from './components/AdminLogin';
 import Signup from './components/signup';
 import Payment from "./components/payment";
 import Tickets from "./pages/Tickets";
@@ -23,6 +24,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/AdminLogin" element={<AdminLogin />} />
                     <Route path="/animals" element={<Animals />} />
                     <Route path="/giftshop" element={<GiftShop />} />
                     <Route path="/product/:name" element={<ProductPage />} />
