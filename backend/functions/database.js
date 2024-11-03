@@ -10,7 +10,7 @@ const pool = mysql.createPool({
     queueLimit: 0,
   });
 
-module.exports.query = async function(query, params = []) {
+  module.exports.query = async function(query, params = []) {
     let connection;
     try {
         connection = await pool.getConnection();
