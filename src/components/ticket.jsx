@@ -17,6 +17,7 @@ function TicketOptions() {
   const [seniorTickets, setSeniorTickets] = useState(0);
   const [infantTickets, setInfantTickets] = useState(0);
   const navigate = useNavigate(); // Create navigate function here
+
   const pricing = {
     '9am': { adult: 25, child: 15, senior: 20, infant: 0 },
     '10am': { adult: 20, child: 13.5, senior: 15, infant: 0 },
@@ -29,22 +30,7 @@ function TicketOptions() {
     '5pm': { adult: 20, child: 13.5, senior: 15, infant: 0 },
   };
 
-
-  function format12Hours(time) {
-    const period = time >= 12 ? "pm" : "am";  // Determine AM or PM
-    const hour = time % 12 || 12;             // Convert 0 or 13-23 to 12-hour format
-    return `${hour}${period}`;
-}
-
-  // Handle date change and update state
-  const handleDateChange = (e) => {
-    const dateValue = e.target.value;
-    setSelectedDate(dateValue);
-    setIsDateSelected(true);
-  };
-
-  
-  const calculateTotalPrice = (time, type = "all") => {
+  function calculateTotalPrice(time, type = "all") {
     const rates = pricing[time];
 
     switch (type) {
@@ -65,6 +51,19 @@ function TicketOptions() {
         return (infantTickets * rates.infant)
     }
 
+  };
+
+  function format12Hours(time) {
+    const period = time >= 12 ? "pm" : "am";  // Determine AM or PM
+    const hour = time % 12 || 12;             // Convert 0 or 13-23 to 12-hour format
+    return `${hour}${period}`;
+}
+
+  // Handle date change and update state
+  const handleDateChange = (e) => {
+    const dateValue = e.target.value;
+    setSelectedDate(dateValue);
+    setIsDateSelected(true);
   };
 
   const TimeSlots = () => {
@@ -107,13 +106,20 @@ function TicketOptions() {
       for (let i = 0; i < tickets.length; i++) {
 
         if (tickets[i] > 0) {
+          const dateNow = new Date();
+          dateNow.setHours(dateNow.getHours() - (dateNow.getTimezoneOffset() / 60))
+          const dateString = dateNow.toISOString().split("T");
+
+          let purchasedForDate = new Date(selectedDate)
+          purchasedForDate.setHours(time - (dateNow.getTimezoneOffset() / 60))
+          const purchasedFor = purchasedForDate.toISOString().split("T");
 
           const dataObject = {
-            date_purchased: new Date().toISOString().split('T')[0],
+            date_purchased: `${dateString[0]} ${dateString[1].substring(0, dateString[1].indexOf("."))}`,
             ticketType: i,
             ticketPrice: calculateTotalPrice(format12Hours(time), ticketTypeMap[i]),
+            time_purchased: `${purchasedFor[0]} ${purchasedFor[1].substring(0, purchasedFor[1].indexOf("."))}`,
           }
-          console.log(dataObject)
           await axios.post(`${url}/tickets/add/`, dataObject);
         }
       }

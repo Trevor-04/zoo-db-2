@@ -10,36 +10,35 @@ const dropdownRef = useRef();
 const [visitors, setVisitors] = useState(0);
 const [subscribers, setSubscribers] = useState(0);
 const [sales, setSales] = useState(0);
+const [donations, setDonations] = useState(0)
 
 const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-const getSales = async (startDate, endDate) => {
-  const searchDates = {startDate, endDate}
-  const res = await axios.get(`${url}/reports/restaurantTotalReport`, searchDates);
-  const con = await axios.get(`${url}/reports/concessionItemReport`, searchDates);
-  const gift = await axios.get(`${url}/reports/giftShopTotalReport`, searchDates);
-
-  const storeSales = 
-  res.data.total_sales_revenue + 
-  con.data.total_sales_revenue + 
-  gift.data.total_sales_revenue;
-  setSales(storeSales);
-  
-// add tickets
-  return storeSales
-}
-
 const getVisitors = async (startDate, endDate) => {
-
   try {
     const response = await axios.get(`${url}/reports/visitorCount/`,{
       params: {startDate, endDate},
     });
     
     if (response.status === 200) { // if it works
-      setVisitors(response.data.visitorCount[0].visitorCount)
+      setVisitors(response.data.visitorCount)
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+const getSales = async (startDate, endDate) => {
+  try {
+    const response = await axios.get(`${url}/reports/transactionCount/`,{
+      params: {startDate, endDate},
+    });
+    
+    if (response.status === 200) { // if it works
+      setSales(response.data.transactionCount[0].transactionCount || 0)
     }
   } catch (err) {
     console.log(err);
@@ -53,7 +52,7 @@ const getEarnings = async () => {
 }
 
 const getRevenue = async () => {
-
+  // tickets + donations
 }
 
 const getSubcribers = async (startDate, endDate) => {
@@ -71,8 +70,19 @@ const getSubcribers = async (startDate, endDate) => {
   }
 }
 
-const getDonations = async () => {
+const getDonations = async (startDate, endDate) => {
+  try {
+    const response = await axios.get(`${url}/donations/total/`, {
+      params: {startDate, endDate},
+    });
 
+    if (response.status === 200) {
+      setDonations(response.data.totalAmount);
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 
@@ -101,6 +111,9 @@ const getDonations = async () => {
     let endDate = (new Date()).toLocaleDateString('en-CA');
     getSubcribers(startDate, endDate);
     getVisitors(startDate, endDate);
+    getSales(startDate, endDate);
+    getDonations(); // put startDate and endDate if needed 
+
   }, []);
 
   return (
@@ -201,7 +214,7 @@ const getDonations = async () => {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 flex ml-2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
         </svg>
-
+          <p>${donations}</p>
         </div>
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>

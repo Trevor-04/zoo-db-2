@@ -24,7 +24,6 @@ function Accordion() {
           response = await axios.get(`${url}/exhibits/`);
       }
       if(response && response.data) {
-        console.log(response.data);
         setExhibits(response.data);
       }
       

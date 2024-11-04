@@ -27,6 +27,17 @@ module.exports.getDonations = async function() {
     }
 }
 
+module.exports.getTotalDonations = async function() {
+    try {
+        const sumOfDonations = await query(`SELECT SUM(amount) as TotalDonations FROM donations`);
+        console.log(sumOfDonations)
+        return sumOfDonations
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
 module.exports.getDonationById = async function(id) {
     try {
         const donation = await query("SELECT * FROM donations WHERE donation_id = ?", [id]);
@@ -61,9 +72,17 @@ module.exports.getDonationsByDateRange = async function(startDate, endDate) {
     }
 };
 
-module.exports.getTotalDonationAmount = async function() {
+module.exports.getTotalDonationAmount = async function(donationData) {
     try {
-        const result = await query("SELECT SUM(amount) AS totalAmount FROM donations");
+        const {startDate, endDate} = donationData;
+        let result;
+        if (!startDate && !endDate) {
+            result = await query("SELECT SUM(amount) AS totalAmount FROM donations");
+        } else {
+            result = await query(`SELECT SUM(amount) AS totalAmount FROM donations
+            WHERE createdAt BETWEEN ? AND ?`, [startDate, endDate]);
+        }
+
         return result[0].totalAmount;
     } catch (error) {
         console.error("Error in getTotalDonationAmount function:", error);

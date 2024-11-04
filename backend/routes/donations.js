@@ -12,21 +12,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Route to get a donation by its ID
-router.get('/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const donation = await donationsController.getDonationById(id);
-        if (donation) {
-            res.status(200).json(donation);
-        } else {
-            res.status(404).json({ error: 'Donation not found.' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch donation.' });
-    }
-});
-
 // Route to get donations by email
 router.get('/email/:email', async (req, res) => {
     const { email } = req.params;
@@ -50,9 +35,10 @@ router.get('/date-range', async (req, res) => {
 });
 
 // Route to get total donation amount
-router.get('/total-amount', async (req, res) => {
+router.get('/total', async (req, res) => {
     try {
-        const totalAmount = await donationsController.getTotalDonationAmount();
+        const {startDate, endDate} = req.query;
+        const totalAmount = await donationsController.getTotalDonationAmount({startDate, endDate});
         res.status(200).json({ totalAmount });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch total donation amount.' });
@@ -70,5 +56,19 @@ router.post('/add', async (req, res) => {
     }
 });
 
+// Route to get a donation by its ID
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const donation = await donationsController.getDonationById(id);
+        if (donation) {
+            res.status(200).json(donation);
+        } else {
+            res.status(404).json({ error: 'Donation not found.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch donation.' });
+    }
+});
 
 module.exports = router;

@@ -1,5 +1,18 @@
 const {query} = require('../functions/database');
 
+const pricing = {
+    '9am': { adult: 25, child: 15, senior: 20, infant: 0 },
+    '10am': { adult: 20, child: 13.5, senior: 15, infant: 0 },
+    '11am': { adult: 25, child: 15, senior: 20, infant: 0 },
+    '12pm': { adult: 30, child: 15, senior: 25, infant: 0 },
+    '1pm': { adult: 30, child: 15, senior: 25, infant: 0 },
+    '2pm': { adult: 20, child: 13.5, senior: 15, infant: 0 },
+    '3pm': { adult: 25, child: 15, senior: 20, infant: 0 },
+    '4pm': { adult: 30, child: 15, senior: 25, infant: 0 },
+    '5pm': { adult: 20, child: 13.5, senior: 15, infant: 0 },
+  };
+
+
 module.exports.restaurantItemReports = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
@@ -133,3 +146,37 @@ module.exports.listSubscribers = async function (memberData) {
     }
 }
 
+module.exports.getVisitors = async function (memberData) {
+    let {startDate, endDate} = memberData;
+
+    startDate = startDate + " 00:00:00";
+    endDate = endDate + " 23:59:59";
+    try {
+        const results = await query(`
+        SELECT ticketType, ticketPrice, time_purchased
+        FROM Ticket_sales
+        WHERE time_purchased BETWEEN ? AND ?`,
+        [startDate, endDate]);
+
+        let visitors = 0;
+        const  ticketTypeMap = ["adult", "child", "senior", "infant"];
+
+        for (let tickets of results) {
+            const timeBought = `${tickets.time_purchased}`.split(" ");
+            const ticketPriceNum = Number(tickets.ticketPrice) || 0;
+            const price = pricing[format12Hours(timeBought[4].split(":")[0])][ticketTypeMap[tickets.ticketType]];
+            visitors += price === 0 ? 1 : Math.floor(ticketPriceNum / price);
+        }
+
+        return visitors;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+function format12Hours(time) {
+    const period = time >= 12 ? "pm" : "am";  // Determine AM or PM
+    const hour = time % 12 || 12;             // Convert 0 or 13-23 to 12-hour format
+    return `${hour}${period}`;
+}

@@ -1,12 +1,13 @@
-const {query, startTransaction, commit} = require('../functions/database');
+const {query} = require('../functions/database');
 
-module.exports.calculateVisitorCount = async function(visitorData) {
+module.exports.calculateTransactionCount = async function(transactionData) {
     
-    const {startDate, endDate} = visitorData;
-
+    let {startDate, endDate} = transactionData;
+        startDate = `${startDate} 00:00:00;`
+        endDate = `${endDate} 23:59:59`;
     try {
         const results = await query(`
-        SELECT COUNT(ticketID) as visitorCount
+        SELECT COUNT(ticketID) as transactionCount
         FROM Ticket_sales
         WHERE date_purchased BETWEEN ? AND ?`,
         [startDate, endDate]);
@@ -18,13 +19,13 @@ module.exports.calculateVisitorCount = async function(visitorData) {
 }
 
 module.exports.addTicket = async function (ticketData) {
-    const { ticketType, date_purchased, ticketPrice} = ticketData;
+    const { ticketType, date_purchased, ticketPrice, time_purchased} = ticketData;
 
     try {
         return await query(`
-            INSERT INTO Ticket_sales (ticketType, date_purchased, ticketPrice)
-            VALUES (?, ?, ?)`,
-            [ticketType, date_purchased, ticketPrice]);
+            INSERT INTO Ticket_sales (ticketType, date_purchased, ticketPrice, time_purchased)
+            VALUES (?, ?, ?, ?)`,
+            [ticketType, date_purchased, ticketPrice, time_purchased]);
     } catch (err) {
         console.error("Error in addTicket:", err);
         // Roll back in case of an error
@@ -32,7 +33,6 @@ module.exports.addTicket = async function (ticketData) {
         throw err;
     }
 };
-
 
 // Delete a ticket by ticketID
 module.exports.deleteTicket = async function (ticketData) {

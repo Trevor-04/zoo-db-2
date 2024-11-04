@@ -48,14 +48,13 @@ router.get('/giftshop/items', async (req, res) => {
     }
 });
 
-// Route to calculate visitor count
-router.get('/visitorCount', async (req, res) => {
+router.get('/transactionCount', async (req, res) => {
     try {
-        const visitorData = req.query; // Assuming startDate and endDate are passed in the body
-        const visitorCount = await ticketController.calculateVisitorCount(visitorData);
-        res.status(200).json({ visitorCount });
+        const transactionData = req.query;
+        const transactionCount = await ticketController.calculateTransactionCount(transactionData);
+        res.status(200).json({ transactionCount });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to calculate visitor count' });
+        res.status(500).json({ error: 'Failed to calculate transaction count' });
     }
 });
 
@@ -67,7 +66,17 @@ router.get(`/subscriberCount`, async (req, res) => {
     } catch (err) {
         res.status(500).json({error: "Failed to calculate subscriber count"});
     }
-})
+});
+
+router.get(`/visitorCount`, async (req, res) => {
+    try {
+        const {startDate, endDate} = req.query;
+        const visitorCount = await reportsController.getVisitors({startDate, endDate});
+        res.status(200).json({visitorCount});
+    } catch (err) {
+        res.status(500).json({error: "Failed to calculate subscriber count"});
+    }
+});
 
 
 
