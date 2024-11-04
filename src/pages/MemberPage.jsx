@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function MemberPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef();
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -20,6 +22,10 @@ export default function MemberPage() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+    // Navigate to the Events page
+    const goToEvents = () => {
+      navigate('/events');
+    };
 
   return (
     <div>
@@ -63,7 +69,10 @@ export default function MemberPage() {
           {/* Add a profile icon or avatar */}
         </div>
 
-        <div className="upcoming-events text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
+        <div
+          className="upcoming-events text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm cursor-pointer"
+          onClick={goToEvents}
+        >
           Upcoming Events
           {/* Placeholder for events */}
         </div>
