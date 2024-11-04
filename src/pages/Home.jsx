@@ -20,9 +20,9 @@ const Home = () => {
               <button className='absolute right-7 left-0 bottom-28 font-semibold bg-white p-1 rounded-full w-[150px] h-[40px] ml-4'> Plan Your Visit </button>
             </Link>
           </div>
-          <div className="relativeh h-[400px] w-full overflow-clip">
+          <div className="relative h-[400px] w-full overflow-clip">
             <img src="cougar.jpeg" alt="Another" />
-            <p className="font-mono absolute text-2xl font-semibold left-0 right-[70%] top-[40%] text-white p-2">Legend 2</p>
+            <p className="font-mono whitespace-nowrap absolute text-2xl font-semibold right-[70%] left-0 top-[40%] text-white p-2 ml-3">See what exciting animals and attractions we have to offer!</p>
             <div className='absolute border-t-2 border-white right-7 left-0 bottom-8 top-[53%] w-4/5 ml-5'></div>
             <div className='absolute border-t-2 border-white right-7 left-0 bottom-8 top-[53%] w-4/5 ml-5'></div>
             <Link to="/tickets">
@@ -53,7 +53,7 @@ const Home = () => {
        </section>
 
     {/*Donate link possibly a joke*/}
-    <Link> 
+    <a href="/donatePage.html" target="_blank" rel="noreferrer">
       <section className='overflow-y-scroll relative '>
         <div className='text-bold text-white  bg-[#faf0e6] h-[200px] m-4 p-6 relative'>
         <p className='font-bold text-2xl text-[#165e229e]'>Donate Today</p>
@@ -63,10 +63,7 @@ const Home = () => {
         </button>
         </div>
       </section>
-     </Link>
-      <div>
-        test test
-      </div>
+     </a>
     </div>
   );
 }

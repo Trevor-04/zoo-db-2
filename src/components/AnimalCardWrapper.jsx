@@ -18,7 +18,7 @@ const AnimalCardWrapper = ({selectedExhibit = []}) => {
       
       {displayAnimals.map((animal, index) => (
         <GiftCard key = {index} 
-          imageUrl={animal.imageUrl || "/default-product.png"} 
+          imageUrl={animal.imageUrl || "/cougar.jpeg"} 
           name={animal.name}/>
         ))
       }

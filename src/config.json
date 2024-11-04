@@ -1,5 +1,10 @@
 {
-    "url": "http://localhost:3000",
-    "port": 3000,
+    "development": {
+      "url": "http://localhost:4000",
+      "port": 4000
+    },
+    "production": {
+      "url": "http://www.coogzoo.com"
+    },
     "inventory": ["Gift Shop", "Restraunt", "Concession"]
-}
+  }

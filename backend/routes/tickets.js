@@ -3,11 +3,22 @@ const ticketController = require('../functions/tickets');
 
 const router = express.Router();
 
+// Route to calculate visitor count
+router.post('/tickets/visitor-count', async (req, res) => {
+    try {
+        const visitorData = req.body; // Assuming startDate and endDate are passed in the body
+        const visitorCount = await ticketController.calculateVisitorCount(visitorData);
+        res.status(200).json({ visitorCount });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to calculate visitor count' });
+    }
+});
+
 router.post('/add', async (req, res) => {
-    const { ticketType, date_purchased, ticketPrice, time_purchased} = req.body;
+    const { ticketType, date_purchased, ticketPrice} = req.body;
 
     try {
-        await ticketController.addTicket({ ticketType, date_purchased, ticketPrice, time_purchased});
+        await ticketController.addTicket({ ticketType, date_purchased, ticketPrice});
         res.status(201).json({ message: 'Ticket added successfully' });
     } catch (err) {
         console.error(err);

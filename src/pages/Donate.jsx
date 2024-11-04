@@ -1,39 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
-import { CardElement, useElements, useStripe, Elements} from "@stripe/react-stripe-js";
 import { CountryDropdown } from "react-country-region-selector";
 import StripeContainer from '../components/StripeContainer';
 const {url} = require('../config.json');
-
-const CARD_OPTIONS = {
-  iconStyle: "solid",
-  style: {
-    base: {
-      margin: '1rem',
-      iconColor: "#cccccc",  // Grey to match the border color of the input
-      color: "black",
-      fontWeight: "500",
-      fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
-      fontSize: "16px",
-      fontSmoothing: "antialiased",
-      "::placeholder": {
-        color: "#cccccc"  // Light grey for placeholder to match the HTML input
-      },
-      backgroundColor: "#ffffff",  // Ensure the background is white
-      border: "1px solid #cccccc", // Grey border to match the HTML input style
-      borderRadius: "0.375rem",   // Rounded corners similar to 'rounded-md'
-      padding: "0.5rem",           // Equivalent to 'p-2' in Tailwind CSS
-    },
-    invalid: {
-      iconColor: "#ff1a1a",  // Red color for invalid input icons
-      color: "#ff1a1a",      // Red color for text when the input is invalid
-      borderColor: "#ff1a1a", // Red border when the input is invalid
-    },
-  },
-};
-const pkey = `${process.env.PUBLISHABLE_KEY}`;
-const stripeTestPromise = loadStripe(pkey);
 
 function Donate() {
   const initialFormData ={
@@ -60,57 +29,12 @@ function Donate() {
   const monthlyAmounts = ['10 /mo', '35 /mo', '50 /mo', '75 /mo', '100 /mo', '150 /mo'];
   //const paymentMethods = ['Credit Card'];
 
-  const [success, setSuccess] = useState(false);
-  const stripe = useStripe();
-  const elements = useElements();
-
-
   const amounts = isMonthly ? monthlyAmounts : oneTime; 
 
   const handleCountryChange = (val) => {
     setCountry(val);
     setFormData({ ...formData, country: val }); // Update formData with the country
   };
-
-  const handleDonation = async (e) => {
-      e.preventDefault();
-
-      if (!stripe || !elements) {
-        console.error("Stripe.js has not loaded yet.");
-        return;
-    }
-
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
-        type: "card",
-        card: elements.getElement(CardElement),
-      });
-  
-      if (!error) {
-        try {
-          const { id } = paymentMethod;
-          const response = await axios.post(`https::localhost4000/payment`, {
-            amount: 1000,
-            id,
-          });
-  
-          if (response.data.success) {
-            console.log("Successful payment");
-            setSuccess(true);
-          } else if (response.data.redirect_url) {
-            window.location.href = response.data.redirect_url;
-          }
-        } catch (error) {
-          console.log("Error", error);
-        }
-      } else {
-        console.log(error.message);
-      }
-  }
-
-  const doBoth = async (e) =>  {
-    handleAddDonation(e);
-    handleDonation(e);
-  }
 
 
   const [error, setError] = useState('');
@@ -163,7 +87,6 @@ function Donate() {
   }
 
   return (
-    <Elements stripe={stripeTestPromise}>
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white p-10 rounded-md shadow-md max-w-2xl w-full">
         <header className="text-center mb-8">
@@ -232,19 +155,11 @@ function Donate() {
           </div>
         </div>
 
-        {/* Payment Method */}
+        {/* Payment Method */}      
         <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Enter Card Information</h2>
-            <form onSubmit={handleDonation}>
-              <CardElement options={CARD_OPTIONS} />
-              {/* <button
-                type="submit"
-                className="w-full bg-[#165e229e] text-white py-3 rounded-md font-semibold hover:bg-green-900"
-              >
-                Donate Now
-              </button> */}
-            </form>
-          </div>
+          <h2 className="text-lg font-semibold mb-2">Enter Card Information</h2>
+          <StripeContainer/>
+        </div>
 
         {/* Personal Information */}
         <div className="mb-8">
@@ -378,26 +293,15 @@ function Donate() {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         {/* Submit Button */}
-        <form onSubmit={doBoth}>
-          <button
-            className="w-full bg-[#165e229e] text-white py-3 rounded-md font-semibold hover:bg-green-900"
-          >
-            Donate Now
-          </button>
-        </form>
+        <button
+          className="w-full bg-[#165e229e] text-white py-3 rounded-md font-semibold hover:bg-green-900"
+          onClick={handleAddDonation}
+        >
+          Donate Now
+        </button>
       </div>
     </div>
-    </Elements>
   );
 }
 
-export default function DonateWrapper() {
-  return (
-    <Elements stripe={stripeTestPromise}>
-      <Donate />
-    </Elements>
-  );
-}
-
-// Optionally, export Donate separately if needed for other internal purposes
-export { Donate };  
+export default Donate;
