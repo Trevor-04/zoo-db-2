@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 //import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const {url} = require('../config.json');
+const {url} = require('../config.json')[process.env.NODE_ENV];
 
 function TicketOptions() {
   const [visibleSection, setVisibleSection] = useState('generalAdmission');
@@ -16,6 +16,7 @@ function TicketOptions() {
   const [childTickets, setChildTickets] = useState(0);
   const [seniorTickets, setSeniorTickets] = useState(0);
   const [infantTickets, setInfantTickets] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
   const navigate = useNavigate(); // Create navigate function here
 
   const pricing = {
@@ -92,7 +93,7 @@ function TicketOptions() {
     const handleTimeSlotClick = async (time) => {
       if (!isTimeSlotDisabled(time)) {
         // Assuming you have a navigate function to go to the payment page
-        navigate("/payment", { state: { selectedTime: time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets } });
+        navigate("/payment", { state: { selectedTime: time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets , finalPrice} });
         await handleSubmitButton(time);
       }
     };
@@ -102,6 +103,7 @@ function TicketOptions() {
       // adult = 0, child = 1, senior = 2, infant = 3;
       const tickets = [adultTickets, childTickets, seniorTickets, infantTickets];
       const  ticketTypeMap = ["adult", "child", "senior", "infant"];
+      let total = 0;
 
       for (let i = 0; i < tickets.length; i++) {
 
@@ -120,10 +122,11 @@ function TicketOptions() {
             ticketPrice: calculateTotalPrice(format12Hours(time), ticketTypeMap[i]),
             time_purchased: `${purchasedFor[0]} ${purchasedFor[1].substring(0, purchasedFor[1].indexOf("."))}`,
           }
+          total += calculateTotalPrice(format12Hours(time), ticketTypeMap[i]);
           await axios.post(`${url}/tickets/add/`, dataObject);
         }
       }
-
+      setFinalPrice(total);
     }
 
     return (

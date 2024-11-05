@@ -1,13 +1,13 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const axios = require("axios");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // const { url, port } = require("../src/config.json");
-const environment = process.env.NODE_ENV || 'development';
 const config = require("../src/config.json");
-const { url, port } = config[environment];
+const environment = process.env.NODE_ENV || 'development';
+const { url, port } = config[process.env.NODE_ENV];
+
 
 // Routes
 const animalRoutes = require("./routes/animals");
@@ -26,10 +26,12 @@ const app = express();
 
 // Middleware
 //app.use(cors()); // Handle CORS
+
 app.use(cors({ 
-	origin: [config.development.url, config.production.url],
+	origin: [config.development.url, config.production.url, `http://localhost:${Number(config.development.port)+1}`],
 	credentials: true
-  }));
+}));
+
 app.use(express.json()); // Handle JSON payloads
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Handle URL-encoded payloads
@@ -80,7 +82,7 @@ app.use("/donations", donationRoutes);
 
 const serverPort = environment === 'production' ? process.env.PORT : port;
 app.listen(serverPort, async () => {
-  console.log(`Server is running on ${url}`);
+  console.log(`Server is running on ${url} and port ${serverPort}`);
 });
 
 // // Start the server

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "./eventCal.css";
 
-const {url} = require('../config.json');
-
+const {url} = require("../config.json")[process.env.NODE_ENV];
 
 const EventCal = ({ isAdmin }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -23,7 +22,6 @@ const EventCal = ({ isAdmin }) => {
 
   // Fetch events from database
 async function getAllEvents() {
-  console.log(`${url}/events/`)
   await axios.get(`${url}/events/`)
   .then(response => {
     const eventsByDate = {};

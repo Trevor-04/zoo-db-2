@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const { url } = require('../config.json');
+const {url} = require("../config.json")[process.env.NODE_ENV];
 
 function Login() {
   const [username, setUsername] = useState('');

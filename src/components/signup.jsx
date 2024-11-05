@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 //import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const {url} = require('../config.json');
+const {url} = require("../config.json")[process.env.NODE_ENV];
 
 function Signup() {
     const navigate = useNavigate();

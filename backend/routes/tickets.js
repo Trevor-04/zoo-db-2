@@ -15,10 +15,9 @@ router.post('/tickets/visitor-count', async (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-    const { ticketType, date_purchased, ticketPrice} = req.body;
-
+    const { ticketType, date_purchased, ticketPrice, time_purchased} = req.body;
     try {
-        await ticketController.addTicket({ ticketType, date_purchased, ticketPrice});
+        await ticketController.addTicket({ ticketType, date_purchased, ticketPrice, time_purchased});
         res.status(201).json({ message: 'Ticket added successfully' });
     } catch (err) {
         console.error(err);

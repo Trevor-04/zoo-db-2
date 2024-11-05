@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react'
 import {useState} from 'react';
 import axios from 'axios';
-import Config from '../config.json';
 import AnimalCardWrapper from './AnimalCardWrapper';
-
-const {url} = Config; 
+const {url} = require('../config.json')[process.env.NODE_ENV];
 
 function Accordion() {
     const [AccordionOpen, setAccordionOpen] = useState(null);
     const [exhibits, setExhibits] = useState([]);
     const [selectedExhibit, setSelectedExhibit] = useState([])
-
 
     const getExhibits = async (exhibit) => {
       let response;
@@ -116,4 +113,4 @@ function Accordion() {
   );
 }
 
-export default Accordion
+export default Accordion;

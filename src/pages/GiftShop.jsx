@@ -2,7 +2,7 @@ import React from 'react'
 import {useState, useEffect} from 'react';
 import GiftshopWrapper from '../components/GiftshopWrapper';
 import axios from 'axios';
-const {url} = require('../config.json');
+const {url} = require('../config.json')[process.env.NODE_ENV];
 
 function Giftshop({imageUrl, name}) {
 
