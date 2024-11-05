@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function MemberPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
@@ -10,7 +11,10 @@ export default function MemberPage() {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  // Close the dropdown if the user clicks outside
+  const toggleProfile = () => {
+    setShowProfile((prev) => !prev);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -22,10 +26,10 @@ export default function MemberPage() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-    // Navigate to the Events page
-    const goToEvents = () => {
-      navigate('/events');
-    };
+
+  const goToEvents = () => {
+    navigate('/events');
+  };
 
   return (
     <div>
@@ -39,7 +43,6 @@ export default function MemberPage() {
           Menu
         </button>
 
-        {/* Dropdown Menu */}
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
             <ul className="py-1">
@@ -64,37 +67,50 @@ export default function MemberPage() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 mt-[20px]">
-        <div className="profile-summary text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
-          My Profile
-          {/* Add a profile icon or avatar */}
+      <div className="profile-summary text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm ">
+          <button
+            onClick={toggleProfile}
+            className="font-bold text-lg mb-4 text-[#165e229e] underline"
+          >
+            My Profile
+          </button>
+          {showProfile ? ( // Display profile details if showProfile is true
+            <div>
+              <p><strong>Name:</strong> John Doe</p>
+              <p><strong>Email:</strong> johndoe@example.com</p>
+              <p><strong>Phone:</strong> (123) 456-7890</p>
+              <p><strong>Birthday:</strong> January 1, 1990</p>
+              <p><strong>Membership Type:</strong> Gold</p>
+              <p><strong>Subscribed On:</strong> January 1, 2020</p>
+              <p><strong>Membership Term:</strong> Annual</p>
+              <p><strong>Last Billed:</strong> January 1, 2024</p>
+            </div>
+          ) : (
+            <p>Click "My Profile" to view your details.</p>
+          )}
         </div>
 
         <div
-          className="upcoming-events text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm cursor-pointer"
+          className="upcoming-events text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
           onClick={goToEvents}
         >
           Upcoming Events
-          {/* Placeholder for events */}
         </div>
 
-        <div className="membership-status text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
+        <div className="membership-status text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center">
           Membership Status
-          {/* Display membership level */}
         </div>
 
-        <div className="reward-points text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
+        <div className="reward-points text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center">
           Reward Points
-          {/* Display user's reward points */}
         </div>
 
-        <div className="purchases text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
+        <div className="purchases text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center">
           Recent Purchases
-          {/* Display recent purchases */}
         </div>
 
-        <div className="notifications text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
+        <div className="notifications text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center">
           Notifications
-          {/* Show recent notifications */}
         </div>
       </div>
     </div>
