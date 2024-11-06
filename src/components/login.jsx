@@ -13,16 +13,17 @@ function Login() {
 
     try {
       const response = await axios.post(`${url}/login/validate`, {
-        employeeEmail: username,
-        employeePassword: password,
+        email: username,
+        password: password,
+        loginType: 'member',
       });
 
       if (response.status === 200) {
         const { role } = response.data; // Assuming you get role in the response
         if (role === 'admin') {
-          navigate.push('/admin-dashboard'); // Redirect to admin dashboard
+          navigate('/Admin'); // Redirect to admin dashboard
         } else {
-          navigate.push('/routes/members'); // Redirect to member dashboard
+          navigate('/Member'); // Redirect to member dashboard
         }
       }
     } catch (e) {
