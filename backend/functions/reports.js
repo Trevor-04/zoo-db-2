@@ -16,7 +16,7 @@ const pricing = {
 module.exports.restaurantItemReports = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
-        return await query(`
+        const code = `
         SELECT 
         I.itemName, 
         I.itemID, 
@@ -25,10 +25,11 @@ module.exports.restaurantItemReports = async function (reportData) {
         FROM Inventory I
         JOIN Restaurant_sales R 
         ON I.itemID = R.itemID
-        WHERE R.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC
-        `, [startDate, endDate]);
+        ORDER BY total_sales_revenue DESC`;
+        return startDate && endDate ? 
+        await query(code+` WHERE R.purchased_at BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -38,15 +39,18 @@ module.exports.restaurantItemReports = async function (reportData) {
 module.exports.restaurantTotalReport = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
-        return await query(`
+        let code = `
         SELECT 
         SUM(I.itemPrice * R.quantity) as total_sales_revenue
         FROM Inventory I
         JOIN Restaurant_sales R
         ON I.itemID = R.itemID
-        WHERE R.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC`, [startDate, endDate])
+        ORDER BY total_sales_revenue DESC`;
+
+        return startDate && endDate ? 
+        await query(code+` WHERE R.purchased_at BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -56,7 +60,8 @@ module.exports.restaurantTotalReport = async function (reportData) {
 module.exports.concessionItemReport = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
-        return await query(`
+
+        let code = `
         SELECT 
         I.itemName,
         I.itemID, 
@@ -65,10 +70,11 @@ module.exports.concessionItemReport = async function (reportData) {
         FROM Inventory I
         JOIN Concession_sales AS C 
         ON I.itemID = C.itemID
-        WHERE C.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC
-        `, [startDate, endDate])
+        ORDER BY total_sales_revenue DESC`;
+        return startDate && endDate ? 
+        await query(code+` WHERE C.purchased_at BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -78,15 +84,17 @@ module.exports.concessionItemReport = async function (reportData) {
 module.exports.concessionTotalReport = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
-        return await query(`
+        let code = `
         SELECT 
         SUM(I.itemPrice * C.quantity) as total_sales_revenue
         FROM Inventory I
         JOIN Concession_sales C
         ON I.itemID = C.itemID
-        WHERE C.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC`, [startDate, endDate])
+        ORDER BY total_sales_revenue DESC`;
+        return startDate && endDate ? 
+        await query(code+` WHERE C.purchased_at BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -96,7 +104,7 @@ module.exports.concessionTotalReport = async function (reportData) {
 module.exports.giftShopItemReport = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
-        return query(`
+        let code = `
         SELECT 
         I.itemName,
         I.itemID, 
@@ -105,10 +113,12 @@ module.exports.giftShopItemReport = async function (reportData) {
         FROM Inventory I
         JOIN Gift_shop_sales AS G
         ON I.itemID = G.itemID
-        WHERE G.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC
-        `, [startDate, endDate])
+        ORDER BY total_sales_revenue DESC`;
+
+        return startDate && endDate ? 
+        await query(code+` WHERE G.purchased_at BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -118,15 +128,17 @@ module.exports.giftShopItemReport = async function (reportData) {
 module.exports.giftShopTotalReport = async function (reportData) {
     const {startDate, endDate} = reportData;
     try {
-        return await query(`
+        let code = `
         SELECT 
         SUM(I.itemPrice * G.quantity) as total_sales_revenue
         FROM Inventory I
-        JOIN gift_shop_sales G
+        JOIN Gift_shop_sales G
         ON I.itemID = G.itemID
-        WHERE G.purchased_at BETWEEN ? AND ?
         GROUP BY I.itemID, I.itemName, I.itemPrice
-        ORDER BY total_sales_revenue DESC`, [startDate, endDate])
+        ORDER BY total_sales_revenue DESC`;
+        return startDate && endDate ? 
+        await query(code+` WHERE G.purchased_at BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -137,9 +149,11 @@ module.exports.listSubscribers = async function (memberData) {
     const {startDate, endDate} = memberData;
 
     try {
-        return await query(`SELECT * FROM Members
-        WHERE subscribed_on BETWEEN ? AND ?`,
-        [startDate, endDate]);
+        let code = `SELECT * FROM Members`;
+
+        return startDate && endDate ? 
+        await query(code+` WHERE subscribed_on BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
     } catch (err) {
         console.log(err);
         throw err;
@@ -173,6 +187,27 @@ module.exports.getVisitors = async function (memberData) {
         console.log(err);
         throw err;
     }
+}
+
+module.exports.calculateTicketSales = async function (ticketData) {
+    let {startDate, endDate} = ticketData;
+
+    startDate = startDate ? startDate + " 00:00:00" : undefined;
+    endDate = endDate ? endDate + " 23:59:59" : undefined;
+    try {
+        let code = `
+        SELECT SUM(ticketPrice) AS ticketProfit 
+        FROM Ticket_sales`;
+        
+        return startDate && endDate ? 
+        await query(code+` WHERE date_purchased BETWEEN ? AND ?`, [startDate, endDate]) :
+        await query(code);
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+
 }
 
 function format12Hours(time) {

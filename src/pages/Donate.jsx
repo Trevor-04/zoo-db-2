@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { CountryDropdown } from "react-country-region-selector";
 import StripeContainer from '../components/StripeContainer';
-const {url} = require('../config.json');
+const {url} = require('../config.json')[process.env.NODE_ENV];
 
 function Donate() {
   const initialFormData ={

@@ -42,7 +42,6 @@ export default function Navbar() {
         </Link>
       </div>
       <div> 
-        test test
       </div>
     </header>
   );

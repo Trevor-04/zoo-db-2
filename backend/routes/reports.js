@@ -37,6 +37,17 @@ router.get('/concession/items', async (req, res) => {
     }
 });
 
+// Concession Total Sales Report
+router.get('/concession/total', async (req, res) => {
+    try {
+        const reportData = req.query;
+        const report = await reportsController.concessionTotalReport(reportData);
+        res.status(200).json(report);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch concession total report' });
+    }
+});
+
 // Gift Shop Item Reports
 router.get('/giftshop/items', async (req, res) => {
     try {
@@ -45,6 +56,17 @@ router.get('/giftshop/items', async (req, res) => {
         res.status(200).json(report);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch gift shop item reports' });
+    }
+});
+
+// Gift Shop Total Sales Report
+router.get('/giftshop/total', async (req, res) => {
+    try {
+        const reportData = req.query;
+        const report = await reportsController.giftShopTotalReport(reportData);
+        res.status(200).json(report);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch gift shop total report' });
     }
 });
 
@@ -81,3 +103,13 @@ router.get(`/visitorCount`, async (req, res) => {
 
 
 module.exports = router;
+
+router.get('/ticketRevenue', async (req, res) => {
+    try {
+        const {startDate, endDate} = req.query;
+        const ticketRevenue = await reportsController.calculateTicketSales({startDate, endDate});
+        res.status(200).json({ticketProfit: ticketRevenue[0].ticketProfit})
+    } catch (err) {
+        res.status(500).json({error: "Failed to calculate ticket revenue"});
+    }
+})
