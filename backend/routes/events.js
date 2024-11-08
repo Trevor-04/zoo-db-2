@@ -36,13 +36,14 @@ router.post('/add', async (req, res) => {
 });
 
 // delete an event (by eventID)
-router.post('/delete', async (req, res) => {
+router.delete('/:eventID', async (req, res) => {
+    const { eventID } = req.params;
+    
     try {
-        const { eventID } = req.body;
-        const result = await eventsController.deleteEvent({ eventID });
-        return res.status(200).json({ message: 'Event deleted successfully' });
-    } catch (err) {
-        return res.status(500).json({ error: 'Failed to delete event' });
+        await eventsController.deleteEvent({eventID});
+        res.status(200).json({ message: 'Event deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete event' });
     }
 });
 

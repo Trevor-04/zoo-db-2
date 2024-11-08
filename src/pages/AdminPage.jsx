@@ -1,7 +1,11 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { UserData } from '../charts/testData'; 
+import {BarChart, LineChart, PieChart} from '../components/charts/BarChart';
+
 const {url} = require('../config.json')[process.env.NODE_ENV];
+
 
 export default function AdminPage() {
 const [isDropdownOpen, setIsDropdownOpen]  = useState(false);
@@ -13,6 +17,9 @@ const [sales, setSales] = useState(0);
 const [donations, setDonations] = useState(0);
 const [revenue, setRevenue] = useState(0);
 const [weeklyRevenue, setWeeklyRevenue] = useState(0);
+
+const [revenueChartData, setRevenueChartData] = useState([]);
+const [revenueWeeklyChartData, setRevenueWeeklyChartData] = useState([])
 
 const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -110,6 +117,38 @@ const getDonations = async (startDate, endDate) => {
   }
 }
 
+const getCharts = async (startDate, endDate) => {
+
+  let oneWeekAgo = new Date(), oneWeekAgoFormatted, startDateFormatted;
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  if (startDate && endDate) {
+    oneWeekAgoFormatted = oneWeekAgo.toISOString().split('T')[0]; // e.g., "2023-03-20"
+    startDateFormatted = new Date(startDate).toISOString().split('T')[0];
+  }
+
+
+  try {
+    const res = await axios.get(`${url}/reports/charts/totalSales`, {
+      params: {startDate, endDate}
+    });
+
+    if (res.status === 200) {
+      let oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const oneWeekAgoFormatted = oneWeekAgo.toLocaleDateString('en-CA');
+
+      if (!startDate && !endDate) {
+        setRevenueChartData(res.data.totalSales); // For the case when no date range is provided
+      } else if (startDate === oneWeekAgoFormatted) {
+        setRevenueWeeklyChartData(res.data.totalSales); // Assuming `weeklySales` is in the API response
+      } 
+    }
+
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
 
 
   // Close the dropdown if the user clicks outside
@@ -139,7 +178,61 @@ const getDonations = async (startDate, endDate) => {
     getDonations(); // put startDate and endDate if needed 
     getRevenue();
     getRevenue(startDate, endDate);
+    getCharts();
+    getCharts(startDate, endDate);
   }, []);
+
+  const [revenueData, setRevenueData] = useState({
+    labels: [],
+    datasets: [{
+      label: "Revenue by Category (Overall)",
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1
+    }]
+  });
+
+  const [weeklyRevenueData, setWeeklyRevenueData] = useState({
+    labels: [],
+    datasets: [{
+      label: "Revenue by Category (Weekly)",
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1
+    }]
+  });
+
+  useEffect(() => {
+    if (revenueChartData.length > 0) { 
+      setRevenueData({
+        labels: revenueChartData.map(data => data.label),
+        datasets: [{
+          label: "Revenue by Category",
+          data: revenueChartData.map(data => Number(data.revenue)),
+          backgroundColor: revenueChartData.map(data => data.color),
+          borderColor: revenueChartData.map(data => data.color),
+          borderWidth: 1
+        }]
+      });
+    }
+  }, [revenueChartData]); 
+
+  useEffect(() => {
+    if (revenueWeeklyChartData.length > 0) { 
+      setWeeklyRevenueData({
+        labels: revenueWeeklyChartData.map(data => data.label),
+        datasets: [{
+          label: revenueWeeklyChartData.map(data => data.label),
+          data: revenueWeeklyChartData.map(data => Number(data.revenue)), 
+          backgroundColor: revenueWeeklyChartData.map(data => data.color),
+          borderColor: revenueWeeklyChartData.map(data => data.color),
+          borderWidth: 1
+        }]
+      });
+    }
+  }, [revenueWeeklyChartData]); 
 
   return (
     <div>
@@ -243,11 +336,11 @@ const getDonations = async (startDate, endDate) => {
         </div>
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
-
+            <PieChart chartData = {revenueData}> </PieChart>
         </div>
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
-
+            {/* <PieChart chartData = {weeklyRevenueData}></PieChart>  */}
         </div> 
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>

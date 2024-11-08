@@ -12,12 +12,12 @@ const EventCal = ({ isAdmin }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   //add events
-  const [newEventID, setNewEventID] = useState('');
   const [newEventName, setNewEventName] = useState('');
   const [newEventDate, setNewEventDate] = useState('');
   const [newMembersOnly, setNewMembersOnly] = useState('');
   const [newExhibitID, setNewExhibitID] = useState('');
   const [newSponsorID, setNewSponsorID] = useState('');
+  const [newEventID, setNewEventID] = useState('');
 
 
   // Fetch events from database
@@ -72,7 +72,7 @@ async function getAllEvents() {
   // deleting events
   const handleDeleteEvent = async () => {
     try {
-      await axios.post(`${url}/events/delete/`, { eventID: selectedEvent.eventID });
+      await axios.delete(`${url}/events/${selectedEvent.eventID}`);
       alert('Event deleted successfully!');
       setIsModalOpen(false);
       getAllEvents();
@@ -181,6 +181,7 @@ async function getAllEvents() {
             <p><strong>Members Only:</strong> {selectedEvent.members_only ? 'Yes' : 'No'}</p>
             <p><strong>Exhibit ID:</strong> {selectedEvent.exhibitID}</p>
             <p><strong>Sponsor ID:</strong> {selectedEvent.sponsorID}</p>
+            <p><strong>Event ID:</strong> {selectedEvent.eventID}</p>
             <button onClick={handleDeleteEvent} className="delete-button">Delete Event</button>
             <button onClick={closeModal} className="close-button">Close</button>
           </div>

@@ -47,13 +47,12 @@ module.exports.addEvent = async function (eventData) {
 };
 
 module.exports.deleteEvent = async function (eventData) {
-    const {eventID} = eventData;
+    const { eventID } = eventData;
     try {
-        // delete the event from the database using parameterized query
-        const result = await query(`
-            DELETE FROM Events
-            WHERE eventID=?;
-        `, [eventID]);
+        console.log('wtf')
+        const result = await query(`DELETE FROM Events WHERE eventID = ?`, [eventID]);
+        
+        console.log("Delete result:", result);  // Debugging line to confirm the operation
         return result;
     } catch (error) {
         console.error("Error deleting event", error);

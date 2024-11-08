@@ -112,4 +112,15 @@ router.get('/ticketRevenue', async (req, res) => {
     } catch (err) {
         res.status(500).json({error: "Failed to calculate ticket revenue"});
     }
+});
+
+router.get('/charts/totalSales', async (req, res) => {
+    try {
+        const {startDate, endDate} = req.query;
+        const totalSales = await reportsController.calculateAllSales({startDate, endDate});
+        res.status(200).json({totalSales});
+    } catch (err) {
+        res.status(500).json({error: "Failed to calculate total sales"});
+    
+    }
 })
