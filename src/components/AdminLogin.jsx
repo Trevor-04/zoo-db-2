@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const { url } = require('../config.json');
+//const { url } = require('../config.json');
+const { url } = require('../config.json')[process.env.NODE_ENV || 'development']; // This ensures the correct environment is selected
 
 function AdminLogin() {
   const [username, setUsername] = useState('');
