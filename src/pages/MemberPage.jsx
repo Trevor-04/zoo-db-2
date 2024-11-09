@@ -148,10 +148,10 @@ export default function MemberPage() {
           <h3 className="font-bold">Membership Status</h3>
           {showMembershipStatus && (
             <div className="mt-2">
-              <p><strong>Type:</strong> Gold</p>
-              <p><strong>Term:</strong> Annual</p>
-              <p><strong>Subscribed On:</strong> January 1, 2020</p>
-              <p><strong>Last Billed:</strong> January 1, 2024</p>
+              <p><strong>Type:</strong> {memberData?.memberType}</p>
+              <p><strong>Term:</strong> {memberData?.memberTerm}</p>
+              <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
+              <p><strong>Last Billed:</strong> {memberData?.last_billed}</p>
             </div>
           )}
         </div>
