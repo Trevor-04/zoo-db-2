@@ -1,5 +1,6 @@
 const express = require('express');
 const membersController = require('../functions/members'); 
+const { verifyToken } = require('../middleware/auth'); // Import the verifyToken function
 
 const router = express.Router();
 
@@ -24,6 +25,39 @@ router.post('/new/member', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
+
+
+// Route to get the member profile based on token
+router.get('/profile', verifyToken, async (req, res) => {
+    console.log("Decoded user from token:", req.user); // Log to check the payload
+    try {
+        const memberID = req.user.ID; // Assuming the token payload has memberID
+        const memberResult = await membersController.getMember({ memberID });
+
+        if (memberResult && memberResult.length > 0) {
+            const member = memberResult[0]; // Get the first row (expected only one since memberID is unique)
+            const formattedMember = {
+                memberID: member.memberID,
+                memberType: member.memberType,
+                memberTerm: member.memberTerm,
+                subscribed_on: member.subscribed_on,
+                last_billed: member.last_billed,
+                memberEmail: member.memberEmail,
+                memberPhone: member.memberPhone,
+                memberFName: member.memberFName,
+                memberLName: member.memberLName,
+                memberBirthday: member.memberBirthday
+            };
+            res.status(200).json(formattedMember);
+        } else {
+            res.status(404).json({ message: 'Member not found' });
+        }
+    } catch (error) {
+        console.error("Error fetching member data:", error);
+        res.status(500).json({ error: 'Failed to get member' });
+    }
+});
+
 
 // Route to get a member by ID
 router.get('/:id', async (req, res) => {

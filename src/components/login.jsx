@@ -18,8 +18,13 @@ function Login() {
         loginType: 'member',
       });
 
+
       if (response.status === 200) {
-        const { role } = response.data; // Assuming you get role in the response
+        const { token, role } = response.data; // Destructure token and role from response
+
+        // Store JWT token in localStorage
+        localStorage.setItem('token', token);
+
         if (role === 'admin') {
           navigate('/Admin'); // Redirect to admin dashboard
         } else {

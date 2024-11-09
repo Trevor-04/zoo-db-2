@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+const url = "http://localhost:3000";
 
 export default function MemberPage() {
+  const [memberData, setMemberData] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showMembershipStatus, setShowMembershipStatus] = useState(false);
@@ -10,6 +13,27 @@ export default function MemberPage() {
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMemberData = async () => {
+      const token = localStorage.getItem('token');
+      console.log("Token from localStorage:", token); // Log the token
+      if (!token) return navigate('/login'); // Redirect to login if no token
+
+      try {
+        const response = await axios.get(`${url}/members/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setMemberData(response.data); // Store the member data
+      } catch (error) {
+        console.error("Error fetching member data:", error);
+      }
+    };
+
+    fetchMemberData();
+  }, [navigate]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -96,14 +120,14 @@ export default function MemberPage() {
           </button>
           {showProfile ? (
             <div>
-              <p><strong>Name:</strong> John Doe</p>
-              <p><strong>Email:</strong> johndoe@example.com</p>
-              <p><strong>Phone:</strong> (123) 456-7890</p>
-              <p><strong>Birthday:</strong> January 1, 1990</p>
-              <p><strong>Membership Type:</strong> Gold</p>
-              <p><strong>Subscribed On:</strong> January 1, 2020</p>
-              <p><strong>Membership Term:</strong> Annual</p>
-              <p><strong>Last Billed:</strong> January 1, 2024</p>
+              <p><strong>Name:</strong> {memberData?.memberFName} {memberData?.memberLName}</p>
+              <p><strong>Email:</strong> {memberData?.memberEmail}</p>
+              <p><strong>Phone:</strong> {memberData?.memberPhone}</p>
+              <p><strong>Birthday:</strong> {memberData?.memberBirthday}</p>
+              <p><strong>Membership Type:</strong> {memberData?.memberType}</p>
+              <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
+              <p><strong>Membership Term:</strong> {memberData?.memberTerm}</p>
+              <p><strong>Last Billed:</strong> {memberData?.last_billed}</p>
             </div>
           ) : (
             <p>Click "My Profile" to view your details.</p>
