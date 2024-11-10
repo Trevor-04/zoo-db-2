@@ -14,6 +14,7 @@ import Tickets from "./pages/Tickets";
 import ProductPage from './components/ProductPage';
 import Admin from './pages/AdminPage';
 import Member from './pages/MemberPage';
+import SettingsPage from "./components/SettingsPage";
 import './App.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
                    <Route path="/donatePage" element={<Navigate to="/donatePage.html" />} />
                    <Route path ="/Admin" element={<Admin />} />
                    <Route path ="/Member" element={<Member />} />
+                   <Route path="/settings" element={<SettingsPage />} />
                 </Routes>
             </Router>
         </div>

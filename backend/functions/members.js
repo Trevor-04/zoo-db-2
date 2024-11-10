@@ -40,6 +40,22 @@ module.exports.getMember = async function(memberData) {
     }
 }
 
+module.exports.updateMember = async function (memberID, updatedData) {
+    const { memberFName, memberLName, memberEmail, memberPhone, memberBirthday } = updatedData;
+    const formattedBirthday = memberBirthday ? new Date(memberBirthday).toISOString().split('T')[0] : null;
+    try {
+        return await query(`
+        UPDATE Members 
+        SET memberFName = ?, memberLName = ?, memberEmail = ?, memberPhone = ?, memberBirthday = ?
+        WHERE memberID = ?`,
+        [memberFName, memberLName, memberEmail, memberPhone, formattedBirthday, memberID]);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+
 module.exports.billed = async function (memberData) {
     const {memberID} = memberData;
     try {

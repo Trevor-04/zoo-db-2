@@ -58,6 +58,17 @@ router.get('/profile', verifyToken, async (req, res) => {
     }
 });
 
+router.put('/update', verifyToken, async (req, res) => {
+    try {
+        const memberID = req.user.ID;
+        const updatedData = req.body;
+        await membersController.updateMember(memberID, updatedData);
+        res.status(200).json({ message: 'Member profile updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update member profile' });
+    }
+});
+
 
 // Route to get a member by ID
 router.get('/:id', async (req, res) => {

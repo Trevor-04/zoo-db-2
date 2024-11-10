@@ -39,6 +39,14 @@ export default function MemberPage() {
     setIsDropdownOpen((prev) => !prev);
   };
 
+  const goToSettings = () => {
+    navigate('/settings');
+};
+
+const formatDate = (isoDate) => {
+  if (!isoDate) return ''; // Handle if no date is available
+  return new Date(isoDate).toISOString().split('T')[0]; // Format to YYYY-MM-DD
+};
   const toggleProfile = () => {
     setShowProfile((prev) => !prev);
   };
@@ -101,7 +109,9 @@ export default function MemberPage() {
                 </button>
               </li>
               <li>
-                <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <button 
+                onClick={goToSettings}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
                   Settings
                 </button>
               </li>
@@ -123,7 +133,7 @@ export default function MemberPage() {
               <p><strong>Name:</strong> {memberData?.memberFName} {memberData?.memberLName}</p>
               <p><strong>Email:</strong> {memberData?.memberEmail}</p>
               <p><strong>Phone:</strong> {memberData?.memberPhone}</p>
-              <p><strong>Birthday:</strong> {memberData?.memberBirthday}</p>
+              <p><strong>Birthday:</strong> {formatDate(memberData?.memberBirthday)}</p>
               <p><strong>Membership Type:</strong> {memberData?.memberType}</p>
               <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
               <p><strong>Membership Term:</strong> {memberData?.memberTerm}</p>
