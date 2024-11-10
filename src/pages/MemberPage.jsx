@@ -85,8 +85,10 @@ const formatDate = (isoDate) => {
 
   return (
     <div>
-      <header className="bg-white text-[#165e229e] p-5 flex items-center" ref={dropdownRef}>
-        <h1>Member Dashboard</h1>
+      <header className="bg-white text-[#165e229e] p-5 flex items-center justify-between" ref={dropdownRef}>
+        <div className="flex-grow text-center">
+          <h1 className="font-bold">Member Dashboard</h1>
+        </div>
 
         <button
           onClick={toggleDropdown}
@@ -96,28 +98,30 @@ const formatDate = (isoDate) => {
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-            <ul className="py-1">
-              <li>
-                <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-                  My Profile
-                </button>
-              </li>
-              <li>
-                <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-                  Ticket History
-                </button>
-              </li>
-              <li>
-                <button 
-                onClick={goToSettings}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-                  Settings
-                </button>
-              </li>
-            </ul>
-          </div>
-        )}
+  <div className="absolute right-0 mt-20 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+    <ul className="py-1">
+      <li>
+        <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+          My Profile
+        </button>
+      </li>
+      <li>
+        <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+          Ticket History
+        </button>
+      </li>
+      <li>
+        <button 
+          onClick={goToSettings}
+          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >
+          Settings
+        </button>
+      </li>
+    </ul>
+  </div>
+)}
+
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 mt-[20px]">
