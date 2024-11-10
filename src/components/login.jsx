@@ -25,12 +25,13 @@ function Login() {
         // Store JWT token in localStorage
         localStorage.setItem('token', token);
 
-        if (role === 'admin') {
+        if (role === 'admin' || role === 'employee') {
           navigate('/Admin'); // Redirect to admin dashboard
         } else {
           navigate('/Member'); // Redirect to member dashboard
         }
       }
+
     } catch (e) {
       if (e.response && e.response.status === 401) {
         alert("Invalid Username and Password");
