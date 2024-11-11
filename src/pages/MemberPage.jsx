@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const url = "http://localhost:3000";
+const {url} = require('../config.json')[process.env.NODE_ENV];
 
 export default function MemberPage() {
   const [memberData, setMemberData] = useState(null);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const url = "http://localhost:3000";
+const {url} = require('../config.json')[process.env.NODE_ENV];  
 
 export default function SettingsPage() {
   const [memberData, setMemberData] = useState(null);
