@@ -41,7 +41,9 @@ export default function MemberPage() {
   };
 
   const goToSettings = () => {
-    navigate('/settings');
+    if (memberId) {
+        navigate(`/member/${memberId}/settings`);
+    }
 };
 
 const formatDate = (isoDate) => {

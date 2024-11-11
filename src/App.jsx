@@ -39,7 +39,8 @@ function App() {
                    <Route path ="/Admin" element={<Admin />} />
                    {/* <Route path ="/Member" element={<Member />} /> */}
                      <Route path="/member/:memberId" element={<Member />} /> 
-                   <Route path="/settings" element={<SettingsPage />} /> 
+                   {/* <Route path="/settings" element={<SettingsPage />} />  */}
+                   <Route path="/member/:memberId/settings" element={<SettingsPage />} />
                 </Routes>
             </Router>
         </div>
