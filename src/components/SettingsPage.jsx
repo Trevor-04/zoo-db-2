@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const {url} = require('../config.json')[process.env.NODE_ENV];  
 
 export default function SettingsPage() {
   const [memberData, setMemberData] = useState(null);
   const [editData, setEditData] = useState({});
+  const { memberId } = useParams(); // Get memberId from the URL
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function SettingsPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert('Changes saved successfully');
-      navigate('/member'); // Redirect back to MemberPage after save
+      navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
     } catch (error) {
       console.error("Error updating member data:", error);
       alert('Failed to save changes');

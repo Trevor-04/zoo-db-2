@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 const {url} = require('../config.json')[process.env.NODE_ENV];
 
@@ -11,6 +11,7 @@ export default function MemberPage() {
   const [showRewardPoints, setShowRewardPoints] = useState(false);
   const [showRecentPurchases, setShowRecentPurchases] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const { memberId } = useParams(); // Get memberId from the route
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
@@ -33,14 +34,16 @@ export default function MemberPage() {
     };
 
     fetchMemberData();
-  }, [navigate]);
+  }, [navigate, memberId]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
   const goToSettings = () => {
-    navigate('/settings');
+    if (memberId) {
+        navigate(`/member/${memberId}/settings`);
+    }
 };
 
 const formatDate = (isoDate) => {
@@ -80,12 +83,20 @@ const formatDate = (isoDate) => {
   }, []);
 
   const goToEvents = () => {
-    navigate('/events');
-  };
+    const memberId = memberData?.memberID; // Use fetched member ID
+    if (memberId) {
+        navigate(`/member/${memberId}/events`);
+    }
+};
 
   return (
     <div>
+
       <header className="bg-white text-[#165e229e] p-5 flex items-center justify-between" ref={dropdownRef}>
+        {/* Logo Section */}
+      <Link to="/" className="flex items-center">
+        <img className="h-[70px]" src="/Coog_Zoo.png" alt="logo" />
+      </Link>
         <div className="flex-grow text-center">
           <h1 className="font-bold">Member Dashboard</h1>
         </div>
