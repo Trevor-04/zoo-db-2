@@ -117,7 +117,7 @@ const getDonations = async (startDate, endDate) => {
   }
 }
 
-const getCharts = async (startDate, endDate) => {
+const getSalesCharts = async (startDate, endDate) => {
 
   let oneWeekAgo = new Date(), oneWeekAgoFormatted, startDateFormatted;
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -150,6 +150,56 @@ const getCharts = async (startDate, endDate) => {
   }
 }
 
+const getTopProductsChart = async (startDate, endDate, limit) => {
+  let oneWeekAgo = new Date();
+  let oneWeekAgoFormatted, startDateFormatted;
+
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  if (startDate && endDate) {
+    oneWeekAgoFormatted = oneWeekAgo.toISOString().split("T")[0];
+    startDateFormatted = new Date(startDate).toISOString().split("T")[0];
+  }
+
+  try {
+    const response = await axios.get(`${url}/reports/charts/topProducts`, {
+      params: { startDate, endDate, limit }
+    });
+
+    if (response.status === 200) {
+      const topProducts = response.data.totalSales;
+
+      if (!startDate && !endDate) {
+        // For the case when no date range is provided, set top products data directly
+        setTopProductsData({
+          labels: topProducts.flatMap(productType => productType.products.map(p => p.product)),
+          datasets: [{
+            label: "Top Products by Revenue",
+            data: topProducts.flatMap(productType => productType.products.map(p => p.total_revenue)),
+            backgroundColor: topProducts.flatMap((_, idx) => `rgba(75, 192, 192, 0.${idx + 3})`),
+            borderColor: topProducts.flatMap(() => 'rgba(75, 192, 192, 1)'),
+            borderWidth: 1
+          }]
+        });
+      } else if (startDate === oneWeekAgoFormatted) {
+        // For the specific date range, adjust the chart data accordingly
+        setTopWeeklyProductsData({
+          labels: topProducts.flatMap(productType => productType.products.map(p => p.product)),
+          datasets: [{
+            label: "Top Products by Revenue (Weekly)",
+            data: topProducts.flatMap(productType => productType.products.map(p => p.total_revenue)),
+            backgroundColor: topProducts.flatMap((_, idx) => `rgba(75, 192, 192, 0.${idx + 3})`),
+            borderColor: topProducts.flatMap(() => 'rgba(75, 192, 192, 1)'),
+            borderWidth: 1
+          }]
+        });
+      }
+    }
+  } catch (err) {
+    console.log("Error fetching top products:", err);
+    throw err;
+  }
+};
+
 
   // Close the dropdown if the user clicks outside
   useEffect(() => {
@@ -178,8 +228,9 @@ const getCharts = async (startDate, endDate) => {
     getDonations(); // put startDate and endDate if needed 
     getRevenue();
     getRevenue(startDate, endDate);
-    getCharts();
-    getCharts(startDate, endDate);
+    getSalesCharts();
+    getSalesCharts(startDate, endDate);
+    getTopProductsChart();
   }, []);
 
   const [revenueData, setRevenueData] = useState({
@@ -197,6 +248,28 @@ const getCharts = async (startDate, endDate) => {
     labels: [],
     datasets: [{
       label: "Revenue by Category (Weekly)",
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1
+    }]
+  });
+
+  const [topProductsData, setTopProductsData] = useState({
+    labels: [],
+    datasets: [{
+      label: "Top Products by Revenue",
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 1
+    }]
+  });
+
+  const [topWeeklyProductsData, setTopWeeklyProductsData] = useState({
+    labels: [],
+    datasets: [{
+      label: "Top Products by Revenue",
       data: [],
       backgroundColor: [],
       borderColor: [],
@@ -233,6 +306,36 @@ const getCharts = async (startDate, endDate) => {
       });
     }
   }, [revenueWeeklyChartData]); 
+
+  useEffect(() => {
+    if (topProductsData.length > 0) { 
+      setTopProductsData({
+        labels: topProductsData.flatMap(productType => productType.products.map(p => p.product)),
+        datasets: [{
+          label: "Top Products by Revenue",
+          data: topProductsData.flatMap(productType => productType.products.map(p => p.total_revenue)),
+          backgroundColor: topProductsData.flatMap((_, idx) => `rgba(75, 192, 192, 0.${idx + 3})`),
+          borderColor: topProductsData.flatMap(() => 'rgba(75, 192, 192, 1)'),
+          borderWidth: 1
+        }]
+      });
+    }
+  }, [topProductsData]); 
+
+  useEffect(() => {
+    if (topWeeklyProductsData.length > 0) { 
+      setTopWeeklyProductsData({
+        labels: topWeeklyProductsData.flatMap(productType => productType.products.map(p => p.product)),
+        datasets: [{
+          label: "Top Products by Revenue",
+          data: topWeeklyProductsData.flatMap(productType => productType.products.map(p => p.total_revenue)),
+          backgroundColor: topWeeklyProductsData.flatMap((_, idx) => `rgba(75, 192, 192, 0.${idx + 3})`),
+          borderColor: topWeeklyProductsData.flatMap(() => 'rgba(75, 192, 192, 1)'),
+          borderWidth: 1
+        }]
+      });
+    }
+  }, [topWeeklyProductsData]); 
 
   return (
     <div>
@@ -344,7 +447,7 @@ const getCharts = async (startDate, endDate) => {
         </div> 
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
-
+          <BarChart chartData={topProductsData} />
         </div>  
       </div>
 

@@ -290,6 +290,56 @@ module.exports.calculateAllSales = async function (salesData) {
     }
 }
 
+module.exports.getTopProducts = async function (salesData) {
+    try {
+        const { startDate, endDate, limit = 5 } = salesData;
+        
+        // Fetch top products for each category with sales details
+        const restaurantTop = await module.exports.restaurantItemReports(salesData); 
+        const concessionTop = await module.exports.concessionItemReport(salesData);
+        const giftShopTop = await module.exports.giftShopItemReport(salesData);
+
+        // Format each category’s top products
+        const formattedTopProducts = [
+            {
+                type: "restaurant",
+                products: restaurantTop.map(item => ({
+                    product: item.itemName,
+                    total_quantity: item.total_quantity_sold || 0,
+                    total_revenue: item.total_sales_revenue || 0
+                })),
+                label: "Restaurant Top Products",
+                color: "#6A9E73" // example color
+            },
+            {
+                type: "concession",
+                products: concessionTop.map(item => ({
+                    product: item.itemName,
+                    total_quantity: item.total_quantity_sold || 0,
+                    total_revenue: item.total_sales_revenue || 0
+                })),
+                label: "Concession Top Products",
+                color: "#8BB174"
+            },
+            {
+                type: "giftShop",
+                products: giftShopTop.map(item => ({
+                    product: item.itemName,
+                    total_quantity: item.total_quantity_sold || 0,
+                    total_revenue: item.total_sales_revenue || 0
+                })),
+                label: "Gift Shop Top Products",
+                color: "#A1C181"
+            }
+        ];
+
+        return formattedTopProducts;
+    } catch (err) {
+        console.error("Error fetching top products:", err);
+        throw err;
+    }
+};
+
 function format12Hours(time) {
     const period = time >= 12 ? "pm" : "am";  // Determine AM or PM
     const hour = time % 12 || 12;             // Convert 0 or 13-23 to 12-hour format

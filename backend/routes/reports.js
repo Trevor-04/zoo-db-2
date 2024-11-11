@@ -123,4 +123,14 @@ router.get('/charts/totalSales', async (req, res) => {
         res.status(500).json({error: "Failed to calculate total sales"});
     
     }
+});
+
+router.get('/charts/topProducts', async (req, res) => {
+    try {
+        const {startDate, endDate, limit} = req.query;
+        const totalSales = await reportsController.getTopProducts({startDate, endDate, limit});
+        res.status(200).json({totalSales});
+    } catch (err) {
+        res.status(500).json({error: "Failed to calculate top products"});
+    }
 })
