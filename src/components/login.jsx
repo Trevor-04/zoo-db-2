@@ -19,16 +19,31 @@ function Login() {
       });
 
 
-      if (response.status === 200) {
-        const { token, role } = response.data; // Destructure token and role from response
+      // if (response.status === 200) {
+      //   const { token, role } = response.data; // Destructure token and role from response
 
+      //   // Store JWT token in localStorage
+      //   localStorage.setItem('token', token);
+
+      //   if (role === 'admin' || role === 'employee') {
+      //     navigate('/Admin'); // Redirect to admin dashboard
+      //   } else {
+      //     navigate('/Member'); // Redirect to member dashboard
+      //   }
+      // }
+      if (response.status === 200) {
+        const { token, role, ID } = response.data; // Destructure memberID from response
+  
         // Store JWT token in localStorage
         localStorage.setItem('token', token);
-
+  
         if (role === 'admin' || role === 'employee') {
           navigate('/Admin'); // Redirect to admin dashboard
+        } else if (role === 'member') {
+          // Use backticks for the template literal, and check memberID value
+          navigate(`/member/${ID}`); 
         } else {
-          navigate('/Member'); // Redirect to member dashboard
+          console.error("No memberID provided for member role");
         }
       }
 
