@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { UserData } from '../charts/testData'; 
 import {BarChart, LineChart, PieChart} from '../components/charts/BarChart';
@@ -10,7 +11,7 @@ const {url} = require('../config.json')[process.env.NODE_ENV];
 export default function AdminPage() {
 const [isDropdownOpen, setIsDropdownOpen]  = useState(false);
 const dropdownRef = useRef();
-
+const { employeeID } = useParams();
 const [visitors, setVisitors] = useState(0);
 const [subscribers, setSubscribers] = useState(0);
 const [sales, setSales] = useState(0);

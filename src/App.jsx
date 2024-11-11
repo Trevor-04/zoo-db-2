@@ -38,6 +38,7 @@ function App() {
                    {/* <Route path="/DonatePage" element={<DonatePage/>} />  */}
                    <Route path="/donatePage" element={<Navigate to="/donatePage.html" />} />
                    <Route path ="/Admin" element={<Admin />} />
+                   <Route path="/Admin/:employeeID" element={<Admin />} />
                    {/* <Route path ="/Member" element={<Member />} /> */}
                      <Route path="/member/:memberId" element={<Member />} /> 
                    {/* <Route path="/settings" element={<SettingsPage />} />  */}
