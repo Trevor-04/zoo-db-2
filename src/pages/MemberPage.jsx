@@ -95,7 +95,7 @@ const formatDate = (isoDate) => {
       <header className="bg-white text-[#165e229e] p-5 flex items-center justify-between" ref={dropdownRef}>
         {/* Logo Section */}
       <Link to="/" className="flex items-center">
-        <img className="h-[70px]" src="Coog_Zoo.png" alt="logo" />
+        <img className="h-[70px]" src="/Coog_Zoo.png" alt="logo" />
       </Link>
         <div className="flex-grow text-center">
           <h1 className="font-bold">Member Dashboard</h1>
