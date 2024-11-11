@@ -31,7 +31,7 @@ module.exports.validateLogin = async function (loginData) {
         }
 
         let returnData = {
-            type: null,
+            role: null,
             ID: "",
             loggedIn: false,
             token: null // Field for JWT token
@@ -51,7 +51,7 @@ module.exports.validateLogin = async function (loginData) {
             );
 
             returnData = {
-                type: "employee",
+                role: "employee",
                 ID: employeeResults[0].employeeID,
                 loggedIn: true,
                 token: jwt.sign(
@@ -69,7 +69,7 @@ module.exports.validateLogin = async function (loginData) {
 
             if (membersResults.length > 0) {
                 returnData = {
-                    type: "member",
+                    role: "member",
                     ID: membersResults[0].memberID,
                     loggedIn: true,
                     token: jwt.sign(
@@ -95,7 +95,7 @@ module.exports.validateEmployeeLogin = async function ({ email, password }) {
             `SELECT employeeID, role FROM Employee_logins WHERE employeeEmail = ? AND employeePassword = ?`,
             [email, password]
         );
-
+        console.log(results);
         if (results.length > 0) {
             const employee = results[0];
             const token = jwt.sign(
@@ -103,9 +103,9 @@ module.exports.validateEmployeeLogin = async function ({ email, password }) {
                 JWT_SECRET,
                 { expiresIn: '1h' }
             );
-
+            console.log("Generated Token for Employee:", token);
             return {
-                type: employee.role === 'admin' ? 'admin' : 'employee',
+                role: employee.role === 'admin' ? 'admin' : 'employee',
                 ID: employee.employeeID,
                 loggedIn: true,
                 token,
@@ -135,7 +135,7 @@ module.exports.validateMemberLogin = async function ({ email, password }) {
             );
 
             return {
-                type: 'member',
+                role: 'member',
                 ID: member.memberID,
                 loggedIn: true,
                 token,
