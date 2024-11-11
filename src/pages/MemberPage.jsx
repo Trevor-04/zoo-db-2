@@ -85,7 +85,7 @@ const formatDate = (isoDate) => {
   const goToEvents = () => {
     const memberId = memberData?.memberID; // Use fetched member ID
     if (memberId) {
-        navigate(`/member/${memberId}/eventsCal`);
+        navigate(`/member/${memberId}/events`);
     }
 };
 

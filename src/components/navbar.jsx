@@ -10,7 +10,7 @@ export default function Navbar() {
     <header className="bg-[#faf0e6] h-20 flex items-center justify-between px-4">
       {/* Logo Section */}
       <Link to="/" className="flex items-center">
-        <img className="h-[70px]" src="Coog_Zoo.png" alt="logo" />
+        <img className="h-[70px]" src="/Coog_Zoo.png" alt="logo" />
       </Link>
 
       {/* Buttons Section */}
