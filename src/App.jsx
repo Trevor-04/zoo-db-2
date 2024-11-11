@@ -33,6 +33,7 @@ function App() {
                     <Route path="/member/:memberId/events" element={<Events />} /> 
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
+                    <Route path="member/:memberId/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
                    {/* <Route path="/Donate" element={<Donate />} /> */}
                    {/* <Route path="/DonatePage" element={<DonatePage/>} />  */}

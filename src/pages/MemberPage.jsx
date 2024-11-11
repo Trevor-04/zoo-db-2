@@ -50,6 +50,12 @@ export default function MemberPage() {
     navigate(`/`);
   }
 
+  const goToTickets = () => {
+    if (memberId) {
+      navigate(`/member/${memberId}/tickets`);
+    }
+  };
+
 const formatDate = (isoDate) => {
   if (!isoDate) return ''; // Handle if no date is available
   return new Date(isoDate).toISOString().split('T')[0]; // Format to YYYY-MM-DD
@@ -196,20 +202,26 @@ const formatDate = (isoDate) => {
         </div>
 
         <div 
-          className="purchases text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
-          onClick={toggleRecentPurchases}
-        >
-          <h3 className="font-bold">Recent Purchases</h3>
-          {showRecentPurchases && (
-            <div className="mt-2">
-              <ul className="list-disc list-inside">
-                <li>Item 1 - $10.00 (January 1, 2024)</li>
-                <li>Item 2 - $5.00 (December 25, 2023)</li>
-                <li>Item 3 - $20.00 (November 15, 2023)</li>
-              </ul>
-            </div>
-          )}
+      className="purchases text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
+      onClick={toggleRecentPurchases}
+    >
+      <h3 className="font-bold">Recent Purchases</h3>
+      {showRecentPurchases && (
+        <div className="mt-2">
+          <ul className="list-disc list-inside">
+            <li>Item 1 - $10.00 (January 1, 2024)</li>
+            <li>Item 2 - $5.00 (December 25, 2023)</li>
+            <li>Item 3 - $20.00 (November 15, 2023)</li>
+          </ul>
+          <button 
+            onClick={goToTickets} 
+            className="mt-4 bg-[#165e229e] text-white font-bold py-2 px-4 rounded"
+          >
+            Buy Tickets
+          </button>
         </div>
+      )}
+    </div>
 
         <div 
           className="notifications text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
