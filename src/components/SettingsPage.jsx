@@ -54,7 +54,7 @@ export default function SettingsPage() {
 
   return (
     <div className="p-4">
-      <h2>Settings</h2>
+      <h2>Edit info</h2>
       <div>
         <label>Name:</label>
         <input name="memberFName" value={editData.memberFName} onChange={handleChange} />

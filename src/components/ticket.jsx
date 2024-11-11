@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './tickets.css';
 import { Link } from 'react-router-dom';
 //import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -8,6 +8,7 @@ const {url} = require('../config.json')[process.env.NODE_ENV];
 
 function TicketOptions() {
   const [visibleSection, setVisibleSection] = useState('generalAdmission');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [showTimeSlots, setShowTimeSlots] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [isDateSelected, setIsDateSelected] = useState(false);
@@ -92,42 +93,55 @@ function TicketOptions() {
     // Handle time slot selection and navigate to payment page
     const handleTimeSlotClick = async (time) => {
       if (!isTimeSlotDisabled(time)) {
-        // Assuming you have a navigate function to go to the payment page
-        navigate("/payment", { state: { selectedTime: time, selectedDate, adultTickets, childTickets, seniorTickets, infantTickets , finalPrice} });
-        await handleSubmitButton(time);
+        const total = await handleSubmitButton(time); // Get the final price directly from handleSubmitButton
+        setFinalPrice(total); // Update the state immediately
+        // Use the calculated total for navigation
+        navigate("/payment", { 
+          state: { 
+            selectedTime: time, 
+            selectedDate, 
+            adultTickets, 
+            childTickets, 
+            seniorTickets, 
+            infantTickets, 
+            finalPrice: total // Pass the calculated total here
+          } 
+        });
       }
     };
   
     const handleSubmitButton = async (time) => {
-      
-      // adult = 0, child = 1, senior = 2, infant = 3;
-      const tickets = [adultTickets, childTickets, seniorTickets, infantTickets];
-      const  ticketTypeMap = ["adult", "child", "senior", "infant"];
-      let total = 0;
-
-      for (let i = 0; i < tickets.length; i++) {
-
-        if (tickets[i] > 0) {
-          const dateNow = new Date();
-          dateNow.setHours(dateNow.getHours() - (dateNow.getTimezoneOffset() / 60))
-          const dateString = dateNow.toISOString().split("T");
-
-          let purchasedForDate = new Date(selectedDate)
-          purchasedForDate.setHours(time - (dateNow.getTimezoneOffset() / 60))
-          const purchasedFor = purchasedForDate.toISOString().split("T");
-
-          const dataObject = {
-            date_purchased: `${dateString[0]} ${dateString[1].substring(0, dateString[1].indexOf("."))}`,
-            ticketType: i,
-            ticketPrice: calculateTotalPrice(format12Hours(time), ticketTypeMap[i]),
-            time_purchased: `${purchasedFor[0]} ${purchasedFor[1].substring(0, purchasedFor[1].indexOf("."))}`,
+      try {
+        const tickets = [adultTickets, childTickets, seniorTickets, infantTickets];
+        const ticketTypeMap = ["adult", "child", "senior", "infant"];
+        let total = 0;
+    
+        for (let i = 0; i < tickets.length; i++) {
+          if (tickets[i] > 0) {
+            const dateNow = new Date();
+            const dateString = dateNow.toISOString().split("T");
+    
+            let purchasedForDate = new Date(selectedDate);
+            purchasedForDate.setHours(time - (dateNow.getTimezoneOffset() / 60));
+            const purchasedFor = purchasedForDate.toISOString().split("T");
+    
+            const dataObject = {
+              date_purchased: `${dateString[0]} ${dateString[1].substring(0, dateString[1].indexOf("."))}`,
+              ticketType: i,
+              ticketPrice: calculateTotalPrice(format12Hours(time), ticketTypeMap[i]),
+              time_purchased: `${purchasedFor[0]} ${purchasedFor[1].substring(0, purchasedFor[1].indexOf("."))}`,
+            };
+            total += calculateTotalPrice(format12Hours(time), ticketTypeMap[i]);
+            await axios.post(`${url}/tickets/add/`, dataObject);
           }
-          total += calculateTotalPrice(format12Hours(time), ticketTypeMap[i]);
-          await axios.post(`${url}/tickets/add/`, dataObject);
         }
+        setFinalPrice(total);
+        return(total);
+      } catch (error) {
+        console.error("Error adding tickets:", error);
       }
-      setFinalPrice(total);
-    }
+    };
+    
 
     return (
       <div className="general-admission">
@@ -311,6 +325,46 @@ function TicketOptions() {
         </div>
       </div>
     );
+    // return (
+    //   <div className="general-admission">
+    //     <button 
+    //       className="update-tickets-button"
+    //       onClick={() => setShowTimeSlots(false)} 
+    //     >
+    //       Update Tickets
+    //     </button>
+    //     <h2>{formattedDate}</h2>
+    //     <div className="time-slots-container">
+    //       {/* Time slots generation logic */}
+    //       <div className="time-slot-column">
+    //         {Object.keys(pricing).map((timeSlot) => {
+    //           const hour = parseInt(timeSlot.split('am')[0].split('pm')[0]) || 12;
+    //           const time = format12Hours(hour);
+    //           return (
+    //             <div
+    //               className={`time-slot-box ${isTimeSlotDisabled(time) ? 'disabled' : ''}`}
+    //               onClick={() => handleTimeSlotClick(time)}
+    //               key={time}
+    //             >
+    //               <h4><strong>{time}</strong></h4>
+    //               {isTimeSlotDisabled(time) ? <p>Unavailable</p> : (
+    //                 <>
+    //                   <p>Total Price: <strong>${calculateTotalPrice(time).toFixed(2)}</strong></p>
+    //                   <p>
+    //                     {adultTickets > 0 && `${adultTickets} x Adult, `}
+    //                     {childTickets > 0 && `${childTickets} x Child, `}
+    //                     {seniorTickets > 0 && `${seniorTickets} x Senior, `}
+    //                     {infantTickets > 0 && `${infantTickets} x Infant`}
+    //                   </p>
+    //                 </>
+    //               )}
+    //             </div>
+    //           );
+    //         })}
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
   };
   
   
