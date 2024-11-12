@@ -4,7 +4,7 @@ import axios from 'axios';
 import moment from "moment";
 import { jsPDF } from "jspdf"; // Import jsPDF for PDF export
 import "jspdf-autotable"; // Optional: for table layout in PDF
-import { Bar} from "react-chartjs-2"; // Import Bar chart for the chart view
+import { Bar, Line} from "react-chartjs-2"; // Import Bar chart for the chart view
 import "../App.css";
 import "../index.css";
 
@@ -19,9 +19,15 @@ function TotalReport() {
   const [sortDirection, setSortDirection] = useState("asc");
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
+  
   const [currentPage, setCurrentPage] = useState(1); // Pagination
   const [viewMode, setViewMode] = useState("table"); // Toggle view mode between table and chart
   const itemsPerPage = 10;
+
+  const [chartType, setChartType] = useState("Bar");
+
+  const ChartComponent = chartType === "Bar" ? Bar : Line;
+
 
   const reportFieldMappings = {
     totalSales: { itemName: 'itemName', revenue: 'total_sales_revenue', quantity: 'total_quantity_sold', date: 'purchase_date' },
@@ -285,7 +291,20 @@ function TotalReport() {
           </table>
         ) : (
           <div className="chart-container mb-6">
-            <Bar data={chartData} options={{ responsive: true }} />
+          {/* <Bar data={chartData} options={{ responsive: true }} /> */}
+
+          <div className="flex justify-center items-center">
+            <select 
+                className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                onChange={(e) => setChartType(e.target.value)} 
+                value={chartType}
+            >
+                <option value="Bar">Bar Chart</option>
+                <option value="Line">Line Chart</option>
+            </select>
+        </div>
+          
+          <ChartComponent data={chartData} options={{ responsive: true }} />
           </div>
         )}
   
