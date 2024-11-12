@@ -26,7 +26,11 @@ const Payment = () => {
     // // Handle payment submission logic here
     // navigate('/confirmation', { state: { selectedTime, selectedDate, finalPrice, email } });
     alert('Payment successful');
-    navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
+    console.log(memberId);
+    if(memberId === 'undefined')
+      navigate(`/`);
+    else
+      navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
   };
 
   return (
