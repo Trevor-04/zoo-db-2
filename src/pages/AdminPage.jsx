@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { UserData } from '../charts/testData'; 
 import {BarChart, LineChart, PieChart} from '../components/charts/BarChart';
 
 const {url} = require('../config.json')[process.env.NODE_ENV];
@@ -77,11 +76,12 @@ const getRevenue = async (startDate, endDate) => {
       params
     });
 
-    if (ticketRevenue.status === 200) tempRev += Number(ticketRevenue.data.ticketProfit) || 0;
+    if (ticketRevenue.status === 200) tempRev += ticketRevenue.data.reduce((sum, ticket) => {
+      return sum + parseFloat(ticket.total_sales_revenue);
+    }, 0);
     if (restaurantRevenue.status === 200) tempRev += Number(restaurantRevenue.data.total_sales_revenue || 0);
     if (concessionRevenue.status === 200) tempRev += Number(concessionRevenue.data.total_sales_revenue || 0);
     if (giftRevenue.status === 200) tempRev += Number(giftRevenue.data.total_sales_revenue || 0);
-
     tempRev += Number(donations);
 
     (startDate && endDate) ? setWeeklyRevenue(tempRev) : setRevenue(tempRev);
@@ -160,6 +160,14 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
     startDateFormatted = new Date(startDate).toISOString().split("T")[0];
   }
 
+  const backgroundColors = [
+    "#6A9E73", // Restaurant Sales color
+    "#8BB174", // Concession Sales color
+    "#A1C181", // Gift Shop Sales color
+    "#B6CF9E", // Ticket Sales color
+    "#D1E2C4"  // Donations color
+  ];
+
   try {
     const response = await axios.get(`${url}/reports/charts/topProducts`, {
       params: { startDate, endDate, limit }
@@ -175,7 +183,7 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
           datasets: [{
             label: "Top Products by Revenue",
             data: topProducts.flatMap(productType => productType.products.map(p => p.total_revenue)),
-            backgroundColor: topProducts.flatMap((_, idx) => `rgba(75, 192, 192, 0.${idx + 3})`),
+            backgroundColor: backgroundColors,
             borderColor: topProducts.flatMap(() => 'rgba(75, 192, 192, 1)'),
             borderWidth: 1
           }]
@@ -187,7 +195,7 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
           datasets: [{
             label: "Top Products by Revenue (Weekly)",
             data: topProducts.flatMap(productType => productType.products.map(p => p.total_revenue)),
-            backgroundColor: topProducts.flatMap((_, idx) => `rgba(75, 192, 192, 0.${idx + 3})`),
+            backgroundColor: backgroundColors,
             borderColor: topProducts.flatMap(() => 'rgba(75, 192, 192, 1)'),
             borderWidth: 1
           }]
@@ -443,7 +451,7 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
         </div>
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
-            {/* <PieChart chartData = {weeklyRevenueData}></PieChart>  */}
+            <PieChart chartData = {weeklyRevenueData}></PieChart> 
         </div> 
 
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>

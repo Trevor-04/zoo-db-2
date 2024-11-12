@@ -108,7 +108,7 @@ router.get('/ticketRevenue', async (req, res) => {
     try {
         const {startDate, endDate} = req.query;
         const ticketRevenue = await reportsController.calculateTicketSales({startDate, endDate});
-        res.status(200).json({ticketProfit: ticketRevenue[0].ticketProfit})
+        res.status(200).json(ticketRevenue);
     } catch (err) {
         res.status(500).json({error: "Failed to calculate ticket revenue"});
     }

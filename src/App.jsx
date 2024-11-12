@@ -15,6 +15,9 @@ import ProductPage from './components/ProductPage';
 import Admin from './pages/AdminPage';
 import Member from './pages/MemberPage';
 import SettingsPage from "./components/SettingsPage";
+
+import TotalReport from "./components/totalReport"; 
+
 import './App.css';
 
 function App() {
@@ -42,6 +45,9 @@ function App() {
                      <Route path="/member/:memberId" element={<Member />} /> 
                    {/* <Route path="/settings" element={<SettingsPage />} />  */}
                    <Route path="/member/:memberId/settings" element={<SettingsPage />} />
+
+                    <Route path="/totalReport" element={<TotalReport />} />
+
                 </Routes>
             </Router>
         </div>

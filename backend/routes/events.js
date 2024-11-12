@@ -41,7 +41,7 @@ router.delete('/:eventID', verifyEmployeeRole, async (req, res) => {
     const { eventID } = req.params;
 
     try {
-        await eventsController.deleteEvent({ eventID });
+        await eventsController.deleteEvent(req.params);
         res.status(200).json({ message: 'Event deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete event' });
