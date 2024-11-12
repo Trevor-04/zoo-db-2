@@ -1,4 +1,5 @@
 const {query} = require('../functions/database');
+const { report } = require('../routes/reports');
 const {getTotalDonationAmount} = require('./donations');
 
 const pricing = {
@@ -16,7 +17,7 @@ const pricing = {
 
   module.exports.restaurantItemReports = async function (reportData) {
     const { startDate, endDate } = reportData;
-    console.log(startDate, endDate);
+    
     try {
         const baseQuery = `
             SELECT 
@@ -218,7 +219,6 @@ module.exports.getVisitors = async function (memberData) {
 
 module.exports.calculateTicketSales = async function (ticketData) {
     let {startDate, endDate} = ticketData;
-
     startDate = startDate ? startDate + " 00:00:00" : undefined;
     endDate = endDate ? endDate + " 23:59:59" : undefined;
     try {

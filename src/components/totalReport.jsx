@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import moment from "moment";
+import { jsPDF } from "jspdf"; // Import jsPDF for PDF export
+import "jspdf-autotable"; // Optional: for table layout in PDF
+import { Bar} from "react-chartjs-2"; // Import Bar chart for the chart view
 import "../App.css";
 import "../index.css";
 
@@ -16,8 +19,10 @@ function TotalReport() {
   const [sortDirection, setSortDirection] = useState("asc");
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
+  const [currentPage, setCurrentPage] = useState(1); // Pagination
+  const [viewMode, setViewMode] = useState("table"); // Toggle view mode between table and chart
+  const itemsPerPage = 10;
 
-  // Define report field mappings
   const reportFieldMappings = {
     totalSales: { itemName: 'itemName', revenue: 'total_sales_revenue', quantity: 'total_quantity_sold', date: 'purchase_date' },
     giftShop: { itemName: 'itemName', revenue: 'total_sales_revenue', quantity: 'total_quantity_sold', date: 'purchase_date' },
@@ -26,12 +31,35 @@ function TotalReport() {
     restaurant: { itemName: 'itemName', revenue: 'total_sales_revenue', quantity: 'total_quantity_sold', date: 'purchase_date' },
   };
 
-  // Dynamically set fields based on reportType
   const fields = reportFieldMappings[reportType];
 
-useEffect(() => {
-  fetchSalesData();
-}, [reportType, dateFilter, startDate, endDate]);
+  useEffect(() => {
+    switch (dateFilter) {
+      case "lastWeek":
+        setStartDate(moment().subtract(1, "weeks").startOf("week").format("YYYY-MM-DD"));
+        setEndDate(moment().subtract(1, "weeks").endOf("week").format("YYYY-MM-DD"));
+        break;
+      case "lastMonth":
+        setStartDate(moment().subtract(1, "months").startOf("month").format("YYYY-MM-DD"));
+        setEndDate(moment().subtract(1, "months").endOf("month").format("YYYY-MM-DD"));
+        break;
+      case "lastYear":
+        setStartDate(moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"));
+        setEndDate(moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"));
+        break;
+      case "between":
+        if (startDate && endDate) {
+          setStartDate(startDate);
+          setEndDate(endDate);
+        }
+        break;
+      default:
+        setStartDate(undefined);
+        setEndDate(undefined);
+    }
+
+    fetchSalesData();
+  }, [reportType, dateFilter, startDate, endDate]);
 
   const fetchSalesData = async () => {
     let fetchData;
@@ -52,7 +80,7 @@ useEffect(() => {
         fetchData = "/reports/all";
     }
     try {
-      const response = await axios.get(`${url}${fetchData}`, {params: {startDate, endDate}});
+      const response = await axios.get(`${url}${fetchData}`, { params: { startDate, endDate } });
       if (response.status !== 200) {
         throw new Error("Failed to fetch sales data");
       }
@@ -69,7 +97,6 @@ useEffect(() => {
 
   const sortedData = React.useMemo(() => {
     if (!sortField) return salesData;
-
     const sorted = [...salesData].sort((a, b) => {
       if (a[fields[sortField]] < b[fields[sortField]]) return -1;
       if (a[fields[sortField]] > b[fields[sortField]]) return 1;
@@ -85,54 +112,24 @@ useEffect(() => {
         .toLowerCase()
         .includes(itemBoughtSearchTerm.toLowerCase());
 
-    let dateMatches = false;
-    const saleDate = moment.utc(sale?.[fields.date]);
-    console.log(saleDate)
-    switch (dateFilter) {
-      case "lastWeek":
-        dateMatches = saleDate.isAfter(moment().subtract(1, "weeks").startOf("week")) &&
-                      saleDate.isBefore(moment().startOf("week"));
-        break;
-      case "lastMonth":
-        dateMatches = saleDate.isAfter(moment().subtract(1, "months").startOf("month")) &&
-                      saleDate.isBefore(moment().startOf("month"));
-        break;
-      case "lastYear":
-        dateMatches = saleDate.isAfter(moment().subtract(1, "years").startOf("year")) &&
-                      saleDate.isBefore(moment().startOf("year"));
-        break;
-      case "between":
-        if (startDate && endDate) {
-          const start = moment.utc(startDate).startOf("day");
-          const end = moment.utc(endDate).endOf("day");
-          dateMatches = saleDate.isBetween(start, end, undefined, "[]");
-        } else {
-          dateMatches = true;
-        }
-        break;
-      case "all":
-        dateMatches = true;
-        break;
-      default:
-        dateMatches = true;
-    }
-    return itemBoughtMatches && dateMatches;
+    return itemBoughtMatches;
   });
 
-  const totalAmountSpent = filteredData
-    ? filteredData.reduce((total, sale) => Number(total) + Number(sale[fields.revenue]), 0)
-    : 0;
-  
-  const totalQuantity = filteredData
-    ? filteredData.reduce((total, sale) => Number(total) + Number(sale[fields.quantity]), 0)
-    : 0;
+  const totalItems = filteredData ? filteredData.length : 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const paginatedData = filteredData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const handlePageChange = (page) => setCurrentPage(page);
+
+  const totalAmountSpent = filteredData ? filteredData.reduce((total, sale) => total + Number(sale[fields.revenue]), 0) : 0;
+  const totalQuantity = filteredData ? filteredData.reduce((total, sale) => total + Number(sale[fields.quantity]), 0) : 0;
+  
   const itemTotals = filteredData
-    ? filteredData.reduce((totals, sale) => {
-        totals[sale[fields.itemName]] = (totals[sale[fields.itemName]] || 0) + Number(sale[fields.quantity]);
-        return totals;
-      }, {})
-    : {};
+  ? filteredData.reduce((totals, sale) => {
+      totals[sale[fields.itemName]] = (totals[sale[fields.itemName]] || 0) + Number(sale[fields.quantity]);
+      return totals;
+    }, {})
+  : {};
 
   const mostPopularItem = Object.keys(itemTotals).reduce(
     (a, b) => (itemTotals[a] > itemTotals[b] ? a : b),
@@ -146,13 +143,69 @@ useEffect(() => {
     3: 'Infant Tickets'
   };
 
+  const downloadCSV = () => {
+    const csvContent = [
+      ["Item Bought", "Amount Earned", "Quantity", "Last Purchased"],  // Header row
+      ...filteredData.map((sale) => [
+        itemTypeMapping[sale[fields.itemName]] || sale[fields.itemName],  // Item Bought
+        sale[fields.revenue],                                             // Amount Earned
+        sale[fields.quantity],                                            // Quantity
+        sale[fields.date]                                                 // Last Purchased
+      ])
+    ]
+    .map((e) => e.join(","))
+    .join("\n");
+  
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "sales_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Sales Report", 14, 22);
+    doc.setFontSize(12);
+    doc.text(`Report Type: ${reportType}`, 14, 30);
+    doc.text(`Date Range: ${startDate || "N/A"} to ${endDate || "N/A"}`, 14, 36);
+
+    const tableColumn = ["Item Bought", "Amount Earned", "Quantity", "Last Purchased"];
+    const tableRows = filteredData.map((sale) => [
+      itemTypeMapping[sale[fields.itemName]] || sale[fields.itemName],
+      `$${sale[fields.revenue]}`,
+      sale[fields.quantity],
+      new Date(sale[fields.date]).toISOString().split("T")[0],
+    ]);
+
+    doc.autoTable({ startY: 40, head: [tableColumn], body: tableRows });
+    doc.save("sales_report.pdf");
+  };
+
+  const chartData = {
+    labels: filteredData?.map(sale => sale[fields.itemName]) || [],
+    datasets: [
+      {
+        label: "Amount Earned",
+        data: filteredData?.map(sale => sale[fields.revenue]) || [],
+        backgroundColor: "#8AA686",
+      },
+      {
+        label: "Quantity",
+        data: filteredData?.map(sale => sale[fields.quantity]) || [],
+        backgroundColor: "#C0BAA4",
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen bg-[#EFEDE5] w-screen flex justify-center">
       <div className="container mx-auto p-6">
-        <Link to="/admin" className="absolute top-32 left-10 inline-block text-2xl text-[#313639] hover:text-[#C0BAA4]"></Link>
         <h1 className="text-4xl text-center mb-6 mt-24 text-[#313639]">Sales Report</h1>
-
-        {/* Filter Controls */}
+  
         <div className="mb-4 flex justify-center space-x-4">
           <select
             value={reportType}
@@ -189,29 +242,30 @@ useEffect(() => {
               <input type="date" value={endDate || ""} onChange={(e) => setEndDate(e.target.value)} className="border-2 border-gray-300 bg-white h-10 px-5 rounded-lg text-sm focus:outline-none w-1/2" />
             </div>
           )}
+          
         </div>
 
-        {/* Sales Data Table */}
-        <table className="divide-y divide-gray-300 mb-6 w-full text-center mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('itemName')}>
-                {reportType === 'tickets' ? 'Ticket Type' : 'Item Bought'}
-              </th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('revenue')}>
-                Amount Earned
-              </th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('quantity')}>
-                Quantity
-              </th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('date')}>
-                Date
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData &&
-              filteredData.map((sale, index) => (
+        <div className="mb-4 flex justify-center space-x-4">
+        <button onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")} className="bg-[#8AA686] text-white py-2 px-4 rounded">
+            {viewMode === "table" ? "Switch to Chart View" : "Switch to Table View"}
+          </button>
+          <button onClick={downloadPDF} className="bg-[#8AA686] text-white py-2 px-4 rounded">Download PDF</button>
+          <button onClick={downloadCSV} className="bg-[#8AA686] text-white py-2 px-4 rounded">Download CSV</button>
+        </div>
+        
+  
+        {viewMode === "table" ? (
+          <table className="divide-y divide-gray-300 mb-6 w-full text-center bg-white shadow-md rounded-lg overflow-hidden">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('itemName')}>Item Bought</th>
+                <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('revenue')}>Amount Earned</th>
+                <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('quantity')}>Quantity</th>
+                <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick('date')}>Last Purchased</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedData?.map((sale, index) => (
                 <tr key={index} className="text-gray-700">
                   <td className="px-4 py-2 border">{itemTypeMapping[sale[fields.itemName]] || sale[fields.itemName]}</td>
                   <td className="px-4 py-2 border">${sale[fields.revenue]}</td>
@@ -219,8 +273,8 @@ useEffect(() => {
                   <td className="px-4 py-2 border">{new Date(sale[fields.date]).toISOString().split("T")[0]}</td>
                 </tr>
               ))}
-          </tbody>
-          <tfoot className="bg-gray-50">
+            </tbody>
+            <tfoot className="bg-gray-50">
             <tr>
               <td className="py-2 border">Most Popular Item: {mostPopularItem}</td>
               <td className="py-2 border">Total Earned: ${totalAmountSpent.toFixed(0)}</td>
@@ -228,7 +282,29 @@ useEffect(() => {
               <td className="py-2 border">Total Count: {filteredData ? filteredData.length : 0}</td>
             </tr>
           </tfoot>
-        </table>
+          </table>
+        ) : (
+          <div className="chart-container mb-6">
+            <Bar data={chartData} options={{ responsive: true }} />
+          </div>
+        )}
+  
+        {/* Pagination Controls: only visible in table view */}
+        {viewMode === "table" && (
+          <div className="flex justify-center mt-4 space-x-2">
+            <button onClick={() => handlePageChange(Math.max(currentPage - 1, 1))} className={`px-3 py-1 border rounded-md ${currentPage === 1 ? "bg-[#8AA686] text-white opacity-50" : "bg-[#8AA686] text-white hover:bg-[#6C8A5E]"}`} disabled={currentPage === 1}>
+              Previous
+            </button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button key={i} onClick={() => handlePageChange(i + 1)} className={`px-3 py-1 border rounded-md ${currentPage === i + 1 ? "bg-[#8AA686] text-white" : "bg-[#8AA686] text-white hover:bg-[#6C8A5E]"}`}>
+                {i + 1}
+              </button>
+            ))}
+            <button onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} className={`px-3 py-1 border rounded-md ${currentPage === totalPages ? "bg-[#8AA686] text-white opacity-50" : "bg-[#8AA686] text-white hover:bg-[#6C8A5E]"}`} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
