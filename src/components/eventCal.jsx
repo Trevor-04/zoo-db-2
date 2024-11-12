@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from "react-router-dom";
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
@@ -18,7 +19,8 @@ const EventCal = () => {
   const [newMembersOnly, setNewMembersOnly] = useState('');
   const [newExhibitID, setNewExhibitID] = useState('');
   const [newSponsorID, setNewSponsorID] = useState('');
-
+  const [isEditMode, setIsEditMode] = useState(false);
+  const location = useLocation();
   // Retrieve role from token in localStorage
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -36,7 +38,15 @@ const EventCal = () => {
   }, []);
 
   console.log("Role:", role); // Check if the role is being set correctly
-
+  // Function to toggle edit mode
+const toggleEditMode = () => {
+  setIsEditMode((prevMode) => !prevMode);
+};
+useEffect(() => {
+  if (location.state && location.state.editMode) {
+    setIsEditMode(location.state.editMode);
+  }
+}, [location.state]);
   // Fetch events from the backend
   async function getAllEvents() {
     try {
@@ -168,7 +178,7 @@ const EventCal = () => {
 
   return (
     <div className="calendar-page">
-      {role === 'employee' && (
+      {role === 'employee' && isEditMode && (
         <div className="button-container">
           <button className="side-button add-event-button" onClick={openAddEventModal}>Add Event</button>
         </div>

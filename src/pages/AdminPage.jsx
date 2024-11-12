@@ -387,10 +387,10 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
         </button>
 
         <button 
-          onClick={toggleDropdown}
+          onClick={() => navigate(`/Admin/${employeeID}/events`, { state: { editMode: true } })}
           className="ml-8 bg-[#165e229e] text-white font-bold w-[100px] h-[30px] rounded-2xl"
         >
-          Button 2
+          Edit events
         </button>
 
           {/* Dropdown Menu */}
