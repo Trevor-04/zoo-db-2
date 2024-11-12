@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import './payment.css'; // You can create this CSS file to add styles
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { memberId } = useParams(); // Get memberId from the URL
   const {
     selectedTime,
     selectedDate,
@@ -15,38 +16,52 @@ const Payment = () => {
     finalPrice,
   } = location.state || {};
 
-  const [email, setEmail] = useState(''); // Email input state
+  const [email, setEmail] = useState('');
 
   const handleBackToTimeSlot = () => {
-    navigate('/tickets'); // Assuming '/tickets' is the route for the ticket selection page
+    navigate('/tickets');
+  };
+
+  const handleSubmit = () => {
+    // // Handle payment submission logic here
+    // navigate('/confirmation', { state: { selectedTime, selectedDate, finalPrice, email } });
+    alert('Payment successful');
+    navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
   };
 
   return (
-    <div>
-      <h2>Payment Page</h2>
-      <p>Selected Time: {selectedTime}</p>
-      <p>Selected Date: {selectedDate}</p>
-      <p>Adult Tickets: {adultTickets}</p>
-      <p>Child Tickets: {childTickets}</p>
-      <p>Senior Tickets: {seniorTickets}</p>
-      <p>Infant Tickets: {infantTickets}</p>
-      <p>Final Price: ${finalPrice}</p>
+    <div className="payment-container">
+      <h2 className="payment-title">Payment Page</h2>
 
-      {/* Email input field */}
-      <div>
-        <label>Email Address:</label>
-        <input 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
+      <div className="payment-info">
+        <p><strong>Selected Time:</strong> {selectedTime}</p>
+        <p><strong>Selected Date:</strong> {selectedDate}</p>
+        <p><strong>Adult Tickets:</strong> {adultTickets}</p>
+        <p><strong>Child Tickets:</strong> {childTickets}</p>
+        <p><strong>Senior Tickets:</strong> {seniorTickets}</p>
+        <p><strong>Infant Tickets:</strong> {infantTickets}</p>
+        <p><strong>Final Price:</strong> ${finalPrice}</p>
+      </div>
+
+      <div className="email-input">
+        <label htmlFor="email">Email Address:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
         />
       </div>
 
-      {/* Back button to return to ticket selection page */}
-      <button onClick={handleBackToTimeSlot}>Back to Select Time Slot</button>
-
-      {/* Payment form will go here */}
+      <div className="button-container">
+        <button className="back-btn" onClick={handleBackToTimeSlot}>
+          Back to Select Time Slot
+        </button>
+        <button className="submit-btn" onClick={handleSubmit}>
+          Submit Payment
+        </button>
+      </div>
     </div>
   );
 };

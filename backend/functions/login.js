@@ -95,7 +95,7 @@ module.exports.validateEmployeeLogin = async function ({ email, password }) {
             `SELECT employeeID, role FROM Employee_logins WHERE employeeEmail = ? AND employeePassword = ?`,
             [email, password]
         );
-        console.log(results);
+        //console.log(results);
         if (results.length > 0) {
             const employee = results[0];
             const token = jwt.sign(
@@ -103,7 +103,7 @@ module.exports.validateEmployeeLogin = async function ({ email, password }) {
                 JWT_SECRET,
                 { expiresIn: '1h' }
             );
-            console.log("Generated Token for Employee:", token);
+            //console.log("Generated Token for Employee:", token);
             return {
                 role: employee.role === 'admin' ? 'admin' : 'employee',
                 ID: employee.employeeID,

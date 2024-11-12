@@ -7,7 +7,7 @@ export default function MemberPage() {
   const [memberData, setMemberData] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [showMembershipStatus, setShowMembershipStatus] = useState(false);
+  const [showAnimals, setShowAnimals] = useState(false);
   const [showRewardPoints, setShowRewardPoints] = useState(false);
   const [showRecentPurchases, setShowRecentPurchases] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -46,6 +46,21 @@ export default function MemberPage() {
     }
 };
 
+  const goToLogout = () =>{
+    navigate(`/`);
+  }
+
+  const goToTickets = () => {
+    if (memberId) {
+      navigate(`/member/${memberId}/tickets`);
+    }
+  };
+  const goToAnimals = () => {
+    if (memberId) {
+      navigate(`/member/${memberId}/animals`);
+    }
+  };
+
 const formatDate = (isoDate) => {
   if (!isoDate) return ''; // Handle if no date is available
   return new Date(isoDate).toISOString().split('T')[0]; // Format to YYYY-MM-DD
@@ -54,9 +69,9 @@ const formatDate = (isoDate) => {
     setShowProfile((prev) => !prev);
   };
 
-  const toggleMembershipStatus = () => {
-    setShowMembershipStatus((prev) => !prev);
-  };
+  // const toggleAnimalStatus = () => {
+  //   setShowAnimals((prev) => !prev);
+  // };
 
   const toggleRewardPoints = () => {
     setShowRewardPoints((prev) => !prev);
@@ -92,7 +107,7 @@ const formatDate = (isoDate) => {
   return (
     <div>
 
-      <header className="bg-white text-[#165e229e] p-5 flex items-center justify-between" ref={dropdownRef}>
+      <header className="bg-[#faf0e6] text-[#165e229e] p-5 flex items-center justify-between" ref={dropdownRef}>
         {/* Logo Section */}
       <Link to="/" className="flex items-center">
         <img className="h-[70px]" src="/Coog_Zoo.png" alt="logo" />
@@ -111,22 +126,19 @@ const formatDate = (isoDate) => {
         {isDropdownOpen && (
   <div className="absolute right-0 mt-20 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
     <ul className="py-1">
-      <li>
-        <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-          My Profile
-        </button>
-      </li>
-      <li>
-        <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-          Ticket History
-        </button>
-      </li>
-      <li>
+    <li>
         <button 
           onClick={goToSettings}
           className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
         >
           Settings
+        </button>
+      </li>
+      <li>
+        <button 
+        onClick={goToLogout}
+        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+          Logout
         </button>
       </li>
     </ul>
@@ -168,17 +180,17 @@ const formatDate = (isoDate) => {
 
         <div 
           className="membership-status text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
-          onClick={toggleMembershipStatus}
+          onClick={goToAnimals}
         >
-          <h3 className="font-bold">Membership Status</h3>
-          {showMembershipStatus && (
+          <h3 className="font-bold">View our animals</h3>
+          {/* {showMembershipStatus && (
             <div className="mt-2">
               <p><strong>Type:</strong> {memberData?.memberType}</p>
               <p><strong>Term:</strong> {memberData?.memberTerm}</p>
               <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
               <p><strong>Last Billed:</strong> {memberData?.last_billed}</p>
             </div>
-          )}
+          )} */}
         </div>
 
         <div 
@@ -195,20 +207,26 @@ const formatDate = (isoDate) => {
         </div>
 
         <div 
-          className="purchases text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
-          onClick={toggleRecentPurchases}
-        >
-          <h3 className="font-bold">Recent Purchases</h3>
-          {showRecentPurchases && (
-            <div className="mt-2">
-              <ul className="list-disc list-inside">
-                <li>Item 1 - $10.00 (January 1, 2024)</li>
-                <li>Item 2 - $5.00 (December 25, 2023)</li>
-                <li>Item 3 - $20.00 (November 15, 2023)</li>
-              </ul>
-            </div>
-          )}
+      className="purchases text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
+      onClick={toggleRecentPurchases}
+    >
+      <h3 className="font-bold">Recent Purchases</h3>
+      {showRecentPurchases && (
+        <div className="mt-2">
+          <ul className="list-disc list-inside">
+            <li>Item 1 - $10.00 (January 1, 2024)</li>
+            <li>Item 2 - $5.00 (December 25, 2023)</li>
+            <li>Item 3 - $20.00 (November 15, 2023)</li>
+          </ul>
+          <button 
+            onClick={goToTickets} 
+            className="mt-4 bg-[#165e229e] text-white font-bold py-2 px-4 rounded"
+          >
+            Buy Tickets
+          </button>
         </div>
+      )}
+    </div>
 
         <div 
           className="notifications text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"

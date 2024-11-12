@@ -19,10 +19,10 @@ function AdminLogin() {
       });
   
       if (response.status === 200) {
-        const { token, role } = response.data; // Assuming token and role are returned in the response
-        console.log("Response Data:", response.data); // Log full response data
+        const { token, role, ID } = response.data; // Assuming token and role are returned in the response
+        //console.log("Response Data:", response.data); // Log full response data
         console.log("Role:", role); // Log role to confirm
-        console.log("Token:", token); // Log token to confirm
+        //console.log("Token:", token); // Log token to confirm
   
         if (token) {
           // Store the token in localStorage
@@ -32,9 +32,9 @@ function AdminLogin() {
   
         // Adjusted Redirect Logic Based on Role
         if (role === 'admin') {
-          navigate('/Admin'); // Redirect to admin dashboard
+          navigate(`/Admin/${ID}`); // Redirect to admin dashboard
         } else if (role === 'employee') {
-          navigate('/Admin'); // Redirect to admin dashboard
+          navigate(`/Admin/${ID}`); // Redirect to admin dashboard
         } else {
           navigate('/Member'); // Redirect to member dashboard or another route
         }

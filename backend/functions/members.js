@@ -110,3 +110,20 @@ module.exports.validateMemberData = async function (memberData) {
     }
 }
 
+module.exports.deleteMember = async function (memberID) {
+    try {
+        return await query(`DELETE FROM Members WHERE memberID = ?`, [memberID]);
+    } catch (err) {
+        console.error("Error deleting member:", err);
+        throw err;
+    }
+};
+module.exports.getAllMembers = async function () {
+    try {
+        const result = await query(`SELECT * FROM Members`);
+        return result;
+    } catch (err) {
+        console.error("Error fetching members:", err);
+        throw err;
+    }
+};

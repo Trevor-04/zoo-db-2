@@ -96,4 +96,35 @@ router.post('/billed', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const memberID = parseInt(req.params.id);
+        if (isNaN(memberID)) {
+            return res.status(400).json({ error: "Invalid member ID" });
+        }
+
+        const result = await membersController.deleteMember(memberID);
+        if (result.affectedRows === 0) {
+            // If no rows were affected, the member might not exist
+            return res.status(404).json({ error: "Member not found" });
+        }
+
+        res.status(200).json({ message: "Member deleted successfully" });
+    } catch (error) {
+        console.error("Error in DELETE /members/:id:", error); // Log error details
+        res.status(500).json({ error: "Failed to delete member" });
+    }
+});
+
+// Route to get all members
+router.get('/', async (req, res) => {
+    try {
+        const members = await membersController.getAllMembers();
+        res.status(200).json({ members });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to retrieve members" });
+    }
+});
+
+
 module.exports = router;

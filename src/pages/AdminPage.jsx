@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import {BarChart, LineChart, PieChart} from '../components/charts/BarChart';
 
@@ -9,7 +10,7 @@ const {url} = require('../config.json')[process.env.NODE_ENV];
 export default function AdminPage() {
 const [isDropdownOpen, setIsDropdownOpen]  = useState(false);
 const dropdownRef = useRef();
-
+const { employeeID } = useParams();
 const [visitors, setVisitors] = useState(0);
 const [subscribers, setSubscribers] = useState(0);
 const [sales, setSales] = useState(0);
@@ -20,9 +21,33 @@ const [weeklyRevenue, setWeeklyRevenue] = useState(0);
 const [revenueChartData, setRevenueChartData] = useState([]);
 const [revenueWeeklyChartData, setRevenueWeeklyChartData] = useState([])
 
+const [members, setMembers] = useState([]);
+
 const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
 };
+
+// Function to fetch all members
+const fetchMembers = async () => {
+  try {
+    const response = await axios.get(`${url}/members`);
+    if (response.status === 200) {
+      setMembers(response.data.members);
+    }
+  } catch (error) {
+    console.error("Error fetching members:", error);
+  }
+};
+
+const deleteMember = async (memberID) => {
+  try {
+    await axios.delete(`${url}/members/${memberID}`);
+    setMembers(members.filter((member) => member.memberID !== memberID));
+  } catch (error) {
+    console.error("Error deleting member:", error);
+  }
+};
+
 
 const getVisitors = async (startDate, endDate) => {
   try {
@@ -208,7 +233,6 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
   }
 };
 
-
   // Close the dropdown if the user clicks outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -239,6 +263,10 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
     getSalesCharts();
     getSalesCharts(startDate, endDate);
     getTopProductsChart();
+  }, []);
+
+  useEffect(() => {
+    fetchMembers();
   }, []);
 
   const [revenueData, setRevenueData] = useState({
@@ -398,6 +426,7 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 mt-[20px]">
+
         <div className="sales text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm">
             Sales this week
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 flex ml-2">
@@ -446,17 +475,43 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
           <p>${donations}</p>
         </div>
 
-        <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
-            <PieChart chartData = {revenueData}> </PieChart>
+        <div className='text-[#165e229e] bg-white p-6 rounded-lg shadow-sm h-[500px] w-full'>
+          Total Revenue Pie Chart
+          <PieChart chartData = {revenueData}> </PieChart>
         </div>
 
+        <div className='text-[#165e229e] bg-white p-6 rounded-lg shadow-sm h-[500px] w-full'>
+          Total Revenue by Week Pie Chart
+          {/* <PieChart chartData = {weeklyRevenueData}></PieChart>  */}
         <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
             <PieChart chartData = {weeklyRevenueData}></PieChart> 
         </div> 
 
-        <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
+        <div className='text-[#165e229e] bg-white p-6 rounded-lg shadow-sm h-[500px] w-full'>
+          Total Revenue by Item
           <BarChart chartData={topProductsData} />
-        </div>  
+        </div>
+
+        <div className="members-list text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm mt-4">
+          Current Members:
+          <div style={{ maxHeight: '200px', overflowY: 'auto' }}> {/* Adjust height as needed */}
+            <ul>
+              {members.map((member) => (
+                <li key={member.memberID} className="flex justify-between items-center py-2">
+                  <div>
+                    {member.memberFName} {member.memberLName} ({member.memberEmail})
+                  </div>
+                  <button
+                    onClick={() => deleteMember(member.memberID)}
+                    className="ml-4 bg-red-500 text-white font-bold px-4 py-2 rounded"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
 
      

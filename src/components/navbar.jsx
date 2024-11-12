@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 export default function Navbar() {
   const location = useLocation();
 
-  if (location.pathname === '/Member') {
+  if (location.pathname.startsWith('/member')) {
     return null;
   }
   return (
