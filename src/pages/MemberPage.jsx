@@ -162,9 +162,9 @@ const formatDate = (isoDate) => {
               <p><strong>Phone:</strong> {memberData?.memberPhone}</p>
               <p><strong>Birthday:</strong> {formatDate(memberData?.memberBirthday)}</p>
               <p><strong>Membership Type:</strong> {memberData?.memberType}</p>
-              <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
+              <p><strong>Subscribed On:</strong> {formatDate(memberData?.subscribed_on)}</p>
               <p><strong>Membership Term:</strong> {memberData?.memberTerm}</p>
-              <p><strong>Last Billed:</strong> {memberData?.last_billed}</p>
+              <p><strong>Last Billed:</strong> {formatDate(memberData?.last_billed)}</p>
             </div>
           ) : (
             <p>Click "My Profile" to view your details.</p>
@@ -228,21 +228,26 @@ const formatDate = (isoDate) => {
       )}
     </div>
 
-        <div 
-          className="notifications text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
-          onClick={toggleNotifications}
-        >
-          <h3 className="font-bold">Notifications</h3>
-          {showNotifications && (
-            <div className="mt-2">
-              <ul className="list-disc list-inside">
-                <li>Reminder: Membership renewal on January 1, 2024</li>
-                <li>New events available for members!</li>
-                <li>Check out our new exhibits this month!</li>
-              </ul>
-            </div>
-          )}
+    <div 
+    className="notifications text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
+    onClick={toggleNotifications}
+>
+    <h3 className="font-bold">Notifications</h3>
+    {showNotifications && (
+        <div className="mt-2">
+            {memberData?.expiry_notification ? (
+                <p>{memberData.expiry_notification}</p>
+            ) : (
+                <ul className="list-disc list-inside">
+                    <li>Reminder: Membership renewal on {memberData?.subscribed_on}</li>
+                    <li>New events available for members!</li>
+                    <li>Check out our new exhibits this month!</li>
+                </ul>
+            )}
         </div>
+    )}
+  </div>
+
       </div>
     </div>
   );

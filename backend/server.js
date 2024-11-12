@@ -67,6 +67,14 @@ app.post("/payment", cors(), async (req, res) => {
 	}
 })
 
+// Email notifications
+
+// Grab functions
+const notifications = require('./functions/notifications');
+
+// Start polling for unsent notifications every 5 minutes
+setInterval(notifications.sendNotifications, 300000); // 5 minutes
+
 // Routes
 app.use("/animals", animalRoutes);
 app.use("/events", eventsRoutes);
