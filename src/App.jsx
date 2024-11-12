@@ -35,6 +35,7 @@ function App() {
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="member/:memberId/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
+                    <Route path="/member/:memberId/payment" element={<Payment />} />
                    {/* <Route path="/Donate" element={<Donate />} /> */}
                    {/* <Route path="/DonatePage" element={<DonatePage/>} />  */}
                    <Route path="/donatePage" element={<Navigate to="/donatePage.html" />} />
