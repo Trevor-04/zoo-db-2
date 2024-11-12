@@ -46,7 +46,8 @@ router.get('/profile', verifyToken, async (req, res) => {
                 memberPhone: member.memberPhone,
                 memberFName: member.memberFName,
                 memberLName: member.memberLName,
-                memberBirthday: member.memberBirthday
+                memberBirthday: member.memberBirthday,
+                expiry_notification: member.expiry_notification // Include the expiry notification
             };
             res.status(200).json(formattedMember);
         } else {
