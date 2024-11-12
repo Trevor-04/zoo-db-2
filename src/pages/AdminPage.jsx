@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {BarChart, LineChart, PieChart} from '../components/charts/BarChart';
 
@@ -22,7 +22,7 @@ const [revenueChartData, setRevenueChartData] = useState([]);
 const [revenueWeeklyChartData, setRevenueWeeklyChartData] = useState([])
 
 const [members, setMembers] = useState([]);
-
+const navigate = useNavigate(); // Initialize useNavigate
 const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
 };
@@ -378,11 +378,12 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
       <header className="bg-white text-[#165e229e] p-5 flex items-cente" ref={dropdownRef}>
         <h1>Admin Page</h1>
 
+        {/* Button to redirect to Total Reports */}
         <button
-          onClick={toggleDropdown}
-          className="ml-8 bg-[#165e229e] text-white font-bold w-[100px] h-[30px] rounded-2xl"
+          onClick={() => navigate(`/Admin/${employeeID}/totalReport`)}
+          className="ml-8 bg-[#165e229e] text-white font-bold w-[120px] h-[35px] rounded-2xl"
         >
-          Button 1
+          View Reports
         </button>
 
         <button 
