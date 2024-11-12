@@ -162,7 +162,7 @@ const formatDate = (isoDate) => {
               <p><strong>Phone:</strong> {memberData?.memberPhone}</p>
               <p><strong>Birthday:</strong> {formatDate(memberData?.memberBirthday)}</p>
               <p><strong>Membership Type:</strong> {memberData?.memberType}</p>
-              <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
+              <p><strong>Subscribed On:</strong> {formatDate(memberData?.subscribed_on)}</p>
               <p><strong>Membership Term:</strong> {memberData?.memberTerm}</p>
               <p><strong>Last Billed:</strong> {memberData?.last_billed}</p>
             </div>
