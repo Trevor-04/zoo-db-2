@@ -71,7 +71,6 @@ function TotalReport() {
       if (response.status != 200) {
         throw new Error("Failed to fetch sales data");
       }
-      console.log(response.data);
       setSalesData(response.data);
     } catch (error) {
       console.error("Error fetching sales data:", error);
@@ -118,52 +117,57 @@ function TotalReport() {
     restaurant: { itemName: 'itemName', revenue: 'total_sales_revenue', quantity: 'total_quantity_sold', date: 'purchase_date' },
   };
 
-  const fields = reportFieldMappings[reportType]
+  const fields = reportFieldMappings[reportType];
 
-  // Modify your filter function to filter by itemName, and date
-  const filteredData = salesData?.filter((sale) => {
-
-    const itemBoughtMatches = sale?.[fields.itemName] !== undefined &&
+// Modify your filter function to filter by itemName and date
+const filteredData = salesData?.filter((sale) => {
+  // Check item name match
+  const itemBoughtMatches = sale?.[fields.itemName] !== undefined &&
     sale[fields.itemName]
       .toString()
       .toLowerCase()
       .includes(itemBoughtSearchTerm.toLowerCase());
 
-    let dateMatches;
-    const saleDate = sale?.[fields.date];
+  // Check date match
+  let dateMatches = false; // Default to false
+  const saleDate = moment.utc(sale?.[fields.date]); // Use moment.utc for ISO format
 
-    switch (dateFilter) {
-      case "lastWeek":
-        dateMatches = moment(saleDate).isAfter(moment().subtract(1, "weeks"));
-        break;
-      case "lastMonth":
-        dateMatches = moment(saleDate).isAfter(moment().subtract(1, "months"));
-        break;
-      case "lastYear":
-        dateMatches = moment(saleDate).isAfter(moment().subtract(1, "years"));
-        break;
-      case "between":
-        dateMatches = moment(new Date(saleDate)).isBetween( // was order date but idk wtf that is 
-          moment(new Date(startDate)),
-          moment(new Date(endDate)),
-          undefined,
-          "[]"
-        );
-        break;
-      case "all":
-        dateMatches = true; // Allow all dates
-        break;
-      default:
-        dateMatches = true; // Default to true for other filters
-    }
-    return itemBoughtMatches && dateMatches;
-  });
+  switch (dateFilter) {
+    case "lastWeek":
+      dateMatches = saleDate.isAfter(moment().subtract(1, "weeks").startOf("week")) &&
+                    saleDate.isBefore(moment().startOf("week"));
+      break;
+    case "lastMonth":
+      dateMatches = saleDate.isAfter(moment().subtract(1, "months").startOf("month")) &&
+                    saleDate.isBefore(moment().startOf("month"));
+      break;
+    case "lastYear":
+      dateMatches = saleDate.isAfter(moment().subtract(1, "years").startOf("year")) &&
+                    saleDate.isBefore(moment().startOf("year"));
+      break;
+    case "between":
+      if (startDate && endDate) {
+        const start = moment.utc(startDate).startOf("day");
+        const end = moment.utc(endDate).endOf("day");
+        dateMatches = saleDate.isBetween(start, end, undefined, "[]");
+      } else {
+        dateMatches = true;
+      }
+      break;
+    case "all":
+      dateMatches = true; // Allow all dates
+      break;
+    default:
+      dateMatches = true; // Default to true for other filters
+  }
+
+  return itemBoughtMatches && dateMatches;
+});
 
 
   const itemTotals = filteredData
   ? filteredData.reduce((totals, sale) => {
-      console.log(`${sale[fields.itemName]} = ${sale[fields.quantity]}`);
-      totals[sale[fields.itemName]] = (totals[sale[fields.itemName]] || 0) + sale[fields.quantity];
+      totals[sale[fields.itemName]] = Number(sale[fields.quantity]);
       return totals;
     }, {})
   : {};
@@ -176,7 +180,7 @@ function TotalReport() {
   const totalAmountSpent = filteredData
     ? filteredData.reduce((total, sale) => total + Number(sale[fields.revenue]), 0)
     : 0;
-    console.log(totalAmountSpent)
+    
   const totalQuantity = filteredData
     ? filteredData.reduce((total, sale) => total + Number(sale[fields.quantity]), 0)
     : 0;
@@ -212,7 +216,7 @@ function TotalReport() {
           <input
             className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
             type="text"
-            value={itemBoughtSearchTerm}
+            value={itemBoughtSearchTerm || ""}
             onChange={handleItemBoughtSearchTermChange}
             placeholder="Search by item bought"
           />
@@ -231,13 +235,13 @@ function TotalReport() {
             <div className="w-1/3 flex justify-between">
               <input
                 type="date"
-                value={startDate}
+                value={startDate || ""}
                 onChange={handleStartDateChange}
                 className="border-2 border-gray-300 bg-white h-10 px-5 rounded-lg text-sm focus:outline-none w-1/2 mr-2"
               />
               <input
                 type="date"
-                value={endDate}
+                value={endDate || ""}
                 onChange={handleEndDateChange}
                 className="border-2 border-gray-300 bg-white h-10 px-5 rounded-lg text-sm focus:outline-none w-1/2"
               />

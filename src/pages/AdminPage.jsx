@@ -482,9 +482,7 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
 
         <div className='text-[#165e229e] bg-white p-6 rounded-lg shadow-sm h-[500px] w-full'>
           Total Revenue by Week Pie Chart
-          {/* <PieChart chartData = {weeklyRevenueData}></PieChart>  */}
-        <div className='bg-white p-6 rounded-lg shadow-sm h-[400px] w-full'>
-            <PieChart chartData = {weeklyRevenueData}></PieChart> 
+          <PieChart chartData = {weeklyRevenueData}></PieChart> 
         </div> 
 
         <div className='text-[#165e229e] bg-white p-6 rounded-lg shadow-sm h-[500px] w-full'>
