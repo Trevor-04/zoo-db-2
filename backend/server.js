@@ -20,6 +20,7 @@ const ticketsRoutes = require("./routes/tickets");
 const inventoryRoutes = require("./routes/inventory");
 const donationRoutes = require("./routes/donations");
 const employeeRoutes = require('./routes/employeeRoutes');
+const notificationsRoutes = require('./routes/notifications');
 
 // Initialize express
 const app = express();
@@ -73,7 +74,7 @@ app.post("/payment", cors(), async (req, res) => {
 const notifications = require('./functions/notifications');
 
 // Start polling for unsent notifications every 5 minutes
-setInterval(notifications.sendNotifications, 300000); // 5 minutes
+setInterval(notifications.sendNotifications, 60000); // 1 minute
 
 // Routes
 app.use("/animals", animalRoutes);
@@ -86,6 +87,7 @@ app.use("/reports", reportsRoutes);
 app.use("/tickets", ticketsRoutes);
 app.use("/inventory", inventoryRoutes);
 app.use("/donations", donationRoutes);
+app.use('/notifications', notificationsRoutes);
 
 
 const serverPort = environment === 'production' ? process.env.PORT : port;
