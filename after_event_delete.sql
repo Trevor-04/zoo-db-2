@@ -10,11 +10,6 @@ BEGIN
     SET eventSubject = CONCAT('Notification: Event "', OLD.eventName, '" has been cancelled');
     SET eventMessage = CONCAT('We regret to inform you that the event "', OLD.eventName, '" scheduled on ', OLD.eventTime, ' has been cancelled.');
 
-    -- Notify Members
-    INSERT INTO Email_notifications (recipientEmail, subject, message)
-    SELECT memberEmail, eventSubject, eventMessage
-    FROM Members;
-
     -- Notify Administration Employees
     INSERT INTO Email_notifications (recipientEmail, subject, message)
     SELECT email, eventSubject, eventMessage
