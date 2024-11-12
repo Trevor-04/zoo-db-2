@@ -51,7 +51,7 @@ function App() {
                    <Route path="/member/:memberId/settings" element={<SettingsPage />} />
 
                     <Route path="/totalReport" element={<TotalReport />} />
-
+                    <Route path="Admin/:employeeID/totalReport" element={<TotalReport />} />
                 </Routes>
             </Router>
         </div>
