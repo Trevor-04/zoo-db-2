@@ -16,13 +16,14 @@ const pricing = {
 
   module.exports.restaurantItemReports = async function (reportData) {
     const { startDate, endDate } = reportData;
+    console.log(startDate, endDate);
     try {
         const baseQuery = `
             SELECT 
                 I.itemName AS itemName, 
                 I.itemID AS itemID, 
                 SUM(R.quantity) AS total_quantity_sold,
-                (I.itemPrice * SUM(R.quantity)) AS total_sales_revenue,
+                SUM(I.itemPrice * R.quantity) AS total_sales_revenue,
                 MAX(R.purchased_at) as purchase_date
             FROM Inventory I
             JOIN Restaurant_sales R ON I.itemID = R.itemID
@@ -73,7 +74,7 @@ module.exports.restaurantTotalReport = async function (reportData) {
                 I.itemName as itemName,
                 I.itemID as itemID, 
                 SUM(C.quantity) AS total_quantity_sold,
-                (I.itemPrice * SUM(C.quantity)) AS total_sales_revenue,
+                SUM(I.itemPrice * C.quantity) AS total_sales_revenue,
                 MAX(C.purchased_at) as purchase_date
             FROM Inventory I
             JOIN Concession_sales C ON I.itemID = C.itemID
@@ -125,7 +126,7 @@ module.exports.giftShopItemReport = async function (reportData) {
                 I.itemName as itemName,
                 I.itemID as itemID, 
                 SUM(G.quantity) AS total_quantity_sold,
-                (I.itemPrice * SUM(G.quantity)) AS total_sales_revenue,
+                SUM(I.itemPrice * G.quantity) AS total_sales_revenue,
                 MAX(G.purchased_at) as purchase_date
             FROM Inventory I
             JOIN Gift_shop_sales G ON I.itemID = G.itemID
@@ -349,102 +350,51 @@ function format12Hours(time) {
 
 module.exports.combinedItemReport = async function (reportData) {
     const { startDate, endDate } = reportData;
-    
     try {
-        // Define the base query to fetch combined data from all three sales sources
-        const baseQuery = `
-            SELECT 
-                I.itemName AS itemName,
-                I.itemID AS itemID,
-                SUM(
-                    CASE 
-                        WHEN R.itemID IS NOT NULL THEN R.quantity 
-                        ELSE 0 
-                    END
-                ) AS restaurant_quantity_sold,
-                SUM(
-                    CASE 
-                        WHEN C.itemID IS NOT NULL THEN C.quantity 
-                        ELSE 0 
-                    END
-                ) AS concession_quantity_sold,
-                SUM(
-                    CASE 
-                        WHEN G.itemID IS NOT NULL THEN G.quantity 
-                        ELSE 0 
-                    END
-                ) AS giftshop_quantity_sold,
-                SUM(
-                    CASE 
-                        WHEN R.itemID IS NOT NULL THEN (R.quantity * I.itemPrice)
-                        ELSE 0 
-                    END
-                ) AS restaurant_sales_revenue,
-                SUM(
-                    CASE 
-                        WHEN C.itemID IS NOT NULL THEN (C.quantity * I.itemPrice)
-                        ELSE 0 
-                    END
-                ) AS concession_sales_revenue,
-                SUM(
-                    CASE 
-                        WHEN G.itemID IS NOT NULL THEN (G.quantity * I.itemPrice)
-                        ELSE 0 
-                    END
-                ) AS giftshop_sales_revenue,
-                (SUM(
-                    CASE 
-                        WHEN R.itemID IS NOT NULL THEN (R.quantity * I.itemPrice)
-                        ELSE 0 
-                    END
-                ) + 
-                SUM(
-                    CASE 
-                        WHEN C.itemID IS NOT NULL THEN (C.quantity * I.itemPrice)
-                        ELSE 0 
-                    END
-                ) + 
-                SUM(
-                    CASE 
-                        WHEN G.itemID IS NOT NULL THEN (G.quantity * I.itemPrice)
-                        ELSE 0 
-                    END
-                )) AS total_sales_revenue
-            FROM Inventory I
-            LEFT JOIN Restaurant_sales R ON I.itemID = R.itemID
-            LEFT JOIN Concession_sales C ON I.itemID = C.itemID
-            LEFT JOIN Gift_shop_sales G ON I.itemID = G.itemID
-        `;
+        // Fetch data from individual report functions
+        const restaurantData = await module.exports.restaurantItemReports(reportData);
+        const concessionData = await module.exports.concessionItemReport(reportData);
+        const giftShopData = await module.exports.giftShopItemReport(reportData);
+        const ticketData = await module.exports.calculateTicketSales(reportData);
 
-        // Apply the date filter if start and end dates are provided
-        const whereClause = startDate && endDate ? `WHERE (R.purchased_at BETWEEN ? AND ? OR C.purchased_at BETWEEN ? AND ? OR G.purchased_at BETWEEN ? AND ?)` : ``;
+        // Aggregate all item data into a single structure
+        const combinedData = [...restaurantData, ...concessionData, ...giftShopData];
 
-        // Group by item and order by total sales revenue
-        const groupByAndOrder = `
-            GROUP BY I.itemID, I.itemName
-            ORDER BY total_sales_revenue DESC
-        `;
+        // Map ticket data to combinedData format
+        ticketData.forEach(ticket => {
+            combinedData.push({
+                itemName: ticket.ticketType,
+                itemID: null,  // Assuming ticket types don’t have item IDs
+                total_quantity_sold: ticket.ticketCount || 0,
+                total_sales_revenue: parseFloat(ticket.total_sales_revenue) || 0,
+                purchase_date: ticket.purchase_date || null
+            });
+        });
 
-        // Combine the parts of the query
-        const fullQuery = `${baseQuery} ${whereClause} ${groupByAndOrder}`;
-        
-        // Execute the query with or without the date parameters
-        const results = startDate && endDate
-            ? await query(fullQuery, [startDate, endDate, startDate, endDate, startDate, endDate])
-            : await query(fullQuery);
+        // Sum quantities, revenues, and identify latest purchase dates by item
+        const finalReport = combinedData.reduce((acc, item) => {
+            const existingItem = acc.find(i => i.itemName === item.itemName);
 
-        // Format results to include total quantity and total revenue across all categories
-        return results.map(item => ({
+            if (existingItem) {
+                existingItem.total_quantity_sold += item.total_quantity_sold;
+                existingItem.total_sales_revenue += item.total_sales_revenue;
+                existingItem.purchase_date = 
+                    new Date(item.purchase_date) > new Date(existingItem.purchase_date)
+                    ? item.purchase_date : existingItem.purchase_date;
+            } else {
+                acc.push(item);
+            }
+
+            return acc;
+        }, []);
+
+        // Format final report data
+        return finalReport.map(item => ({
             itemName: item.itemName,
             itemID: item.itemID,
-            restaurant_quantity_sold: item.restaurant_quantity_sold || 0,
-            concession_quantity_sold: item.concession_quantity_sold || 0,
-            giftshop_quantity_sold: item.giftshop_quantity_sold || 0,
-            total_quantity_sold: (item.restaurant_quantity_sold || 0) + (item.concession_quantity_sold || 0) + (item.giftshop_quantity_sold || 0),
-            restaurant_sales_revenue: item.restaurant_sales_revenue || 0,
-            concession_sales_revenue: item.concession_sales_revenue || 0,
-            giftshop_sales_revenue: item.giftshop_sales_revenue || 0,
-            total_sales_revenue: item.total_sales_revenue || 0
+            total_quantity_sold: Number(item.total_quantity_sold) || 0,
+            total_sales_revenue: parseFloat(item.total_sales_revenue).toFixed(2) || 0,
+            purchase_date: item.purchase_date || null
         }));
 
     } catch (err) {

@@ -114,6 +114,16 @@ router.get('/ticketRevenue', async (req, res) => {
     }
 });
 
+router.get('/all', async (req, res) => {
+    try {
+        const {startDate, endDate} = req.query;
+        const allReports = await reportsController.combinedItemReport({startDate, endDate});
+        res.status(200).json(allReports);
+    } catch (err) {
+        res.status(500).json({error: "Failed to calculate combined item report"});
+    }
+});
+
 router.get('/charts/totalSales', async (req, res) => {
     try {
         const {startDate, endDate} = req.query;
