@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import './payment.css'; // You can create this CSS file to add styles
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { memberId } = useParams(); // Get memberId from the URL
   const {
     selectedTime,
     selectedDate,
@@ -23,8 +23,10 @@ const Payment = () => {
   };
 
   const handleSubmit = () => {
-    // Handle payment submission logic here
-    navigate('/confirmation', { state: { selectedTime, selectedDate, finalPrice, email } });
+    // // Handle payment submission logic here
+    // navigate('/confirmation', { state: { selectedTime, selectedDate, finalPrice, email } });
+    alert('Payment successful');
+    navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
   };
 
   return (

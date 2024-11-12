@@ -7,7 +7,7 @@ export default function MemberPage() {
   const [memberData, setMemberData] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [showMembershipStatus, setShowMembershipStatus] = useState(false);
+  const [showAnimals, setShowAnimals] = useState(false);
   const [showRewardPoints, setShowRewardPoints] = useState(false);
   const [showRecentPurchases, setShowRecentPurchases] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -55,6 +55,11 @@ export default function MemberPage() {
       navigate(`/member/${memberId}/tickets`);
     }
   };
+  const goToAnimals = () => {
+    if (memberId) {
+      navigate(`/member/${memberId}/animals`);
+    }
+  };
 
 const formatDate = (isoDate) => {
   if (!isoDate) return ''; // Handle if no date is available
@@ -64,9 +69,9 @@ const formatDate = (isoDate) => {
     setShowProfile((prev) => !prev);
   };
 
-  const toggleMembershipStatus = () => {
-    setShowMembershipStatus((prev) => !prev);
-  };
+  // const toggleAnimalStatus = () => {
+  //   setShowAnimals((prev) => !prev);
+  // };
 
   const toggleRewardPoints = () => {
     setShowRewardPoints((prev) => !prev);
@@ -175,17 +180,17 @@ const formatDate = (isoDate) => {
 
         <div 
           className="membership-status text-[#165e229e] w-full bg-white p-6 rounded-lg shadow-sm flex items-center justify-center text-center cursor-pointer"
-          onClick={toggleMembershipStatus}
+          onClick={goToAnimals}
         >
-          <h3 className="font-bold">Membership Status</h3>
-          {showMembershipStatus && (
+          <h3 className="font-bold">View our animals</h3>
+          {/* {showMembershipStatus && (
             <div className="mt-2">
               <p><strong>Type:</strong> {memberData?.memberType}</p>
               <p><strong>Term:</strong> {memberData?.memberTerm}</p>
               <p><strong>Subscribed On:</strong> {memberData?.subscribed_on}</p>
               <p><strong>Last Billed:</strong> {memberData?.last_billed}</p>
             </div>
-          )}
+          )} */}
         </div>
 
         <div 
