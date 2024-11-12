@@ -20,9 +20,9 @@ function AdminLogin() {
   
       if (response.status === 200) {
         const { token, role, ID } = response.data; // Assuming token and role are returned in the response
-        console.log("Response Data:", response.data); // Log full response data
+        //console.log("Response Data:", response.data); // Log full response data
         console.log("Role:", role); // Log role to confirm
-        console.log("Token:", token); // Log token to confirm
+        //console.log("Token:", token); // Log token to confirm
   
         if (token) {
           // Store the token in localStorage
