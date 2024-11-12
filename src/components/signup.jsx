@@ -18,6 +18,8 @@ function Signup() {
         password: "",
         date_of_birth: "",
         address: "",
+        memberType: 0, // Default to Regular
+        memberTerm: 0  // Default to 1 month
     });
     const [birthday, setBirthday] = useState('');
     const [address, setAddress] = useState({
@@ -37,8 +39,9 @@ function Signup() {
 
     const handleSubmitForm = async (formData) => {
         try {
-            const {first_name, last_name, email, phone_number, username, password, date_of_birth} = formData;
+            const {first_name, last_name, email, phone_number, username, password, date_of_birth, memberType, memberTerm} = formData;
             const {street, city, state, zip} = address;
+            const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
             const memberData = {
                 address: `${street}, ${city}, ${state}, ${zip}`,
@@ -47,6 +50,9 @@ function Signup() {
                 memberPhone: phone_number,
                 memberFName: first_name,
                 memberLName: last_name,
+                memberType: memberType, // Add selected membership type
+                memberTerm: memberTerm,  // Add selected membership term
+                subscribed_on: today
             }
 
             const newMember = await axios.post(`${url}/members/new/member`, memberData);
@@ -170,6 +176,30 @@ function Signup() {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
+
+                    <label htmlFor="memberType" className="block text-sm text-gray-600">Membership Type</label>
+                    <select
+                        className="w-full p-2 mb-4 border border-[#165e229e] rounded"
+                        value={formData.memberType}
+                        onChange={(e) => setFormData({ ...formData, memberType: parseInt(e.target.value) })}
+                    >
+                        <option value={0}>Regular</option>
+                        <option value={1}>Student</option>
+                        <option value={2}>Veteran</option>
+                        <option value={3}>Military</option>
+                    </select>
+
+                    <label htmlFor="memberTerm" className="block text-sm text-gray-600">Membership Term</label>
+                    <select
+                        className="w-full p-2 mb-4 border border-[#165e229e] rounded"
+                        value={formData.memberTerm}
+                        onChange={(e) => setFormData({ ...formData, memberTerm: parseInt(e.target.value) })}
+                    >
+                        <option value={0}>1 month</option>
+                        <option value={1}>6 months</option>
+                        <option value={2}>12 months</option>
+                        <option value={3}>24 months</option>
+                    </select>
                     <label htmlFor="birthday" className="block text-sm text-gray-600">Birthday</label>
                     <input
                         type="date"
