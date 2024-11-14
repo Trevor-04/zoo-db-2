@@ -3,12 +3,13 @@ const nodemailer = require('nodemailer');
 require("dotenv").config();
 
 const transport = nodemailer.createTransport({
-  host: process.env.MAILTRAP_HOST,
-  port: 2525, // try 587 or 465 if needed
-  secure: false, // set to true if using port 465
+  service: "Gmail",
+  host: process.env.GMAIL_HOST,
+  port: process.env.GMAIL_HOST, // try 587 or 465 if needed
+  secure: true, // set to true if using port 465
   auth: {
-    user: process.env.MAILTRAP_USER,
-    pass: process.env.MAILTRAP_PASS,
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
   },
   connectionTimeout: 10000, // 10 seconds
 });
@@ -22,22 +23,17 @@ transport.verify((error, success) => {
   }
 });
 
-
-const sender = {
-  address: "hello@example.com",
-  name: "Mailtrap Test",
-};
-const recipientEmail = "cooguarzooguar@gmail.com";
+const recipientEmail = "zoeyemilyballard@gmail.com";
 
 // Sample function to send a test email
 async function sendTestEmail() {
   try {
     const info = await transport.sendMail({
-      from: `"${sender.name}" <${sender.address}>`, // sender address
-      to: recipientEmail, // recipient's email
-      subject: "Hello from Mailtrap", // Subject line
-      text: "This is a test email sent with Mailtrap!", // plain text body
-      html: "<b>This is a test email sent with Mailtrap!</b>", // HTML body
+      from: process.env.GMAIL_USER, // sender address
+      to: process.env.GMAIL_TEST, // recipient's email
+      subject: "Coog Zoo Test Email", // Subject line
+      text: "This is a test email sent with Nodemailer!", // plain text body
+      html: "<b>This is a test email sent with Nodemailer!</b>", // HTML body
     });
     console.log("Message sent: %s", info.messageId);
   } catch (error) {
@@ -56,10 +52,15 @@ module.exports.sendNotifications = async function() {
       SELECT * FROM Email_notifications WHERE sent = 0
     `);
 
+    if (notifications.length === 0) {
+      console.log("No emails to be sent");
+      return;
+    }
+
     for (let notification of notifications) {
       // Send the email
       await transport.sendMail({
-        from: `"${sender.name}" <${sender.address}>`,
+        from: process.env.GMAIL_USER,
         to: notification.recipientEmail,
         subject: notification.subject,
         text: notification.message,
