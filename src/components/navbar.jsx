@@ -1,11 +1,21 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem("token"); // Check if a token exists
+
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token from local storage
+    navigate("/login"); // Redirect to login page
+  };
 
   if (location.pathname.startsWith('/member')) {
     return null;
   }
+
   return (
     <header className="bg-[#faf0e6] h-20 flex items-center justify-between px-4">
       {/* Logo Section */}
@@ -39,11 +49,21 @@ export default function Navbar() {
           </button>
         </Link>
 
-        <Link to="/login">
-          <button className="bg-[#165e229e] rounded font-bold text-white hover:bg-green-900 ml-4 pl-2 pr-2 h-[35px]">
-            Log in
+        {/* Conditional rendering based on login status */}
+        {isLoggedIn ? (
+          <button
+            onClick={handleLogout}
+            className="bg-[#165e229e] rounded font-bold text-white hover:bg-green-900 ml-4 pl-2 pr-2 h-[35px]"
+          >
+            Log out
           </button>
-        </Link>
+        ) : (
+          <Link to="/login">
+            <button className="bg-[#165e229e] rounded font-bold text-white hover:bg-green-900 ml-4 pl-2 pr-2 h-[35px]">
+              Log in
+            </button>
+          </Link>
+        )}
       </div>
     </header>
   );
