@@ -23,8 +23,6 @@ transport.verify((error, success) => {
   }
 });
 
-const recipientEmail = "zoeyemilyballard@gmail.com";
-
 // Sample function to send a test email
 async function sendTestEmail() {
   try {

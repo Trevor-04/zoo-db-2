@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Navbar from './components/navbar';
 import Home from './pages/Home';    
 import Animals from './pages/Animals';
+import AnimalPage from './components/AnimalPage';
 import GiftShop from './pages/GiftShop';
 import Events from './pages/Events';
 import Login from './components/login';
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/AdminLogin" element={<AdminLogin />} />
                     <Route path="/animals" element={<Animals />} />
+                    <Route path="/animal/:name" element={<AnimalPage />} />
                     <Route path="/member/:memberId/animals" element={<Animals />} />
                     <Route path="/giftshop" element={<GiftShop />} />
                     <Route path="/product/:name" element={<ProductPage />} />
