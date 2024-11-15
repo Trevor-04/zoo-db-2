@@ -383,14 +383,21 @@ const getTopProductsChart = async (startDate, endDate, limit) => {
           onClick={() => navigate(`/Admin/${employeeID}/totalReport`)}
           className="ml-8 bg-[#165e229e] text-white font-bold w-[120px] h-[35px] rounded-2xl"
         >
-          View Reports
+          Reports
+        </button>
+
+        <button
+          onClick={() => navigate(`/Admin/${employeeID}/employeeTable`)}
+          className="ml-8 bg-[#165e229e] text-white font-bold w-[120px] h-[35px] rounded-2xl"
+        >
+          Employees
         </button>
 
         <button 
           onClick={() => navigate(`/Admin/${employeeID}/events`, { state: { editMode: true } })}
-          className="ml-8 bg-[#165e229e] text-white font-bold w-[100px] h-[30px] rounded-2xl"
+          className="ml-8 bg-[#165e229e] text-white font-bold w-[120px] h-[35px] rounded-2xl"
         >
-          Edit events
+          Edit Events
         </button>
 
           {/* Dropdown Menu */}

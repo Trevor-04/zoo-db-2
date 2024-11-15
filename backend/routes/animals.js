@@ -92,5 +92,18 @@ router.get('/exhibits/:exhibitName', async (req, res) => {
     }
 });
 
+router.put('/edit', async (req, res) => {
+    const animalData = req.body;
+
+    try {
+        const result = await animalController.editAnimal(animalData);
+        res.status(200).json({ message: 'Animal updated successfully', result });
+    } catch (err) {
+        console.error('Error editing animal:', err);
+        res.status(500).json({ error: 'Failed to edit animal' });
+    }
+});
+
+
 // Export the router
 module.exports = router;

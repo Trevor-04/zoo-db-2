@@ -135,7 +135,7 @@ const handleEditEmployee = async (e) => {
   const fetchEmployeeData = async () => {
     try {
         const response = await axios.get(`${url}/employees/`);
-        if (response.status !== 200) throw new Error("Failed to fetch sales data");
+        if (response.status !== 200) throw new Error("Failed to fetch employee data");
         setEmployeeData(response.data);
       } catch (error) {
         console.error(error);
@@ -163,6 +163,7 @@ const closeEditEmployeeOptions = async () => {
 
   async function deleteEmployee(employeeID) {
     try {
+      if (!window.confirm("Are you sure you want to delete this employee?")) return;
         await axios.delete(`${url}/employees/${employeeID}`);
 
         alert(`Successfully deleted employee ${employeeID}`);
@@ -324,7 +325,7 @@ const handlePageChange = (page) => setCurrentPage(page);
 
                     <div className="form-group">
                         <label>Phone Number:</label>
-                        <input type="text" value={newNumber} onChange={(e) => setNumber(e.target.value)} required />
+                        <input type="text" value={newNumber} onChange={(e) => setNumber(e.target.value)} required maxLength="12"/>
                     </div>
 
                     <div className="form-group">
@@ -408,6 +409,7 @@ const handlePageChange = (page) => setCurrentPage(page);
     value={newNumber}
     onChange={(e) => setNumber(e.target.value)}
     required
+    maxLength="12"
   />
 </div>
 <div className="form-group">

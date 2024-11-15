@@ -17,7 +17,7 @@ module.exports.addNewAnimal = async function (animalData) {
 module.exports.deleteAnimal = async function (animalData) {
     const {animalID} = animalData;
     try {
-        return query(`DELETE FROM Animals WHERE animal_id=?`, 
+        return query(`DELETE FROM Animals WHERE animalID=?`, 
         [animalID]);
     } catch (err) {
         console.log(err);
@@ -28,17 +28,21 @@ module.exports.deleteAnimal = async function (animalData) {
 
 module.exports.listAllAnimals = async function () {
     try {
-        return query(`SELECT * FROM Animal`); 
+        return query(`
+            SELECT A.*, E.enclosureName
+            FROM Animals AS A
+            LEFT JOIN Enclosures AS E ON A.enclosureID = E.enclosureID
+        `); 
     } catch (err) {
-        console.log(err);
-        throw err;
+        console.error("Error listing all animals:", err);
+        throw new Error("Failed to list all animals");
     }
-}
+};
 
 module.exports.getAnimalById = async function (animalData) {
     const {animalID} = animalData;
     try {
-        const result = await query(`SELECT * FROM Animals WHERE animal_id=?`, [animalID]);
+        const result = await query(`SELECT * FROM Animals WHERE animalID=?`, [animalID]);
         return result[0]; 
     } catch(err) {
         console.log(err);
@@ -139,6 +143,61 @@ module.exports.getAnimalsByExhibit = async function(animalData) {
         return results || [];
     } catch (err) {
         console.log(err);
+        throw err;
+    }
+};
+
+
+module.exports.editAnimal = async function (animalData) {
+    const {
+        animalID,
+        name,
+        sex,
+        date_acquired,
+        date_died = null,
+        date_born = null,
+        species,
+        classification,
+        enclosureID,
+    } = animalData;
+
+    if (!animalID) {
+        throw new Error("Animal ID is required to edit an animal.");
+    }
+
+    try {
+        const result = await query(
+            `UPDATE Animals 
+            SET 
+                name = ?, 
+                sex = ?, 
+                date_acquired = ?, 
+                date_died = ?, 
+                date_born = ?, 
+                species = ?, 
+                classification = ?, 
+                enclosureID = ? 
+            WHERE animalID = ?`,
+            [
+                name,
+                sex,
+                new Date(date_acquired).toISOString().split("T")[0],
+                date_died ? new Date(date_died).toISOString().split("T")[0] : null,
+                date_born ? new Date(date_born).toISOString().split("T")[0] : null,
+                species,
+                classification,
+                enclosureID,
+                animalID,
+            ]
+        );
+
+        if (result.affectedRows === 0) {
+            throw new Error(`Animal with ID ${animalID} not found.`);
+        }
+
+        return result;
+    } catch (err) {
+        console.error("Error in editAnimal function:", err);
         throw err;
     }
 };
