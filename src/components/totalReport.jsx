@@ -25,7 +25,6 @@ function TotalReport() {
   const itemsPerPage = 10;
 
   const [chartType, setChartType] = useState("Bar");
-
   const ChartComponent = chartType === "Bar" ? Bar : Line;
 
 
@@ -87,9 +86,8 @@ function TotalReport() {
     }
     try {
       const response = await axios.get(`${url}${fetchData}`, { params: { startDate, endDate } });
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch sales data");
-      }
+        if (response.status !== 200) throw new Error("Failed to fetch sales data");
+        
       setSalesData(response.data);
     } catch (error) {
       console.error("Error fetching sales data:", error);

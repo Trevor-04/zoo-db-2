@@ -17,6 +17,7 @@ import Member from './pages/MemberPage';
 import SettingsPage from "./components/SettingsPage";
 
 import TotalReport from "./components/totalReport"; 
+import EmployeeTable from "./components/employeeTable";
 
 import './App.css';
 
@@ -53,6 +54,7 @@ function App() {
 
                     <Route path="/totalReport" element={<TotalReport />} />
                     <Route path="Admin/:employeeID/totalReport" element={<TotalReport />} />
+                    <Route path="Admin/:employeeID/employeeTable" element={<EmployeeTable />} />
                 </Routes>
             </Router>
         </div>
