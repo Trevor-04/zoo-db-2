@@ -405,14 +405,15 @@ module.exports.combinedItemReport = async function (reportData) {
 
 module.exports.feedingReport = async function (feedingData) {
     const { startDate, endDate } = feedingData;
-
+    
     try {
         // Base query for feeding schedules and enclosures
         let baseQuery = `
-            SELECT 
+            SELECT DISTINCT
                 en.enclosureID,
                 en.enclosureName AS Enclosure_Name,
-                COUNT(a.animalID) AS Total_Animals,
+                a.name AS Animal_Name,
+                a.species AS Animal_Species,
                 fs.feedingType AS Feeding_Type,
                 fs.feedingFreq AS Feeding_Frequency,
                 fs.amount AS Feeding_Amount,
@@ -421,7 +422,7 @@ module.exports.feedingReport = async function (feedingData) {
             FROM Enclosures en
             LEFT JOIN Animals a ON en.enclosureID = a.enclosureID
             LEFT JOIN Feeding_schedules fs ON a.animalID = fs.animalID
-            LEFT JOIN Employees emp ON en.caretakerID = emp.employeeID
+            LEFT JOIN Employees emp ON fs.caretakerID = emp.employeeID
         `;
         
         // Apply date filter if startDate and endDate are provided
@@ -431,18 +432,11 @@ module.exports.feedingReport = async function (feedingData) {
 
         // Grouping and ordering for report clarity
         let groupByAndOrder = `
-            GROUP BY 
-                en.enclosureID,
-                en.enclosureName,
-                fs.feedingType,
-                fs.feedingFreq,
-                fs.amount,
-                fs.last_fed,
-                emp.fName,
-                emp.lName
-            ORDER BY 
-                en.enclosureID,
-                Total_Animals DESC
+        GROUP BY 
+        en.enclosureID, en.enclosureName, a.name,
+        a.species, fs.feedingType, fs.feedingFreq, fs.amount,
+        fs.last_fed, emp.fName, emp.lName
+        ORDER BY en.enclosureID;
         `;
 
         // Combine base query, where clause, and grouping
@@ -457,7 +451,8 @@ module.exports.feedingReport = async function (feedingData) {
         return results.map(row => ({
             enclosureID: row.enclosureID,
             enclosureName: row.Enclosure_Name,
-            totalAnimals: row.Total_Animals,
+            animalName: row.Animal_Name,
+            animalSpecies: row.Animal_Species,
             feedingType: row.Feeding_Type,
             feedingFrequency: row.Feeding_Frequency,
             feedingAmount: row.Feeding_Amount,

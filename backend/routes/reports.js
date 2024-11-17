@@ -147,7 +147,7 @@ router.get('/charts/topProducts', async (req, res) => {
 
 router.get("/feedingSchedule/", async (req, res) => {
     try {
-        const feedingSchedule = await reportsController.getFeedingSchedule(res.query);
+        const feedingSchedule = await reportsController.feedingReport(req.query);
         res.status(200).json(feedingSchedule);
     } catch (err) {
         res.status(500).json({error: "Failed to fetch feeding schedule"});

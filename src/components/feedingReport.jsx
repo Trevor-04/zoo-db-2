@@ -39,7 +39,7 @@ function AnimalFeedingReport() {
 
   const fetchFeedingData = async () => {
     try {
-      const response = await axios.get(`${url}/feedingSchedule`, {
+      const response = await axios.get(`${url}/reports/feedingSchedule`, {
         params: { startDate, endDate }
       });
       if (response.status !== 200) throw new Error("Failed to fetch feeding data");
@@ -58,7 +58,8 @@ function AnimalFeedingReport() {
 
     const tableColumn = [
       "Enclosure Name",
-      "Total Animals",
+      "Animal Name",
+      "Animal Species",
       "Feeding Type",
       "Feeding Frequency",
       "Feeding Amount",
@@ -67,7 +68,8 @@ function AnimalFeedingReport() {
     ];
     const tableRows = feedingData.map(row => [
       row.enclosureName,
-      row.totalAnimals,
+      row.animalName,
+      row.animalSpecies,
       row.feedingType,
       row.feedingFrequency,
       row.feedingAmount,
@@ -83,8 +85,8 @@ function AnimalFeedingReport() {
     labels: feedingData.map(row => row.enclosureName),
     datasets: [
       {
-        label: "Total Animals",
-        data: feedingData.map(row => row.totalAnimals),
+        label: "Animal Name",
+        data: feedingData.map(row => row.animalName),
         backgroundColor: "#8AA686",
       },
       {
@@ -122,7 +124,8 @@ function AnimalFeedingReport() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-2 font-medium text-xl underline border">Enclosure Name</th>
-                <th className="px-4 py-2 font-medium text-xl underline border">Total Animals</th>
+                <th className="px-4 py-2 font-medium text-xl underline border">Animal Name</th>
+                <th className="px-4 py-2 font-medium text-xl underline border">Animal Species</th>
                 <th className="px-4 py-2 font-medium text-xl underline border">Feeding Type</th>
                 <th className="px-4 py-2 font-medium text-xl underline border">Feeding Frequency</th>
                 <th className="px-4 py-2 font-medium text-xl underline border">Feeding Amount</th>
@@ -134,11 +137,12 @@ function AnimalFeedingReport() {
               {feedingData.map((row, index) => (
                 <tr key={index} className="text-gray-700">
                   <td className="px-4 py-2 border">{row.enclosureName}</td>
-                  <td className="px-4 py-2 border">{row.totalAnimals}</td>
+                  <td className="px-4 py-2 border">{row.animalName}</td>
+                  <td className="px-4 py-2 border">{row.animalSpecies}</td>
                   <td className="px-4 py-2 border">{row.feedingType}</td>
                   <td className="px-4 py-2 border">{row.feedingFrequency}</td>
                   <td className="px-4 py-2 border">{row.feedingAmount}</td>
-                  <td className="px-4 py-2 border">{row.lastFedTime}</td>
+                  <td className="px-4 py-2 border">{row.lastFedTime.split("T")[0]}</td>
                   <td className="px-4 py-2 border">{row.caretakerName}</td>
                 </tr>
               ))}
