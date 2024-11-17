@@ -39,12 +39,22 @@ export default function Navbar() {
 
       {/* Buttons Section */}
       <div className="flex items-center">
-      <Link to={employeeID ? `/Admin/${employeeID}/events` : "/Events"}>
-          <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
+      {employeeID ? (
+          <button
+            onClick={() =>
+              navigate(`/Admin/${employeeID}/events`, { state: { editMode: true } })
+            }
+            className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1"
+          >
             Upcoming Events
           </button>
-        </Link>
-
+        ) : (
+          <Link to="/Events">
+            <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
+              Upcoming Events
+            </button>
+          </Link>
+        )}
         <Link to="/tickets">
           <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
             Tickets
