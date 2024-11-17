@@ -56,7 +56,7 @@ export default function Navbar() {
             }
             className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1"
           >
-            Upcoming Events
+            Edit Upcoming Events
           </button>
         ) : (
           <Link to="/Events">
