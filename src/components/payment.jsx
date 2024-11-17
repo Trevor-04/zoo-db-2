@@ -6,6 +6,7 @@ const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { memberId } = useParams(); // Get memberId from the URL
+  const { employeeID } = useParams();
   const {
     selectedTime,
     selectedDate,
@@ -25,12 +26,17 @@ const Payment = () => {
   const handleSubmit = () => {
     // // Handle payment submission logic here
     // navigate('/confirmation', { state: { selectedTime, selectedDate, finalPrice, email } });
+    //console.log(memberId);
     alert('Payment successful');
-    console.log(memberId);
-    if(memberId === 'undefined')
-      navigate(`/`);
-    else
-      navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
+    // if(memberId === 'undefined')
+    //   navigate(`/`);
+    // else
+    //   navigate(`/member/${memberId}`); // Redirect back to MemberPage with dynamic memberId
+    if(location.pathname.startsWith('/member'))
+      navigate(`/member/${memberId}`)
+    else if(location.pathname.startsWith('/Admin'))
+      navigate(`/Admin/${employeeID}`)
+    else navigate(`/`);
   };
 
   return (

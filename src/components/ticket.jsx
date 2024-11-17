@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './tickets.css';
 import { Link } from 'react-router-dom';
 //import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 const {url} = require('../config.json')[process.env.NODE_ENV];
 
@@ -19,7 +19,9 @@ function TicketOptions() {
   const [infantTickets, setInfantTickets] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
   const navigate = useNavigate(); // Create navigate function here
+  const location = useLocation();
   const { memberId } = useParams(); // Get memberId from the URL params
+  const {employeeID} = useParams();
   const pricing = {
     '9am': { adult: 25, child: 15, senior: 20, infant: 0 },
     '10am': { adult: 20, child: 13.5, senior: 15, infant: 0 },
@@ -96,6 +98,7 @@ function TicketOptions() {
         const total = await handleSubmitButton(time); // Get the final price directly from handleSubmitButton
         setFinalPrice(total); // Update the state immediately
         // Use the calculated total for navigation
+        if (location.pathname.startsWith('/member')) {
         navigate(`/member/${memberId}/payment`, { 
           state: { 
             selectedTime: time, 
@@ -108,7 +111,34 @@ function TicketOptions() {
           } 
         });
       }
-    };
+      else if (location.pathname.startsWith('/Admin')) {
+        navigate(`/Admin/${employeeID}/payment`, { 
+          state: { 
+            selectedTime: time, 
+            selectedDate, 
+            adultTickets, 
+            childTickets, 
+            seniorTickets, 
+            infantTickets, 
+            finalPrice: total // Pass the calculated total here
+          } 
+        });
+      }
+      else {
+      navigate(`/payment`, { 
+        state: { 
+          selectedTime: time, 
+          selectedDate, 
+          adultTickets, 
+          childTickets, 
+          seniorTickets, 
+          infantTickets, 
+          finalPrice: total // Pass the calculated total here
+        } 
+      });
+    }
+    }
+  };
   
     const handleSubmitButton = async (time) => {
       try {

@@ -48,6 +48,7 @@ function App() {
                     <Route path="member/:memberId/tickets" element={<Tickets />} />
                     <Route path="Admin/:employeeID/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
+                    <Route path="/Admin/:employeeID/payment" element={<Payment />} />
                     <Route path="/member/:memberId/payment" element={<Payment />} />
                    {/* <Route path="/Donate" element={<Donate />} /> */}
                    {/* <Route path="/DonatePage" element={<DonatePage/>} />  */}
