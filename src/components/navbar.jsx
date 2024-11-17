@@ -5,7 +5,21 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token"); // Check if a token exists
+  // Decode token to extract the ID
+  const getIDFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
 
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decode payload
+      return payload.ID; // Extract ID
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
+    }
+  };
+
+  const employeeID = getIDFromToken();
   // Function to handle logout
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token from local storage
@@ -25,7 +39,7 @@ export default function Navbar() {
 
       {/* Buttons Section */}
       <div className="flex items-center">
-        <Link to="/Events">
+      <Link to={employeeID ? `/Admin/${employeeID}/events` : "/Events"}>
           <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
             Upcoming Events
           </button>
