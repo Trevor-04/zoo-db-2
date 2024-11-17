@@ -82,7 +82,7 @@ function AnimalFeedingReport() {
   };
 
   const chartData = {
-    labels: feedingData.map(row => row.enclosureName),
+    labels: feedingData.map(row => row.animalName),
     datasets: [
       {
         label: "Animal Name",
