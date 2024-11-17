@@ -33,10 +33,20 @@ export default function Navbar() {
   return (
     <header className="bg-[#faf0e6] h-20 flex items-center justify-between px-4">
       {/* Logo Section */}
+      {employeeID ? (
+          <button
+            onClick={() =>
+              navigate(`/Admin/${employeeID}`)
+            }
+            className="flex items-center"
+          >
+            <img className="h-[70px]" src="/Coog_Zoo.png" alt="logo" />
+          </button>
+        ) : (
       <Link to="/" className="flex items-center">
         <img className="h-[70px]" src="/Coog_Zoo.png" alt="logo" />
       </Link>
-
+      )}
       {/* Buttons Section */}
       <div className="flex items-center">
       {employeeID ? (
@@ -55,23 +65,56 @@ export default function Navbar() {
             </button>
           </Link>
         )}
+
+        {employeeID ? (
+          <button
+            onClick={() =>
+              navigate(`/Admin/${employeeID}/tickets`)
+            }
+            className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1"
+          >
+            Tickets
+          </button>
+        ) : (
         <Link to="/tickets">
           <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
             Tickets
           </button>
         </Link>
+        )}
 
+        {employeeID ? (
+          <button
+            onClick={() =>
+              navigate(`/Admin/${employeeID}/giftshop`)
+            }
+            className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1"
+          >
+            Merchandise
+          </button>
+        ) : (
         <Link to="/giftshop">
           <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
             Merchandise
           </button>
         </Link>
-
+        )}
+        {employeeID ? (
+          <button
+            onClick={() =>
+              navigate(`/Admin/${employeeID}/animals`)
+            }
+            className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1"
+          >
+            Animals
+          </button>
+        ) : (
         <Link to="/animals">
           <button className="text-[#165e229e] font-bold hover:text-green-900 ml-4 p-1">
             Animals
           </button>
         </Link>
+        )}
 
         {/* Conditional rendering based on login status */}
         {isLoggedIn ? (

@@ -34,9 +34,11 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/AdminLogin" element={<AdminLogin />} />
                     <Route path="/animals" element={<Animals />} />
+                    <Route path="/Admin/:employeeID/animals" element={<Animals />} />
                     <Route path="/animal/:name" element={<AnimalPage />} />
                     <Route path="/member/:memberId/animals" element={<Animals />} />
                     <Route path="/giftshop" element={<GiftShop />} />
+                    <Route path="/Admin/:employeeID/giftshop" element={<GiftShop />} />
                     <Route path="/product/:name" element={<ProductPage />} />
                     <Route path="/events" element={<Events />} />
                     <Route path="/member/:memberId/events" element={<Events />} /> 
@@ -44,6 +46,7 @@ function App() {
                     <Route path="/signup" element={<Signup/>} />
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="member/:memberId/tickets" element={<Tickets />} />
+                    <Route path="Admin/:employeeID/tickets" element={<Tickets />} />
                     <Route path="/payment" element={<Payment />} /> 
                     <Route path="/member/:memberId/payment" element={<Payment />} />
                    {/* <Route path="/Donate" element={<Donate />} /> */}
