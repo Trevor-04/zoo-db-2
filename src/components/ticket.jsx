@@ -469,12 +469,14 @@ function TicketOptions() {
             General Admission
           </button>
         </li>
-        <li className="ticket-item">
+        {/* <li className="ticket-item">
           <Link to="/discounted-tickets" className="ticket-link">Discounted Tickets</Link>
-        </li>
+        </li> */}
+        {!location.pathname.startsWith('/member') && !location.pathname.startsWith('/Admin') && (
         <li className="ticket-item">
           <Link to="/Signup" className="ticket-link">Membership Portal</Link>
         </li>
+      )}
       </ul>
 
       <div className="general-admission-container">

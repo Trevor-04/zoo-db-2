@@ -20,7 +20,11 @@ const Payment = () => {
   const [email, setEmail] = useState('');
 
   const handleBackToTimeSlot = () => {
-    navigate('/tickets');
+    if(location.pathname.startsWith('/member'))
+      navigate(`/member/${memberId}/tickets`)
+      else if(location.pathname.startsWith('/Admin'))
+      navigate(`/Admin/${employeeID}/tickets`)
+    else navigate('/tickets');
   };
 
   const handleSubmit = () => {
