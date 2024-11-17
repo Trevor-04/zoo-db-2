@@ -402,3 +402,71 @@ module.exports.combinedItemReport = async function (reportData) {
         throw err;
     }
 };
+
+module.exports.feedingReport = async function (feedingData) {
+    const { startDate, endDate } = feedingData;
+
+    try {
+        // Base query for feeding schedules and enclosures
+        let baseQuery = `
+            SELECT 
+                en.enclosureID,
+                en.enclosureName AS Enclosure_Name,
+                COUNT(a.animalID) AS Total_Animals,
+                fs.feedingType AS Feeding_Type,
+                fs.feedingFreq AS Feeding_Frequency,
+                fs.amount AS Feeding_Amount,
+                fs.last_fed AS Last_Fed_Time,
+                CONCAT(emp.fName, ' ', emp.lName) AS Caretaker_Name
+            FROM Enclosures en
+            LEFT JOIN Animals a ON en.enclosureID = a.enclosureID
+            LEFT JOIN Feeding_schedules fs ON a.animalID = fs.animalID
+            LEFT JOIN Employees emp ON en.caretakerID = emp.employeeID
+        `;
+        
+        // Apply date filter if startDate and endDate are provided
+        let whereClause = startDate && endDate 
+            ? `WHERE fs.last_fed BETWEEN ? AND ?`
+            : ``;
+
+        // Grouping and ordering for report clarity
+        let groupByAndOrder = `
+            GROUP BY 
+                en.enclosureID,
+                en.enclosureName,
+                fs.feedingType,
+                fs.feedingFreq,
+                fs.amount,
+                fs.last_fed,
+                emp.fName,
+                emp.lName
+            ORDER BY 
+                en.enclosureID,
+                Total_Animals DESC
+        `;
+
+        // Combine base query, where clause, and grouping
+        let fullQuery = `${baseQuery} ${whereClause} ${groupByAndOrder}`;
+
+        // Execute query with or without date filters
+        const results = startDate && endDate 
+            ? await query(fullQuery, [startDate, endDate]) 
+            : await query(fullQuery);
+
+        // Format the results for the report
+        return results.map(row => ({
+            enclosureID: row.enclosureID,
+            enclosureName: row.Enclosure_Name,
+            totalAnimals: row.Total_Animals,
+            feedingType: row.Feeding_Type,
+            feedingFrequency: row.Feeding_Frequency,
+            feedingAmount: row.Feeding_Amount,
+            lastFedTime: row.Last_Fed_Time,
+            caretakerName: row.Caretaker_Name
+        }));
+
+    } catch (err) {
+        console.error("Error generating feeding and enclosure report:", err);
+        throw err;
+    }
+}

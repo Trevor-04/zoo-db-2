@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import "../App.css";
 import "../index.css";
-import "./employeeTable.css";
+// import "./employeeTable.css";
 
 const { url } = require('../config.json')[process.env.NODE_ENV];
 let itemsPerPage = 10;
@@ -247,22 +247,22 @@ const handlePageChange = (page) => setCurrentPage(page);
               </button>
             </div>
         {/* Employee Data Table */}
-        <table className="divide-y divide-gray-300 mb-6 w-full text-center bg-white shadow-md rounded-lg overflow-hidden">
+        <table className="divide-y divide-gray-300 w-full text-center bg-white shadow-md rounded-lg overflow-hidden">
           <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("fName")}>Employee Name</th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("email")}>Email</th >
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("phone")}>Phone Number</th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("salary")}>Salary</th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("department")}>Department</th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("supervisorID")}>Supervisor</th>
-              <th className="px-4 py-2 font-medium text-xl underline border" onClick={() => handleHeaderClick("start_on")}>Start Date</th>
-              <th className="px-4 py-2 font-medium text-xl underline border">Manage Employee</th>
+           <tr>
+              <th onClick={() => handleHeaderClick("fName")}>Employee Name</th>
+              <th onClick={() => handleHeaderClick("email")}>Email</th>
+              <th onClick={() => handleHeaderClick("phone")}>Phone Number</th>
+              <th onClick={() => handleHeaderClick("salary")}>Salary</th>
+              <th onClick={() => handleHeaderClick("department")}>Department</th>
+              <th onClick={() => handleHeaderClick("supervisorID")}>Supervisor</th>
+              <th onClick={() => handleHeaderClick("start_on")}>Start Date</th>
+              <th>Manage Employee</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((employee, index) => (
-              <tr key={index} className="text-gray-700">
+            {paginatedData.map((employee, index) => (
+              <tr key={index} className="text-gray-700 hover:bg-gray-100">
                 <td className="px-4 py-2 border">{formatName(employee)}</td>
                 <td className="px-4 py-2 border">{employee.email}</td>
                 <td className="px-4 py-2 border">{employee.phone}</td>
@@ -272,11 +272,11 @@ const handlePageChange = (page) => setCurrentPage(page);
                 <td className="px-4 py-2 border">{new Date(employee.start_on).toISOString().split("T")[0]}</td>
                 <td className="px-4 py-2 border">
                 <button 
-                  className="bg-[#8AA686] text-white py-2 px-4 rounded"
+                  className="bg-[#8AA686] text-white py-2 px-4 rounded hover:bg-[#6C8A5E]"
                   onClick={() => handleEditEmployeeOptions(employee.employeeID)}>
                     Edit</button>
                   <button 
-                  className="bg-[#8AA686] text-white py-2 px-4 rounded"
+                  className="bg-[#8AA686] text-white py-2 px-4 rounded hover:bg-[#6C8A5E]"
                   onClick={() => deleteEmployee(employee.employeeID)}>
                     Delete</button>
                 </td>
